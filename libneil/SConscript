@@ -49,7 +49,7 @@ def bool_converter(value):
 def audioengine_converter(value):
     value = value.lower()
     if not value in ('portaudio'):
-        print "invalid option for AUDIOENGINE:",value
+        print("invalid option for AUDIOENGINE:",value)
         Exit(1)
     return value
 
@@ -88,13 +88,13 @@ def get_revision():
             return '%s:%s' % (revn, revid)
     # its a release build, take the string from a special file
     if os.path.isfile('REVISION'):
-        rev = file('REVISION').readline().strip()
+        rev = open('REVISION').readline().strip()
         if rev != "" and rev != "exported":
             return rev
     return env['REVISION']
 
 revision = get_revision()
-print >> file('REVISION','w'), revision
+print(revision, file=open('REVISION','w'))
 env['REVISION'] = revision
 
 env.SConsignFile()
@@ -371,24 +371,24 @@ if (not is_cleaning()) and ('configure' in COMMAND_LINE_TARGETS):
             }
     )
     if not conf.CheckCHeader('zlib.h'):
-        print "Error: no zlib development files seem to be installed."
-        print "zlib libraries and headers are required for building."
+        print("Error: no zlib development files seem to be installed.")
+        print("zlib libraries and headers are required for building.")
         Exit(1)
     if not conf.CheckCHeader('sndfile.h'):
-        print "Error: no libsndfile development files seem to be installed."
-        print "libsndfile libraries and headers are required for building."
+        print("Error: no libsndfile development files seem to be installed.")
+        print("libsndfile libraries and headers are required for building.")
         Exit(1)
     if not conf.CheckCHeader('samplerate.h'):
-        print "Error: no libsamplerate (libsrc) development files seem to be installed."
-        print "libsamplerate (libsrc) libraries and headers are required for building."
+        print("Error: no libsamplerate (libsrc) development files seem to be installed.")
+        print("libsamplerate (libsrc) libraries and headers are required for building.")
         Exit(1)
     if not conf.CheckCHeader('fftw3.h'):
-        print "Error: no libfftw3 development files seem to be installed."
-        print "libfftw3 libraries and headers are required for building."
+        print("Error: no libfftw3 development files seem to be installed.")
+        print("libfftw3 libraries and headers are required for building.")
         Exit(1)
     if not conf.CheckCHeader('mpg123.h'):
-        print "Error: no mpg123 development files seem to be installed."
-        print "libmpg123 libraries and headers are required for building."
+        print("Error: no mpg123 development files seem to be installed.")
+        print("libmpg123 libraries and headers are required for building.")
         Exit(1)        
     boostgraphheaders = [
         'boost/graph/adjacency_list.hpp',
@@ -397,8 +397,8 @@ if (not is_cleaning()) and ('configure' in COMMAND_LINE_TARGETS):
         ]
     for header in boostgraphheaders:
         if not conf.CheckCXXHeader(header):
-            print "Error: no libboost-graph development files seem to be installed."
-            print "libboost-graph libraries and headers are required for building."
+            print("Error: no libboost-graph development files seem to be installed.")
+            print("libboost-graph libraries and headers are required for building.")
             Exit(1)
     if conf.CheckCHeader('ladspa.h'):
         env['LADSPA'] = True
@@ -407,17 +407,17 @@ if (not is_cleaning()) and ('configure' in COMMAND_LINE_TARGETS):
     else:
         env['DSSI'] = False
     if not conf.CheckCHeader('FLAC/all.h'):
-        print "Error: no FLAC library development files found."
+        print("Error: no FLAC library development files found.")
         Exit(1)
     if not conf.CheckCHeader('mad.h'):
         env['MAD'] = False
     else:
         env['MAD'] = True
     if not conf.CheckCHeader('portaudio.h'):
-        print "Error: portaudio is not available on your system."
+        print("Error: portaudio is not available on your system.")
         Exit(1)
     if not conf.HasExecutable('xmlto'):
-        print "Error: xmlto is not available on your system."
+        print("Error: xmlto is not available on your system.")
         Exit(1)
 
     if conf.CheckCPUFlag('sse'):
@@ -427,7 +427,7 @@ if (not is_cleaning()) and ('configure' in COMMAND_LINE_TARGETS):
         env['SSE2'] = True
 
     if not conf.CheckPKGConfig('0.15.0'):
-        print 'pkg-config >= 0.15.0 not found.'
+        print('pkg-config >= 0.15.0 not found.')
         Exit(1)
 
     if conf.CheckPKG('gtk+-2.0'):
@@ -436,37 +436,37 @@ if (not is_cleaning()) and ('configure' in COMMAND_LINE_TARGETS):
         env['GTK2'] = False
 
     if not conf.CheckPKGVersion('portaudio-2.0', '19'):
-        print 'Error: need at least portaudio 19.'
+        print('Error: need at least portaudio 19.')
         Exit(1)
 
-    print "Finished configuration."
+    print("Finished configuration.")
     print
-    print "=== Using ===".center(50)
-    print "GTK2:".rjust(30), yesno[env['GTK2'] == True]
-    print "MAD:".rjust(30), yesno[env['MAD'] == True]
-    print "Use SSE CPU Extension:".rjust(30),yesno[env['SSE'] == True]
-    print "Use SSE2 CPU Extension:".rjust(30),yesno[env['SSE2'] == True]
+    print("=== Using ===".center(50))
+    print("GTK2:".rjust(30), yesno[env['GTK2'] == True])
+    print("MAD:".rjust(30), yesno[env['MAD'] == True])
+    print("Use SSE CPU Extension:".rjust(30),yesno[env['SSE'] == True])
+    print("Use SSE2 CPU Extension:".rjust(30),yesno[env['SSE2'] == True])
     print
-    print "=== Components ===".center(50)
-    print "DSSI:".rjust(30),yesno[env['DSSI'] == True]
-    print "LADSPA:".rjust(30),yesno[env['LADSPA'] == True]
-    print "pyzzub (zubb for Python):".rjust(30),yesno[env['PYZZUB'] == True]
+    print("=== Components ===".center(50))
+    print("DSSI:".rjust(30),yesno[env['DSSI'] == True])
+    print("LADSPA:".rjust(30),yesno[env['LADSPA'] == True])
+    print("pyzzub (zubb for Python):".rjust(30),yesno[env['PYZZUB'] == True])
     print
-    print "=== Directories ===".center(50)
-    print "Prefix:".rjust(30),env['PREFIX']
-    print "Install into:".rjust(30),env.Dir("${DESTDIR}${PREFIX}")
-    print "Library Directory:".rjust(30),env.Dir("${PREFIX}${LIBDIR}")
+    print("=== Directories ===".center(50))
+    print("Prefix:".rjust(30),env['PREFIX'])
+    print("Install into:".rjust(30),env.Dir("${DESTDIR}${PREFIX}"))
+    print("Library Directory:".rjust(30),env.Dir("${PREFIX}${LIBDIR}"))
     print
-    print "Generate Debug Info:".rjust(30),env['DEBUG']
+    print("Generate Debug Info:".rjust(30),env['DEBUG'])
 
     env = conf.Finish()
     env['CONFIGURED'] = VERSION
     opts.Save('options.conf', env)
     print
-    print "Please check if above settings reflect what you want, then build libzzub using"
-    print "\tscons"
-    print "To install scons, run"
-    print "\t[sudo] scons install"
+    print("Please check if above settings reflect what you want, then build libzzub using")
+    print("\tscons")
+    print("To install scons, run")
+    print("\t[sudo] scons install")
     Exit(0)
 
 ######################################
@@ -477,9 +477,9 @@ opts.Save('options.conf', env)
 Help( opts.GenerateHelpText( env ) )
 
 if (not is_cleaning()) and (env['CONFIGURED'] != VERSION):
-    print "libzzub is not configured for version %s yet." % VERSION
+    print("libzzub is not configured for version %s yet." % VERSION)
     print
-    print "Please run 'scons configure' to configure libzzub."
+    print("Please run 'scons configure' to configure libzzub.")
     Exit(1)
 
 
@@ -513,12 +513,12 @@ def build_signature(target, source, env):
     outfilepath = str(target[0])
     optionsconfpath = str(source[0])
 
-    exec (file(optionsconfpath,"r").read())
+    exec (open(optionsconfpath,"r").read())
 
-    ofile = file(outfilepath,"w")
-    print >> ofile, copyright_notice
-    print >> ofile, "// generated by scons, do not touch"
-    print >> ofile, "const char ZZUB_SIGNATURE[] = \"%s\";" % SIGNATURE
+    ofile = open(outfilepath,"w")
+    print(copyright_notice, file=ofile)
+    print("// generated by scons, do not touch", file=ofile)
+    print("const char ZZUB_SIGNATURE[] = \"%s\";" % SIGNATURE, file=ofile)
     ofile.close()
 
 def build_buildconfig(target, source, env):

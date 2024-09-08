@@ -17,12 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
+ 
 Import('env', 'install', 'install_recursive')
 import glob
 
 for filename in glob.glob('*.py'):
-	install('${SITE_PACKAGE_PATH}/neil', filename, 0644)
+	install('${SITE_PACKAGE_PATH}/neil', filename, 0o0644)
 
 for filename in glob.glob('*.xml'):
-	install('${SITE_PACKAGE_PATH}/neil', filename, 0444)
+	install('${SITE_PACKAGE_PATH}/neil', filename, 0o0444)
