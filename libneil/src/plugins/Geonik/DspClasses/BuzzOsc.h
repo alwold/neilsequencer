@@ -9,6 +9,7 @@
 
 #include "../DspClasses/DspClasses.h"
 #include "zzub/plugin.h"
+#include <time.h>
 
 extern int dspcSampleRate;
 
