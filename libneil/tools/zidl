@@ -220,7 +220,7 @@ class Parser:
 		if not context:
 			context = self.context
 		traceback = self.format_context('warning: '  + msg, context)
-		print >> sys.stderr, traceback
+		print(traceback, file=sys.stderr)
 		
 	def format_context(self, msg, context):
 		if sys.platform == 'win32':
@@ -441,10 +441,10 @@ class zzubIDLObject(object):
 		
 	def write_py_doc(self, f):
 		if self.doc:
-			print >> f
+			print("", file=f)
 		for i,doc in enumerate(self.doc):
 			doc = doc.strip()
-			print >> f, '# ' + doc
+			print('# ' + doc, file=f)
 			
 	def write_py_docstr(self, f, ident):
 		if not self.doc:
@@ -452,13 +452,13 @@ class zzubIDLObject(object):
 		tab = '\t' * ident
 		for i,doc in enumerate(self.doc):
 			if len(self.doc) == 1:
-				print >> f, tab + '"""' + doc + '"""'
+				print(tab + '"""' + doc + '"""', file=f)
 			elif i == 0:
-				print >> f, tab + '"""' + doc
+				print(tab + '"""' + doc, file=f)
 			elif i == len(self.doc)-1:
-				print >> f, tab + doc + '"""'
+				print(tab + doc + '"""', file=f)
 			else:
-				print >> f, tab + doc
+				print(tab + doc, file=f)
 			
 	def write_py_ctypes(self, parent, f):
 		pass
@@ -618,16 +618,16 @@ class Class(zzubIDLObject):
 		self.py_ctypes_writing = True
 		for member in self.members:
 			member.solve_py_ctypes_deps(f)
-		print >> f, 'class ' + self.struct_name + '(Structure):'
+		print('class ' + self.struct_name + '(Structure):', file=f)
 		self.write_py_docstr(f, 1)
-		print >> f, '\t_fields_ = ['
+		print('\t_fields_ = [', file=f)
 		for member in self.members:
 			member.write_py_ctypes(self, f)
-		print >> f, '\t]'
-		print >> f, '\t_anonymous_ = ['
+		print('\t]', file=f)
+		print('\t_anonymous_ = [', file=f)
 		for member in self.members:
 			member.write_py_ctypes_anon(self, f)
-		print >> f, '\t]'
+		print('\t]', file=f)
 		for class_ in self.classes:
 			class_.write_py_ctypes(self, f)
 		self.py_ctypes_written = True
@@ -641,40 +641,40 @@ class Class(zzubIDLObject):
 			
 	def write_py_classes(self, parent, f):
 		if self.members:
-			print >> f, self.name + ' = ' + self.struct_name
-			print >> f
+			print(self.name + ' = ' + self.struct_name, file=f)
+			print("", file=f)
 		else:
 			# handle class
-			print >> f, 'class ' + self.name + '(object):'
+			print('class ' + self.name + '(object):', file=f)
 			self.write_py_docstr(f, 1)
-			print >> f
-			print >> f, '\t_as_parameter_ = None'
-			print >> f, '\t_hash = 0'
-			print >> f, '\t'
-			print >> f, '\tdef __init__(self, handle):'
-			print >> f, '\t\tself._as_parameter_ = handle'
-			print >> f, '\t\tself._hash = cast(self._as_parameter_, c_void_p).value'
-			print >> f, '\t'
-			print >> f, '\t@classmethod'
-			print >> f, '\tdef _new_from_handle(cls,handle):'
-			print >> f, '\t\tif not handle:'
-			print >> f, '\t\t\treturn None'
-			print >> f, '\t\treturn cls(handle)'
-			print >> f, '\t'
-			print >> f, '\tdef __hash__(self):'
-			print >> f, '\t\treturn self._hash'
-			print >> f, '\t'
-			print >> f, '\tdef __eq__(self,other):'
-			print >> f, '\t\treturn self._hash == hash(other)'
-			print >> f, '\t'
-			print >> f, '\tdef __ne__(self,other):'
-			print >> f, '\t\treturn self._hash != hash(other)'
-			print >> f, '\t'
+			print("", file=f)
+			print('\t_as_parameter_ = None', file=f)
+			print('\t_hash = 0', file=f)
+			print('\t', file=f)
+			print('\tdef __init__(self, handle):', file=f)
+			print('\t\tself._as_parameter_ = handle', file=f)
+			print('\t\tself._hash = cast(self._as_parameter_, c_void_p).value', file=f)
+			print('\t', file=f)
+			print('\t@classmethod', file=f)
+			print('\tdef _new_from_handle(cls,handle):', file=f)
+			print('\t\tif not handle:', file=f)
+			print('\t\t\treturn None', file=f)
+			print('\t\treturn cls(handle)', file=f)
+			print('\t', file=f)
+			print('\tdef __hash__(self):', file=f)
+			print('\t\treturn self._hash', file=f)
+			print('\t', file=f)
+			print('\tdef __eq__(self,other):', file=f)
+			print('\t\treturn self._hash == hash(other)', file=f)
+			print('\t', file=f)
+			print('\tdef __ne__(self,other):', file=f)
+			print('\t\treturn self._hash != hash(other)', file=f)
+			print('\t', file=f)
 			for function in self.functions:
 				function.write_py_method(self, f)
-			print >> f
-			print >> f, self.struct_name + '._wrapper_ = ' + self.name
-			print >> f
+			print("", file=f)
+			print(self.struct_name + '._wrapper_ = ' + self.name, file=f)
+			print("", file=f)
 		
 class Union(zzubIDLObject):
 	nextid = 0
@@ -712,11 +712,11 @@ class Union(zzubIDLObject):
 			return
 		for member in self.members:
 			member.solve_py_ctypes_deps(f)
-		print >> f, 'class ' + self.struct_name + '(Union):'
-		print >> f, '\t_fields_ = ['
+		print('class ' + self.struct_name + '(Union):', file=f)
+		print('\t_fields_ = [', file=f)
 		for member in self.members:
 			member.write_py_ctypes(self, f)
-		print >> f, '\t]'
+		print('\t]', file=f)
 		self.py_ctypes_written = True
 		
 	def write_c_header(self, parent, f):
@@ -1092,16 +1092,16 @@ class Function(zzubIDLObject):
 					arrayargs.append(arg)
 				
 		if self.static:
-			print >> f, '\t@staticmethod'
-		print >> f, '\tdef ' + self.name + '(' + ', '.join(args) + '):'
+			print('\t@staticmethod', file=f)
+		print('\tdef ' + self.name + '(' + ', '.join(args) + '):', file=f)
 		self.write_py_docstr(f, 2)
 		if not self.static:
-			print >> f, '\t\tassert self._as_parameter_'
+			print('\t\tassert self._as_parameter_', file=f)
 			
 		for arrayarg in arrayargs:
-			print >> f, '\t\t' + arrayarg.name + ' = ' + arrayarg.py_c_decl_type + '(*' + arrayarg.name + ')'
+			print('\t\t' + arrayarg.name + ' = ' + arrayarg.py_c_decl_type + '(*' + arrayarg.name + ')', file=f)
 		for outarg in outargs:
-			print >> f, '\t\t' + outarg.name + ' = ' + outarg.py_c_decl_type + '()'
+			print('\t\t' + outarg.name + ' = ' + outarg.py_c_decl_type + '()', file=f)
 		
 		callfunc = self.c_name + '(' + ','.join(callargs) + ')'
 		resargs = []
@@ -1121,19 +1121,19 @@ class Function(zzubIDLObject):
 			return argname
 			
 		if not self.ret_arg or not self.ret_arg.python:
-			print >> f, '\t\t' + callfunc
+			print('\t\t' + callfunc, file=f)
 		elif not outargs:
-			print >> f, '\t\treturn ' + wrapped_retarg(self.ret_arg, callfunc)
+			print('\t\treturn ' + wrapped_retarg(self.ret_arg, callfunc), file=f)
 		else:
 			outargnames.append(wrapped_retarg(self.ret_arg,'_ret_arg'))
-			print >> f, '\t\t_ret_arg = ' + callfunc
+			print('\t\t_ret_arg = ' + callfunc, file=f)
 		
 		for outarg in outargs:
 			outargnames.append(wrapped_retarg(outarg,outarg.name))
 		if outargnames:
-			print >> f, '\t\treturn ' + ','.join(outargnames)
+			print('\t\treturn ' + ','.join(outargnames), file=f)
 			
-		print >> f, '\t'
+		print('\t', file=f)
 
 	def write_py_ctypes(self, parent, f):
 		retval = 'None'
@@ -1154,10 +1154,10 @@ class Function(zzubIDLObject):
 			else:
 				args.append('("' + arg.name + '",' + arg.py_c_type + ')')
 		if self.func_type:
-			print >> f, self.c_name + '_t' + ' = CFUNCTYPE(' + ', '.join(args) + ')'
-			print >>f, self.c_name + "_t.from_param = classmethod(callback_from_param)"
+			print(self.c_name + '_t' + ' = CFUNCTYPE(' + ', '.join(args) + ')', file=f)
+			print(self.c_name + "_t.from_param = classmethod(callback_from_param)", file=f)
 		else:
-			print >> f, self.c_name + ' = dlsym(' + ', '.join(args) + ')'
+			print(self.c_name + ' = dlsym(' + ', '.join(args) + ')', file=f)
 
 class FunctionType(Function):
 	def __init__(self):
@@ -1178,12 +1178,12 @@ class IteratorFunction(zzubIDLObject):
 		self.get_count_func = parser.scan_symbol()
 
 	def write_py_method(self, parent, f):
-		print >> f, '\tdef ' + self.name + '(self):'
+		print('\tdef ' + self.name + '(self):', file=f)
 		self.write_py_docstr(f, 2)
-		print >> f, '\t\tfor index in xrange(self.' + self.get_count_func + '()):'
-		print >> f, '\t\t\tyield self.' + self.get_item_func + '(index)'
+		print('\t\tfor index in xrange(self.' + self.get_count_func + '()):', file=f)
+		print('\t\t\tyield self.' + self.get_item_func + '(index)', file=f)
 			
-		print >> f, '\t'
+		print('\t', file=f)
 
 class zzubIDLParser(Parser):
 	symbols = {
@@ -1221,9 +1221,9 @@ class zzubIDLParser(Parser):
 		
 	def write_c_def(self, filename):
 		f = StringIO()
-		print >> f, 'EXPORTS'
+		print('EXPORTS', file=f)
 		self.root.write_c_def(None, f)
-		file(filename, 'w').write(f.getvalue())
+		open(filename, 'w').write(f.getvalue())
 		
 	def write_c_header(self, filename):
 		basename = os.path.basename(filename)
@@ -1319,7 +1319,7 @@ if __name__ == '__main__':
 	parser.add_option("--libversion", dest="libversion", help="specifies lib version to use.", metavar="<major>.<minor>")
 	options,args = parser.parse_args()
 	if not args:
-		print >> sys.stderr, "no input file(s)."
+		print("no input file(s).", file=sys.stderr)
 		raise SystemExit(255)
 	parser = zzubIDLParser(libversion=options.libversion)
 	try:
