@@ -42,11 +42,11 @@ class Package(ConfigParser):
     def parse(self):
         self.read([self.filename])
         if not self.has_section(SECTION_NAME):
-            print "missing section " + SECTION_NAME + " in " + self.filename
+            print("missing section " + SECTION_NAME + " in " + self.filename)
             return False
         for option in OPTIONS:
             if not self.has_option(SECTION_NAME, option):
-                print "missing option " + option + " in " + self.filename
+                print("missing option " + option + " in " + self.filename)
                 return False
             setattr(self, option.lower(), self.get(SECTION_NAME, option))
         #basepath = os.path.dirname(self.filename)
@@ -73,27 +73,27 @@ class ComponentManager:
             os.path.expanduser('~/.neil/components'),
         ]
         for path in component_path:
-            print "scanning " + path + " for components"
+            print("scanning " + path + " for components")
             if os.path.isdir(path):
                 if not path in sys.path:
                     sys.path = [path] + sys.path
                 for filename in glob.glob(os.path.join(path, '*.neil-component')):
-                    print filename
+                    print(filename)
                     pkg = Package(filename)
                     if pkg.parse():
                         packages.append(pkg)
             else:
-                print "no such path: " + path
+                print("no such path: " + path)
         for pkg in packages:
             try:
                 modulename = pkg.module
-                print "importing module", modulename
+                print("importing module", modulename)
                 module_ = __import__(modulename)
                 names = modulename.split('.')
                 for name in names[1:]:
                     module_ = getattr(module_, name)
                 if not hasattr(module_, '__neil__'):
-                    print "module", modulename, "has no __neil__ metadict"
+                    print("module", modulename, "has no __neil__ metadict")
                     continue
                 self.register(module_.__neil__, modulename)
                 self.packages.append(pkg)
@@ -105,7 +105,7 @@ class ComponentManager:
         # enumerate class factories
         for class_ in pkginfo.get('classes', []):
             if not hasattr(class_, '__neil__'):
-                print "class", class_, "has no __neil__ metadict"
+                print("class", class_, "has no __neil__ metadict")
                 continue
             classinfo = class_.__neil__
             classid = classinfo['id']
@@ -125,11 +125,11 @@ class ComponentManager:
         # get metainfo for object
         metainfo = self.factories.get(id, None)
         if not metainfo:
-            print "no factory metainfo found for classid '%s'" % id
+            print("no factory metainfo found for classid '%s'" % id)
             return None
         class_ = metainfo.get('classobj', None)
         if not class_:
-            print "no factory found for classid '%s'" % id
+            print("no factory found for classid '%s'" % id)
             return None
         return class_
 
@@ -252,15 +252,15 @@ if __name__ == '__main__':
         ],
     )
     com.register(pkginfo)
-    print com.get('neil.hub.myclass').x
-    print com.get('neil.hub.myclass').x
-    print com.get('neil.hub.myclass').x
-    print com.get('neil.hub.myclass.singleton').x
-    print com.get('neil.hub.myclass.singleton').x
-    print com.get('neil.hub.myclass.singleton').x
-    print com.category('uselessclass')
+    print(com.get('neil.hub.myclass').x)
+    print(com.get('neil.hub.myclass').x)
+    print(com.get('neil.hub.myclass').x)
+    print(com.get('neil.hub.myclass.singleton').x)
+    print(com.get('neil.hub.myclass.singleton').x)
+    print(com.get('neil.hub.myclass.singleton').x)
+    print(com.category('uselessclass'))
     try:
         com.throw('neil.exception.cancel', "argh.")
-    except com.exception('neil.exception.cancel'), test:
-        print "passed.", test
-    print "bleh."
+    except (com.exception('neil.exception.cancel'), test):
+        print("passed.", test)
+    print("bleh.")

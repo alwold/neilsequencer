@@ -10,7 +10,7 @@ in order to use contextlog, just import it and call L{init}.
 
 import traceback
 import os
-from path import path
+from path import Path
 
 if 'NEIL_NO_ESCAPING' in os.environ:
 	ESCAPE_BEGIN = ""
@@ -30,7 +30,7 @@ class StdErrAnnotator:
 		self.stderr = sys.stderr
 		sys.stderr = self
 		self.annotate_next = True
-		print >> sys.stderr, "annotating stderr"
+		print("annotating stderr", file=sys.stderr)
 		
 	def write(self, text):
 		error = False
@@ -68,7 +68,7 @@ class StdOutAnnotator:
 		self.annotate_next = True
 		self.last_filename = ''
 		self.last_line = 0
-		print "annotating stdout"
+		print("annotating stdout")
 		
 	def annotate(self, stack):
 		filename = '?'
@@ -76,7 +76,7 @@ class StdOutAnnotator:
 		if len(stack) >= 2:
 			entry = stack[-2]
 			if len(entry) >= 2:
-				filename = path(entry[0])
+				filename = Path(entry[0])
 				line = entry[1]
 		if not str(filename.relpath()).startswith('..'):
 			filename = filename.relpath()
@@ -128,8 +128,8 @@ __all__ = [
 
 if __name__ == '__main__':
 	init()
-	print "hello."
+	print("hello.")
 	clean_next_line()
-	print "hello again."
-	print "and hello once more."
+	print("hello again.")
+	print("and hello once more.")
 	raise Exception
