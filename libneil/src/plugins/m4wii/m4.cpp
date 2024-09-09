@@ -123,9 +123,7 @@ typedef struct {
 #include <assert.h>
 #include <math.h>
 #include <float.h>
-#if defined(_WIN32)
 #include <time.h>
-#endif
 
 #include "filter.h"
 
