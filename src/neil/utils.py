@@ -1354,21 +1354,21 @@ if __name__ == '__main__':
         oldlist = [1,2,6,3,4,5]
         newlist = [1,3,4,5,2]
         def insert_entry(i,o):
-                print "insert",i,o
+                print("insert",i,o)
                 oldlist.insert(i,o)
         def del_entry(i):
-                print "del",i
+                print("del",i)
                 del oldlist[i]
         def swap_entry(i,j):
-                print "swap",i,j
+                print("swap",i,j)
                 a,b = oldlist[i],oldlist[j]
                 del oldlist[j]
                 del oldlist[i]
                 oldlist.insert(i,b)
                 oldlist.insert(j,a)
-        print oldlist, newlist
+        print(oldlist, newlist)
         synchronize_list(oldlist,newlist,insert_entry,del_entry,swap_entry)
-        print oldlist, newlist
+        print(oldlist, newlist)
 
 
 class ImageToggleButton(gtk.ToggleButton):
