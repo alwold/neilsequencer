@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, sys, imp
+import os, sys
 
 if '--debug' in sys.argv:
 	sys.argv.remove('--debug')
