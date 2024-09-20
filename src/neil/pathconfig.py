@@ -51,16 +51,16 @@ class PathConfig(ConfigParser):
 			path = os.path.expanduser(path)
 			if not os.path.isabs(path):
 				path = os.path.normpath(os.path.join(BASE_PATH,path))
-			print "searching " + path
+			print("searching " + path)
 			if os.path.isfile(path):
-				print "using " + path
+				print("using " + path)
 				CFG_PATH = path
 				break
 		assert CFG_PATH, "Unable to find path.cfg"
 		self.read([CFG_PATH])
 		site_packages = self.get_path('site_packages')
 		if not site_packages in sys.path:
-			print site_packages + "  missing in sys.path, prepending"
+			print(site_packages + "  missing in sys.path, prepending")
 			sys.path = [site_packages] + sys.path
 			
 	def get_paths(self, pathid, append=''):
