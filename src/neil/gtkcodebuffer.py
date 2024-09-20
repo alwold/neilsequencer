@@ -118,7 +118,7 @@ def add_syntax_path(path_or_list):
         SYNTAX_PATH.insert(0, path_or_list)
     # handle attr-error
     else:
-        raise TypeError, "Argument must be path-string or list of strings"
+        raise TypeError("Argument must be path-string or list of strings")
         
         
         
@@ -154,7 +154,7 @@ class Pattern:
 
         # compile re        
         try: self._regexp = re.compile(regexp, flag)
-        except re.error, e: 
+        except re.error as e: 
             raise Exception("Invalid regexp \"%s\": %s"%(regexp,str(e)))
 
         self._group  = group
@@ -209,7 +209,7 @@ class String:
             string. """
         try:
             self._starts  = re.compile(starts)
-        except re.error, e: 
+        except re.error as e: 
             raise Exception("Invalid regexp \"%s\": %s"%(regexp,str(e)))
         
         if escape:
@@ -220,7 +220,7 @@ class String:
 
         try:     
             self._ends    = re.compile(end_exp)
-        except re.error, e: 
+        except re.error as e: 
             raise Exception("Invalid regexp \"%s\": %s"%(regexp,str(e)))
 
         self.tag_name = style
@@ -333,7 +333,7 @@ class SyntaxLoader(ContentHandler, LanguageDefinition):
         # search for syntax-files:
         fname = None
         for syntax_dir in SYNTAX_PATH:
-            print syntax_dir
+            print(syntax_dir)
             fname = os.path.join(syntax_dir, "%s.xml"%lang_name)
             if os.path.isfile(fname): break
 
@@ -505,7 +505,7 @@ class SyntaxLoader(ContentHandler, LanguageDefinition):
             
             
             
-class CodeBuffer(gtk.TextBuffer):
+class CodeBuffer(Gtk.TextBuffer):
     """ This class extends the gtk.TextBuffer to support syntax-highlighting. 
         You can use this class like a normal TextBuffer. """
         

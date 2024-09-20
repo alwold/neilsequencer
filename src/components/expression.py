@@ -164,7 +164,7 @@ class Expression():
                     'get_param' : get_param,
                     'n' : plugin.get_pattern_length(pattern),
                     }
-                exec expr in new_global
+                exec(expr in new_global)
             except Exception as e:
                 error(self.dialog, "There was a problem with your expression!", details=str(e))
 

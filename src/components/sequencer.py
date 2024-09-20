@@ -510,7 +510,7 @@ class SequencerView(Gtk.DrawingArea):
         eventbus.document_loaded += self.redraw
         set_clipboard_text("invalid_clipboard_data")
 
-    def track_row_to_pos(self, (track, row)):
+    def track_row_to_pos(self, track, row):
         """
         Converts track and row to a pixel coordinate.
 
@@ -533,7 +533,7 @@ class SequencerView(Gtk.DrawingArea):
                  self.seq_top_margin)
         return x, y
 
-    def pos_to_track_row(self, (x, y)):
+    def pos_to_track_row(self, x, y):
         """
         Converts pixel coordinate to a track and row.
 

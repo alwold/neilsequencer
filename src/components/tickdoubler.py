@@ -26,13 +26,12 @@ This module can also be executed standalone.
 
 import neil.com as com
 import zzub
-import gtk
-import gobject
+from gi.repository import Gtk
 import time
 import os
 from neil.utils import prepstr, new_listview, is_generator, message
 
-class TickDoublerDialog(gtk.Dialog):
+class TickDoublerDialog(Gtk.Dialog):
 	__neil__ = dict(
 		id = 'neil.tickdoubler.dialog',
 		singleton = True,

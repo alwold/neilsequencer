@@ -22,7 +22,7 @@
 Provides dialogs, classes and controls to display/load/save envelopes
 """
 
-import gtk
+from gi.repository import Gtk
 import os
 import sys
 import math
@@ -44,7 +44,7 @@ EXACT = 0
 NEXT = 1
 
 
-class SimpleEnvelope(gtk.DrawingArea):
+class SimpleEnvelope(Gtk.DrawingArea):
     def __init__(self):
         self.envelope = [[0.0, 0.0], [1.0, 0.0]]
         self.currentpoint = None
@@ -285,7 +285,7 @@ class SimpleEnvelope(gtk.DrawingArea):
                 ctx.fill()
 
 
-class EnvelopeView(gtk.DrawingArea):
+class EnvelopeView(Gtk.DrawingArea):
     """
     Envelope viewer.
 

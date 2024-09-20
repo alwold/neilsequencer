@@ -27,13 +27,12 @@ from neil.common import MARGIN, MARGIN0
 from neil.utils import new_image_button, new_image_toggle_button, imagepath
 from neil.utils import ObjectHandlerGroup
 import config
-import gobject
-import gtk
+from gi.repository import Gtk
 import neil.com as com
 import zzub
 
 
-class TransportPanel(gtk.HBox):
+class TransportPanel(Gtk.HBox):
     """
     A panel containing the BPM/TPB spin controls.
     """

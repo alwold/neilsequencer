@@ -25,7 +25,7 @@ such as plugins, patterns, and so on. based on the context object currently
 selected, items can choose to append themselves or not.
 """
 
-import gtk
+from gi.repository import Gtk
 import neil.common as common
 from neil.com import com
 import zzub
@@ -71,7 +71,7 @@ class ContextMenu(Menu):
         return Menu.popup(self, parent, event)
 
 
-class PluginContextMenu(gtk.Menu):
+class PluginContextMenu(Gtk.Menu):
     __neil__ = dict(id='neil.core.popupmenu',
                       singleton=True,
                       categories=['contextmenu.handler'])
@@ -310,7 +310,7 @@ class PluginContextMenu(gtk.Menu):
             mi = mp.get_input_connection_plugin(index).get_pluginloader()
             for i in range(mi.get_parameter_count(3)):
                 param = mi.get_parameter(3, i)
-                print param.get_name()
+                print(param.get_name())
 
     def populate_pluginmenu(self, menu):
         mp = menu.context

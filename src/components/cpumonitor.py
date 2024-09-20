@@ -22,15 +22,14 @@
 Provides dialog class for cpu monitor.
 """
 
-import gtk
-import gobject
+from gi.repository import Gtk
 from neil.utils import prepstr, add_scrollbars
 import neil.utils as utils, os, stat
 import neil.common as common
 from neil.common import MARGIN, MARGIN2, MARGIN3
 import neil.com as com
 
-class CPUMonitorDialog(gtk.Dialog):
+class CPUMonitorDialog(Gtk.Dialog):
 	"""
 	This Dialog shows the CPU monitor, which allows monitoring
 	CPU usage and individual plugin CPU consumption.

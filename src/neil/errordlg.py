@@ -1,5 +1,6 @@
 from traceback import format_exception, print_exc as traceback_print_exc
 import sys
+from gi.repository import Gtk
 
 Parent = None
 

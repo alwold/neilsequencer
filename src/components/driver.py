@@ -53,7 +53,7 @@ class MidiDriver:
     def destroy(self):
         if not self.enabled:
             return
-        print "uninitializing midi driver..."
+        print("uninitializing midi driver...")
         player = com.get('neil.core.player')
         zzub.Mididriver.close_all(player)
         self.enabled = False
@@ -67,11 +67,11 @@ class MidiDriver:
         for i in range(zzub.Mididriver.get_count(player)):
             drivername = zzub.Mididriver.get_name(player,i).strip() 
             if zzub.Mididriver.is_input(player,i) and drivername in midiinputs:
-                print "Opening MIDI input device '%s'..." % drivername
+                print("Opening MIDI input device '%s'..." % drivername)
                 if zzub.Mididriver.open(player,i) != 0:
                     raise self.MidiInitException
             elif zzub.Mididriver.is_output(player,i) and drivername in midioutputs:
-                print "Opening MIDI output device '%s'..." % drivername
+                print("Opening MIDI output device '%s'..." % drivername)
                 if zzub.Mididriver.open(player,i) != 0:
                     raise self.MidiInitException
         self.enabled = True
@@ -105,7 +105,7 @@ class AudioDriver:
     def destroy(self):
         if not self.enabled:
             return
-        print "uninitializing audio driver..."
+        print("uninitializing audio driver...")
         self.driver.destroy()
         self.enabled = False
         
@@ -128,12 +128,12 @@ class AudioDriver:
         if self.enabled:
             self.destroy()
         inputname, outputname, samplerate, buffersize = config.get_config().get_audiodriver_config()
-        print inputname, outputname
+        print(inputname, outputname)
         player = com.get('neil.core.player')
         self.driver = zzub.Audiodriver.create(player)
         if not self.driver.get_count():
             raise self.AudioInitException
-        print "available drivers:"
+        print("available drivers:")
         input = -1
         output = -1
         for i in range(self.driver.get_count()):
@@ -147,7 +147,7 @@ class AudioDriver:
             else:
                 io += ' '
             drivername = self.driver.get_name(i)
-            print "#%i: %s [%s]" % (i,drivername, io)
+            print("#%i: %s [%s]" % (i,drivername, io))
             if drivername == inputname:
                 input = i
             if drivername == outputname:
@@ -184,8 +184,8 @@ class AudioDriver:
 
         if output == -1:
             raise self.AudioInitException
-        print "best input/output pick:"
-        print self.driver.get_name(input),"/",self.driver.get_name(output)
+        print("best input/output pick:")
+        print(self.driver.get_name(input),"/",self.driver.get_name(output))
         self.driver.set_samplerate(samplerate)
         self.driver.set_buffersize(buffersize)
         initres = self.driver.create_device(input, output)

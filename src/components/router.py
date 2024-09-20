@@ -454,7 +454,7 @@ class VolumeSlider(gtk.Window):
         layout.set_markup("<small>%.1f dB</small>" % (self.amp * -48.0))
         drawable.draw_layout(gc, 2, 2, layout)
 
-    def display(self, (mx, my), mp, index):
+    def display(self, m, mp, index):
         """
         Called by the router view to show the control.
 
@@ -465,6 +465,7 @@ class VolumeSlider(gtk.Window):
         @param conn: Connection to control.
         @type conn: zzub.Connection
         """
+        mx, my = m
         self.y = VOLBARHEIGHT / 2
         self.plugin = mp
         self.index = index
@@ -700,7 +701,7 @@ class RouteView(gtk.DrawingArea):
                 menu = com.get('neil.core.contextmenu', 'router', point)
         menu.popup(self, event)
 
-    def float_to_pixel(self, (x, y)):
+    def float_to_pixel(self, xy):
         """
         Converts a router coordinate to an on-screen pixel coordinate.
 
@@ -711,12 +712,13 @@ class RouteView(gtk.DrawingArea):
         @return: A tuple returning the pixel coordinate.
         @rtype: (int,int)
         """
+        x, y = xy
         rect = self.get_allocation()
         w, h = rect.width, rect.height
         cx, cy = w * 0.5, h * 0.5
         return cx * (1 + x), cy * (1 + y)
 
-    def pixel_to_float(self, (x, y)):
+    def pixel_to_float(self, xy):
         """
         Converts an on-screen pixel coordinate to a router coordinate.
 
@@ -727,12 +729,13 @@ class RouteView(gtk.DrawingArea):
         @return: A tuple returning the router coordinate.
         @rtype: (float, float)
         """
+        x, y = xy
         rect = self.get_allocation()
         w, h = rect.width, rect.height
         cx, cy = w * 0.5, h * 0.5
         return (x / cx) - 1, (y / cy) - 1
 
-    def get_connection_at(self, (mx, my)):
+    def get_connection_at(self, m):
         """
         Finds the connection arrow at a specific position.
 
@@ -743,6 +746,7 @@ class RouteView(gtk.DrawingArea):
         @return: A connection item or None.
         @rtype: zzub.Connection or None
         """
+        mx, my = m
         player = com.get('neil.core.player')
         rect = self.get_allocation()
         w, h = rect.width, rect.height
@@ -760,7 +764,7 @@ class RouteView(gtk.DrawingArea):
                 if length <= 14:  # why exactly 14?
                     return mp, index
 
-    def get_plugin_at(self, (x, y)):
+    def get_plugin_at(self, xy):
         """
         Finds a plugin at a specific position.
 
@@ -771,6 +775,7 @@ class RouteView(gtk.DrawingArea):
         @return: A connection item, exact pixel position and area (AREA_ANY, AREA_PANNING, AREA_LED) or None.
         @rtype: (zzub.Plugin,(int,int),int) or None
         """
+        x, y = xy
         rect = self.get_allocation()
         w, h = rect.width, rect.height
         cx, cy = w * 0.5, h * 0.5
