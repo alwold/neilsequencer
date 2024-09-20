@@ -22,9 +22,7 @@
 Provides dialog class for hd recorder control.
 """
 
-
-import gtk
-import gobject
+from gi.repository import Gtk
 import neil.utils as utils, os, stat
 from neil.utils import new_stock_image_toggle_button, ObjectHandlerGroup
 import neil.common as common
@@ -32,7 +30,7 @@ import neil.com as com
 import zzub
 from neil.common import MARGIN, MARGIN2, MARGIN3
 
-class HDRecorderDialog(gtk.Dialog):
+class HDRecorderDialog(Gtk.Dialog):
 	"""
 	This Dialog shows the HD recorder, which allows recording
 	the audio output to a wave file.

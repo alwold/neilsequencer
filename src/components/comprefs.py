@@ -27,8 +27,7 @@ if __name__ == '__main__':
 	os.system('../../bin/neil-combrowser neil.core.pref.components')
 	raise SystemExit
 
-import gtk
-import gobject
+from gi.repository import Gtk
 import neil.com as com
 from neil.common import MARGIN, MARGIN2, MARGIN3
 from neil.utils import new_listview, add_scrollbars
@@ -42,7 +41,7 @@ from neil.utils import new_listview, add_scrollbars
 #	'Copyright',
 #	'Website',
 
-class ComponentPanel(gtk.VBox):
+class ComponentPanel(Gtk.VBox):
 	"""
 	Panel which allows changing of general settings.
 	"""

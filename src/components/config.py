@@ -205,96 +205,96 @@ class NeilConfig(object, ConfigParser.ConfigParser):
     On Linux, most settings will be saved in ~/.neil/settings.cfg
     """
     def __init__(self):
-	"""
-	Initializer.
-	"""		
-	ConfigParser.ConfigParser.__init__(self)
-	self.filename = os.path.join(self.get_settings_folder(),'settings.cfg')
-	self.read([self.filename])
-	self._section = ''
-	try:
-	    self.select_theme(self.get_active_theme())
-	except:
-	    import traceback
-	    traceback.print_exc()
-	    self.select_theme(None)
+        """
+        Initializer.
+        """
+        ConfigParser.ConfigParser.__init__(self)
+        self.filename = os.path.join(self.get_settings_folder(),'settings.cfg')
+        self.read([self.filename])
+        self._section = ''
+        try:
+            self.select_theme(self.get_active_theme())
+        except:
+            import traceback
+            traceback.print_exc()
+            self.select_theme(None)
 
     def getter(self, section, option, vtype, onget, defvalue):
-	self.set_section(section)
-	value = self.read_value(option, defvalue)
-	if vtype == bool:
-	    if value == 'true':
-		value = True
-	    elif value == 'false':
-		value = False
-	if onget:
-	    value = onget(value)
-	return value
+        self.set_section(section)
+        value = self.read_value(option, defvalue)
+        if vtype == bool:
+            if value == 'true':
+                value = True
+            elif value == 'false':
+                value = False
+        if onget:
+            value = onget(value)
+        return value
 
     def setter(self, section, option, vtype, onset, value):
-	if onset:
-	    value = onset(value)
-	assert type(value) == vtype		
-	if vtype == bool:
-	    if value:
-		value = 'true'
-	    else:
-		value = 'false'
-	self.set_section(section)
-	self.write_value(option, str(value))
-	self.flush()
+        if onset:
+            value = onset(value)
+        assert type(value) == vtype
+        if vtype == bool:
+            if value:
+                value = 'true'
+            else:
+                value = 'false'
+        self.set_section(section)
+        self.write_value(option, str(value))
+        self.flush()
 
     def listgetter(self, section, option, vtype, onget):
-	self.set_section(section)
-	values = []
-	for i,(name,value) in enumerate(self.get_values()):
-	    if name.lower().startswith(option.lower()):
-		if vtype == bool:
-		    if value == 'true':
-			value = True
-		    elif value == 'false':
-			value = False
-		if onget:
-		    value = onget(value)
-		values.append(value)
-	return values
+        self.set_section(section)
+        values = []
+        for i,(name,value) in enumerate(self.get_values()):
+            if name.lower().startswith(option.lower()):
+                if vtype == bool:
+                    if value == 'true':
+                        value = True
+                    elif value == 'false':
+                        value = False
+                if onget:
+                    value = onget(value)
+                values.append(value)
+        return values
 
     def listsetter(self, section, option, vtype, onset, values):
-	self.delete_section(section)
-	self.set_section(section)
-	for i,value in enumerate(values):
-	    if onset:
-		value = onset(value)
-	    assert type(value) == vtype		
-	    if vtype == bool:
-		if value:
-		    value = 'true'
-		else:
-		    value = 'false'
-	    self.write_value('%s%04i' % (option,i), value)
-	self.flush()
+        self.delete_section(section)
+        self.set_section(section)
+        for i,value in enumerate(values):
+            if onset:
+                value = onset(value)
+            assert type(value) == vtype
+            if vtype == bool:
+                if value:
+                    value = 'true'
+                else:
+                    value = 'false'
+                self.write_value('%s%04i' % (option,i), value)
+            self.flush()
 
     def set_section(self, section):
-	self._section = section
+        self._section = section
 
     def delete_section(self, section):
-	if not self.has_section(section):
-	    return
-	self.remove_section(section)
+        if not self.has_section(section):
+            return
+        self.remove_section(section)
 
     def get_values(self):
-	assert self._section
-	if not self.has_section(self._section):
-	    return []
-	return sorted(self.items(self._section), lambda a,b: cmp(a[0],b[0]))
+        assert self._section
+        if not self.has_section(self._section):
+            return []
+        return sorted(self.items(self._section), lambda a,b: cmp(a[0],b[0]))
 
     def read_int_value(self, name, default=0):
-	assert self._section
-	if not self.has_section(self._section):
-	    return default
-	if not self.has_option(self._section, name):
-	    return default
-	return self.getint(self._section, name)
+        assert self._section
+        if not self.has_section(self._section):
+            return default
+        if not self.has_option(self._section, name):
+            return default
+        return self.getint(self._section, name)
 
     def read_value(self, name, default=''):
 	assert self._section

@@ -26,8 +26,7 @@ which have no specific module or class they belong to.
 import time, sys, math, os, zzub
 from string import ascii_letters, digits
 import struct
-import gtk
-import gobject
+from gi.repository import Gtk
 import weakref
 import neil.com as com
 
@@ -937,7 +936,7 @@ class CancelException(Exception):
         """
 
 def make_submenu_item(submenu, name):
-        item = gtk.MenuItem(label=name)
+        item = Gtk.MenuItem(label=name)
         item.set_submenu(submenu)
         return item
 
@@ -1066,7 +1065,7 @@ class ObjectHandlerGroup:
                 for widget,handler in self.handlers:
                         widget.handler_unblock(handler)
 
-class Menu(gtk.Menu):
+class Menu(Gtk.Menu):
         def add_separator(self):
                 self.append(gtk.SeparatorMenuItem())
 
@@ -1371,7 +1370,7 @@ if __name__ == '__main__':
         print(oldlist, newlist)
 
 
-class ImageToggleButton(gtk.ToggleButton):
+class ImageToggleButton(Gtk.ToggleButton):
     """
     GTK ToggleButton with Image 
     """
