@@ -168,6 +168,6 @@ if __name__ == '__main__':
 	from testplayer import TestWindow
 	window = TestWindow()
 	def show_dialog(rootwindow):
-		print learn_controller(rootwindow, rootwindow)
+		print(learn_controller(rootwindow, rootwindow))
 	gobject.timeout_add(100, show_dialog, window)
 	gtk.main()

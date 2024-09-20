@@ -523,7 +523,7 @@ class PreferencesDialog(gtk.Dialog):
 
         self.connect('response', self.on_response)
         self.show_all()
-        print starting_tab_index
+        print(starting_tab_index)
         # select starting tab and adjust the list index
         self.nb.set_current_page(starting_tab_index)
 
