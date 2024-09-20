@@ -69,7 +69,7 @@ class FramePanel(gtk.Notebook):
     pages = sorted(com.get_from_category('neil.viewpanel'), cmp=cmp_view)
     for index, panel in enumerate(pages):
       if not hasattr(panel, '__view__'):
-        print "panel",panel,"misses attribute __view__"
+        print("panel",panel,"misses attribute __view__")
         continue
       options = panel.__view__
       stockid = options['stockid']
@@ -149,7 +149,7 @@ class ViewMenu(Menu):
     accel = com.get('neil.core.accelerators')
     for view in views:
       if not hasattr(view, '__view__'):
-        print "view",view,"misses attribute __view__"
+        print("view",view,"misses attribute __view__")
         continue
       options = view.__view__
       label = options['label']
@@ -403,16 +403,16 @@ class NeilFrame(gtk.Window):
     pos = player.history_get_position()
     historysize = player.history_get_size()
     if not historysize:
-      print "no history."
+      print("no history.")
       return
-    print "----"
+    print("----")
     for index in xrange(historysize):
       desc = str(player.history_get_description(index))
       s = '#%i: "%s"' % (index,desc)
       if pos == index:
         s += ' <-'
-      print s
-    print "----"
+      print(s)
+    print("----")
 
   def can_activate_undo(self, *args):
     """
@@ -721,7 +721,7 @@ class NeilFrame(gtk.Window):
             if not os.path.isfile(newpath):
               break
             i += 1
-          print '%s => %s' % (filename, newpath)
+          print('%s => %s' % (filename, newpath))
           os.rename(filename, newpath)
         else:
           # store one backup copy
@@ -730,7 +730,7 @@ class NeilFrame(gtk.Window):
           newpath = os.path.join(path,"%s%s.bak" % (basename,ext))
           if os.path.isfile(newpath):
             os.remove(newpath)
-          print '%s => %s' % (filename, newpath)
+          print('%s => %s' % (filename, newpath))
           os.rename(filename, newpath)
       base,ext = os.path.splitext(filename)
       result = player.save_ccm(filename)
