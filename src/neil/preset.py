@@ -211,14 +211,14 @@ if __name__ == '__main__':
         aliases[name] = uri
         player.add_plugin_alias(name, uri)
     pluginpath = utils.filepath('../../lib/zzub') + os.sep
-    print "pluginpath is '%s'" % pluginpath
+    print("pluginpath is '%s'" % pluginpath)
     player.add_plugin_path(pluginpath)
     player.initialize(44100)
     prs = PresetCollection(utils.filepath('presets/makk_m4.prs'))
-    print 'collection version', prs.version
-    print 'collection name', prs.name
+    print('collection version', prs.version)
+    print('collection name', prs.name)
     pl = player.get_pluginloader_by_name(aliases.get(prs.name, prs.name))
     if pl._handle:
         for preset in prs.presets:
-            print '---'
-            print 'preset name', preset.name
+            print('---')
+            print('preset name', preset.name)
