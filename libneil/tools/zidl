@@ -46,7 +46,7 @@ def load_library(*names,**kw):
 	import ctypes, os, sys
 	searchpaths = []
 	if os.name in ('posix', 'mac'):
-		if os.environ.has_key('LD_LIBRARY_PATH'):
+		if 'LD_LIBRARY_PATH' in os.environ:
 			searchpaths += os.environ['LD_LIBRARY_PATH'].split(os.pathsep)
 		searchpaths += [
 			'/usr/local/lib64',
