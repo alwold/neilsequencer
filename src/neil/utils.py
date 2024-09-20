@@ -826,7 +826,7 @@ def add_hscrollbar(view):
         return scrollwin
 
 def file_filter(name,*patterns):
-        ff = gtk.FileFilter()
+        ff = Gtk.FileFilter()
         ff.set_name(name)
         for pattern in patterns:
                 ff.add_pattern(pattern.upper())

@@ -23,7 +23,7 @@ Contains panels and dialogs related to application preferences.
 """
 
 import os
-import gtk
+from gi.repository import Gtk
 import webbrowser
 
 from neil.utils import prepstr, buffersize_to_latency, filepath, error, add_scrollbars, new_listview, sharedpath
@@ -52,7 +52,7 @@ class CancelException(Exception):
     )
 
 
-class GeneralPanel(gtk.VBox):
+class GeneralPanel(Gtk.VBox):
     """
     Panel which allows changing of general settings.
     """
@@ -74,8 +74,8 @@ class GeneralPanel(gtk.VBox):
         """
         gtk.VBox.__init__(self)
         self.set_border_width(MARGIN)
-        frame1 = gtk.Frame("General Settings")
-        fssizer = gtk.VBox(False, MARGIN)
+        frame1 = Gtk.Frame("General Settings")
+        fssizer = Gtk.VBox(False, MARGIN)
         fssizer.set_border_width(MARGIN)
         frame1.add(fssizer)
         incsave = config.get_config().get_incremental_saving()
@@ -83,7 +83,7 @@ class GeneralPanel(gtk.VBox):
         leddraw = config.get_config().get_led_draw()
         curvearrows = config.get_config().get_curve_arrows()
         patnoteoff = config.get_config().get_pattern_noteoff()
-        self.patternfont = gtk.FontButton(
+        self.patternfont = Gtk.FontButton(
             config.get_config().get_pattern_font())
         self.patternfont.set_use_font(True)
         self.patternfont.set_use_size(True)
@@ -151,7 +151,7 @@ class GeneralPanel(gtk.VBox):
         neil.com.get('neil.core.sequencerpanel').update_all()
 
 
-class DriverPanel(gtk.VBox):
+class DriverPanel(Gtk.VBox):
     """
     Panel which allows to see and change audio driver settings.
     """
@@ -249,7 +249,7 @@ class DriverPanel(gtk.VBox):
                 raise com.exception('neil.exception.cancel')
 
 
-class ControllerPanel(gtk.VBox):
+class ControllerPanel(Gtk.VBox):
     """
     Panel which allows to set up midi controller mappings.
     """
@@ -334,7 +334,7 @@ class ControllerPanel(gtk.VBox):
         config.get_config().set_midi_controllers(ctrllist)
 
 
-class MidiPanel(gtk.VBox):
+class MidiPanel(Gtk.VBox):
     """
     Panel which allows to see and change a list of used MIDI output devices.
     """
@@ -409,7 +409,7 @@ class MidiPanel(gtk.VBox):
         config.get_config().set_mididriver_outputs(outputlist)
 
 
-class KeyboardPanel(gtk.VBox):
+class KeyboardPanel(Gtk.VBox):
     """
     Panel which allows to see and change the current keyboard configuration.
     """
@@ -467,7 +467,7 @@ def cmp_prefpanel(a, b):
     return cmp(a_order, b_order)
 
 
-class PreferencesDialog(gtk.Dialog):
+class PreferencesDialog(Gtk.Dialog):
     """
     This Dialog aggregates the different panels and allows
     the user to switch between them using a tab control.

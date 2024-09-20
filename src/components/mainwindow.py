@@ -19,7 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import os
-import gtk
+from gi.repository import Gtk
 from neil.utils import format_time, ticks_to_time, prepstr, linear2db, db2linear, filepath, \
         is_debug, question, error, add_scrollbars, file_filter, new_stock_image_toggle_button, \
         new_stock_image_button, message, refresh_gui, show_manual
@@ -50,7 +50,7 @@ def cmp_view(a,b):
   b_order = (hasattr(b, '__view__') and b.__view__.get('order',0)) or 0
   return cmp(a_order, b_order)
 
-class FramePanel(gtk.Notebook):
+class FramePanel(Gtk.Notebook):
   __neil__ = dict(
           id = 'neil.core.framepanel',
           singleton = True,
@@ -101,7 +101,7 @@ class FramePanel(gtk.Notebook):
           panel.handle_focus()
         return
 
-class Accelerators(gtk.AccelGroup):
+class Accelerators(Gtk.AccelGroup):
 
   __neil__ = dict(
           id = 'neil.core.accelerators',
@@ -218,7 +218,7 @@ class ViewMenu(Menu):
 #     gtk.Statusbar.__init__(self)
 #     self.push(0, "Ready to rok again")
 
-class NeilFrame(gtk.Window):
+class NeilFrame(Gtk.Window):
   """
   The application main window class.
   """

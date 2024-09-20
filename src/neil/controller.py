@@ -23,7 +23,7 @@ Contains dialogs related to controller enumeration and pick up.
 """
 
 import sys, os
-import gtk
+from gi.repository import Gtk
 import zzub
 import webbrowser
 
@@ -34,7 +34,7 @@ import config
 import common
 from common import MARGIN, MARGIN2, MARGIN3
 
-class SelectControllerDialog(gtk.Dialog):
+class SelectControllerDialog(Gtk.Dialog):
 	"""
 	Dialog that records a controller from keyboard input.
 	"""

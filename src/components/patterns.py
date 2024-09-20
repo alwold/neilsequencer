@@ -29,9 +29,8 @@ if __name__ == '__main__':
     raise SystemExit
 
 import neil.com as com
-import gtk
-import gobject
-import pango
+from gi.repository import Gtk
+import pangocffi as pango
 
 from neil.utils import prepstr
 from neil.utils import get_clipboard_text, set_clipboard_text
@@ -59,7 +58,7 @@ patternsizes = [
 ]
 
 
-class PatternDialog(gtk.Dialog):
+class PatternDialog(Gtk.Dialog):
     """
     Pattern Dialog Box.
 
@@ -161,7 +160,7 @@ def show_pattern_dialog(parent, name, length, dlgmode, letswitch=True):
     return result
 
 
-class PatternToolBar(gtk.HBox):
+class PatternToolBar(Gtk.HBox):
     """
     Pattern Toolbar
 
@@ -411,7 +410,7 @@ class PatternToolBar(gtk.HBox):
             player.stop_preview()
 
 
-class PatternPanel(gtk.VBox):
+class PatternPanel(Gtk.VBox):
     """
     Panel containing the pattern toolbar and pattern view.
     """
@@ -623,7 +622,7 @@ SEL_ALL = 3
 SEL_COUNT = 4
 
 
-class PatternView(gtk.DrawingArea):
+class PatternView(Gtk.DrawingArea):
     """
     Pattern viewer class.
     """

@@ -19,7 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA  02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 import gobject
 import neil.utils as utils
 import os
@@ -43,7 +43,7 @@ DRAG_FORMATS = [
 ]
 
 
-class SearchPluginsDialog(gtk.Window):
+class SearchPluginsDialog(Gtk.Window):
 
     __neil__ = dict(
         id='neil.core.searchplugins',
