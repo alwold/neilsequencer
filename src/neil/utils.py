@@ -1193,7 +1193,7 @@ def generate_ui_method(class_, membername, kwargs):
 
 def generate_ui_methods(class_, memberlist):
         # build getters and setters based on the options map
-        for membername,kwargs in memberlist.iteritems():
+        for membername,kwargs in memberlist.items():
                 generate_ui_method(class_, membername, kwargs)
 
 def refresh_gui():

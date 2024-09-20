@@ -28,8 +28,8 @@ if __name__ == '__main__':
     os.system('../../bin/neil-combrowser neil.core.sequencerpanel')
     raise SystemExit
 
-import gtk
-import pango
+from gi.repository import Gtk
+import pangocffi as pango
 import gobject
 import sys
 # from neil.utils import PLUGIN_FLAGS_MASK, ROOT_PLUGIN_FLAGS
@@ -63,7 +63,7 @@ class PatternNotFoundException(Exception):
     pass
 
 
-class AddSequencerTrackDialog(gtk.Dialog):
+class AddSequencerTrackDialog(Gtk.Dialog):
     """
     Sequencer Dialog Box.
 
@@ -87,7 +87,7 @@ class AddSequencerTrackDialog(gtk.Dialog):
         self.show_all()
 
 
-class SequencerToolBar(gtk.HBox):
+class SequencerToolBar(Gtk.HBox):
     """
     Sequencer Toolbar
 
@@ -176,7 +176,7 @@ class SequencerToolBar(gtk.HBox):
         player.set_seqstep(step)
 
 
-class SequencerPanel(gtk.VBox):
+class SequencerPanel(Gtk.VBox):
     """
     Sequencer pattern panel.
 
@@ -455,7 +455,7 @@ class SequencerPanel(gtk.VBox):
 # end of class SequencerFrame
 
 
-class SequencerView(gtk.DrawingArea):
+class SequencerView(Gtk.DrawingArea):
     """
     Sequence viewer class.
     """
@@ -886,12 +886,12 @@ class SequencerView(gtk.DrawingArea):
         player = com.get('neil.core.player')
         loader = player.get_pluginloader_by_name('@zzub.org/recorder/wavetable')
         if not loader:
-            print >> sys.stderr, "Can't find instrument recorder plugin loader."
+            print("Can't find instrument recorder plugin loader.", file=sys.stderr)
             return
         flags = zzub.zzub_plugin_flag_no_undo | zzub.zzub_plugin_flag_no_save
         recorder = zzub.Player.create_plugin(player, None, 0, "_IRecorder", loader, flags)
         if not recorder:
-            print >> sys.stderr, "Can't create instrument recorder plugin instance."
+            print("Can't create instrument recorder plugin instance.", file=sys.stderr)
             return
         master = player.get_plugin(0)
         recorder.add_input(master, zzub.zzub_connection_type_audio)
@@ -1712,7 +1712,7 @@ class SequencerView(gtk.DrawingArea):
                     drawable.draw_line(ctx, x, y + 2, x, y + self.seq_track_size - 1)
                     ctx.line_width = 1
                 else:
-                    print "Weird pattern id value: ", value
+                    print("Weird pattern id value: ", value)
             # Draw the track name boxes.
             name = plugin.get_name()
             title = prepstr(name)

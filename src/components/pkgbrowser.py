@@ -25,18 +25,17 @@ This module can also be executed standalone.
 """
 
 from neil.utils import Menu, test_view
-import gobject
-import gtk
+from gi.repository import Gtk
 import inspect
 import neil.com as com
 import neil.contextlog as contextlog
 import os
-import pango
+import pangocffi as pango
 
 MARGIN = 6
 
 
-class PackageBrowserDialog(gtk.Dialog):
+class PackageBrowserDialog(Gtk.Dialog):
     __neil__ = dict(
         id = 'neil.componentbrowser.dialog',
         singleton = True,
@@ -252,7 +251,7 @@ class PackageBrowserDialog(gtk.Dialog):
             # print reference to stdout so devs can click the line from
             # within SciTE.
             contextlog.clean_next_line()
-            print "%s:%s:%r" % (filepath, line, obj)
+            print("%s:%s:%r" % (filepath, line, obj))
         insert('File "%s", Line %s\n\n' % (filepath, line), 'i')
         if inspect.ismethod(obj):
             docstr = ""
