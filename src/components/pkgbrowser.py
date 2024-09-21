@@ -30,7 +30,7 @@ import inspect
 import neil.com as com
 import neil.contextlog as contextlog
 import os
-import pangocffi as pango
+from gi.repository import Pango
 
 MARGIN = 6
 

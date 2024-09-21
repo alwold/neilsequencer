@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
 import neil.com as com
 from gi.repository import Gtk
-import pangocffi as pango
+from gi.repository import Pango
 
 from neil.utils import prepstr
 from neil.utils import get_clipboard_text, set_clipboard_text
