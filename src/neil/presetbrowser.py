@@ -22,10 +22,9 @@
 Contains all classes and functions needed to render the preset browser.
 """
 
-import gtk
-import gobject
+from gi.repository import Gtk
 import cairo
-import pangocairo
+from gi.repository import PangoCairo
 from utils import prepstr, filepath, db2linear, linear2db, is_debug, filenameify, \
 	get_item_count, question, error, new_listview, add_scrollbars, get_clipboard_text, set_clipboard_text, \
 	gettext, new_stock_image_button, diff, file_filter
@@ -36,7 +35,7 @@ from preset import PresetCollection, Preset
 import common
 import neil.com as com
 
-class PresetView(gtk.VBox):
+class PresetView(Gtk.VBox):
 	"""
 	Rack panel.
 	
@@ -131,7 +130,7 @@ class PresetView(gtk.VBox):
 						preset.apply(self.plugin, dryrun=True)
 					except AssertionError:
 						txt = "This preset file seems intended for a different plugin."
-						print txt
+						print(txt)
 						error(self, txt)
 						return
 				# If they're all ok, add them
@@ -142,7 +141,7 @@ class PresetView(gtk.VBox):
 				self.update_presets()
 			except:
 				import traceback
-				print traceback.format_exc()			
+				print(traceback.format_exc())
 		
 	def on_row_activate(self, treeview, path, view_column):
 		preset = self.presets.presets[path[0]]

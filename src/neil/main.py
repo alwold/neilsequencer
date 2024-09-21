@@ -23,11 +23,14 @@ Provides application class and controls used in the neil main window.
 """
 
 import pathconfig
-import gobject
+#import gobject
+import gi
+from gi.repository import GObject as gobject
 gobject.threads_init()
 
-import pygtk
-pygtk.require('2.0')
+#import pygtk
+#pygtk.require('2.0')
+gi.require_version("Gtk", "3.0")
 import gtk
 
 import sys, os

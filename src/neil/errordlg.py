@@ -9,41 +9,43 @@ def error(parent, msg, msg2=None, details=None, offer_quit=False):
     """
     Shows an error message dialog.
     """
-    dialog = gtk.MessageDialog(parent and parent.get_toplevel(),
-        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-        gtk.MESSAGE_ERROR, gtk.BUTTONS_NONE)
+    dialog = Gtk.MessageDialog(parent=parent and parent.get_toplevel(),
+#        Gtk.Dialog.MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+        
+#        Gtk.MESSAGE_ERROR, Gtk.BUTTONS_NONE
+                               )
     dialog.set_markup(msg)
     dialog.set_resizable(True)
     if msg2:
         dialog.format_secondary_text(msg2)
     if details:
-        expander = gtk.Expander("Details")
-        dialog.vbox.pack_start(expander, expand=False, fill=True)
-        label = gtk.TextView()
+        expander = Gtk.Expander(label="Details")
+        dialog.vbox.pack_start(expander, False, True, 0)
+        label = Gtk.TextView()
         label.set_editable(False)
         label.get_buffer().set_property('text', details)
-        label.set_wrap_mode(gtk.WRAP_NONE)
+        label.set_wrap_mode(Gtk.WrapMode.NONE)
 
-        sw = gtk.ScrolledWindow()
-        sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        sw = Gtk.ScrolledWindow()
+        sw.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_size_request(-1, 200)
 
         sw.add(label)
         expander.add(sw)
         dialog.show_all()
-    dialog.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
+    dialog.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
     if offer_quit:
-        dialog.add_button(gtk.STOCK_QUIT, gtk.RESPONSE_REJECT)
+        dialog.add_button(Gtk.STOCK_QUIT, Gtk.ResponseType.REJECT)
 
         def delayed_quit():
             try:
-                gtk.main_quit()
+                Gtk.main_quit()
             except RuntimeError:
                 raise SystemExit
 
         def quit_on_cancel(dlg, response_id):
-            if response_id == gtk.RESPONSE_REJECT:
+            if response_id == Gtk.Response.REJECT:
                 gobject.timeout_add(1, delayed_quit)
         dialog.connect('response', quit_on_cancel)
     response = dialog.run()

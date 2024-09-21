@@ -22,10 +22,9 @@
 Contains all classes and functions needed to render the rack view.
 """
 
-import gtk
-import gobject
+from gi.repository import Gtk
 import cairo
-import pangocairo
+from gi.repository import PangoCairo
 from neil.utils import prepstr, filepath, db2linear, linear2db, is_debug, filenameify, \
     get_item_count, question, error, new_listview, add_scrollbars, get_clipboard_text, set_clipboard_text, \
     gettext, new_stock_image_button, diff, show_machine_manual
@@ -44,7 +43,7 @@ import config
 import neil.com as com
 
 
-class ParameterView(gtk.VBox):
+class ParameterView(Gtk.VBox):
     """
     Displays parameter sliders for a plugin in a new Dialog.
     """
@@ -56,7 +55,7 @@ class ParameterView(gtk.VBox):
 
     DROP_TARGETS = [
         ('application/x-controller-slider-drop',
-         gtk.TARGET_SAME_APP, DROP_TARGET_CTRL_SLIDER),
+         Gtk.TargetFlags.SAME_APP, DROP_TARGET_CTRL_SLIDER),
     ]
 
     __neil__ = dict(
@@ -344,18 +343,20 @@ class ParameterView(gtk.VBox):
     def get_title(self):
         return self._title
 
-    def on_drag_data_get(self, btn, context, selection_data, info, time, (g, t, i)):
+    def on_drag_data_get(self, btn, context, selection_data, info, time, gti):
+        g, t, i = gti
         if info == self.DROP_TARGET_CTRL_SLIDER:
             text = cPickle.dumps((self.plugin.get_id(), g, t, i))
             selection_data.set(selection_data.target, 8, text)
 
-    def on_drag_data_delete(self, btn, context, data, (g, t, i)):
+    def on_drag_data_delete(self, btn, context, data, gti):
         pass
 
-    def on_drag_drop(self, w, context, x, y, time, (g, t, i)):
+    def on_drag_drop(self, w, context, x, y, time, gti):
         return True
 
-    def on_drag_end(self, w, context, (g, t, i)):
+    def on_drag_end(self, w, context, gti):
+        g, t, i = gti
         self.update_namelabel(g, t, i)
 
     def find_event_connection(self, source):
@@ -379,7 +380,8 @@ class ParameterView(gtk.VBox):
         self.plugin.add_event_connection_binding(source, si, tg, tt, ti)
         self.update_namelabel(tg, tt, ti)
 
-    def on_drag_data_received(self, w, context, x, y, data, info, time, (g, t, i)):
+    def on_drag_data_received(self, w, context, x, y, data, info, time, gti):
+        g, t, i = gti
         player = com.get('neil.core.player')
         try:
             if data and data.format == 8:
@@ -396,19 +398,21 @@ class ParameterView(gtk.VBox):
             traceback.print_exc()
         context.finish(False, False, time)
 
-    def on_unbind(self, widget, (g, t, i)):
+    def on_unbind(self, widget, gti):
         """
         Unbinds all midi controllers from the selected parameter.
         """
+        g, t, i = gti
         player = com.get('neil.core.player')
         player.remove_midimapping(self.plugin, g, t, i)
         self.update_namelabel(g, t, i)
         player.history_commit("remove MIDI mapping")
 
-    def on_unbind_event_connection_binding(self, widget, (g, t, i)):
+    def on_unbind_event_connection_binding(self, widget, gti):
         """
         Unbinds all event connection bindings from the selected parameter.
         """
+        g, t, i = gti
         conns = []
         while True:
             result = self.get_event_connection_bindings(g, t, i)
@@ -425,11 +429,12 @@ class ParameterView(gtk.VBox):
                 conn.get_output().delete_input(conn.get_input())
         self.update_namelabel(g, t, i)
 
-    def on_learn_controller(self, widget, (g, t, i)):
+    def on_learn_controller(self, widget, gti):
         """
         Handles the learn entry from the context menu. Associates
         a controller with a plugin parameter.
         """
+        g, t, i = gti
         import neil.controller as controller
         player = com.get('neil.core.player')
         res = controller.learn_controller(self)
@@ -439,11 +444,13 @@ class ParameterView(gtk.VBox):
             player.history_commit("add MIDI mapping")
         self.update_namelabel(g, t, i)
 
-    def on_bind_controller(self, widget, (g, t, i), (name, channel, ctrlid)):
+    def on_bind_controller(self, widget, gti, ncc):
         """
         Handles clicks on controller names in the context menu. Associates
         a controller with a plugin parameter.
         """
+        g, t, i = gti
+        name, channel, ctrlid = ncc
         player = com.get('neil.core.player')
         # FIXME: commented-out for now, because midi controllers crash neil
         # after closing and reopening a rack.
@@ -491,13 +498,14 @@ class ParameterView(gtk.VBox):
                 break
         nl.set_markup(markup)
 
-    def on_context_menu(self, widget, event, (g, t, i)):
+    def on_context_menu(self, widget, event, gti):
         """
         Event handler for requests to show the context menu.
 
         @param event: event.
         @type event: wx.Event
         """
+        g, t, i = gti
         player = com.get('neil.core.player')
         if event.button == 1:
             nl, s, vl = self.pid2ctrls[(g, t, i)]
@@ -768,10 +776,11 @@ class ParameterView(gtk.VBox):
             info.run()
             info.destroy()
 
-    def on_key_down(self, widget, event, (g, t, i)):
+    def on_key_down(self, widget, event, gti):
         """
         Callback that responds to key stroke.
         """
+        g, t, i = gti
         kv = event.keyval
         if (kv >= ord('0')) and (kv <= ord('9')):
             p = self.pluginloader.get_parameter(g, i)
@@ -810,11 +819,12 @@ class ParameterView(gtk.VBox):
 # player.remove_midimapping(plugin, m.get_group(), m.get_track(), m.get_column())
 # player.history_commit("remove MIDI mapping")
 
-    def on_button_press(self, widget, event, (g, t, i)):
+    def on_button_press(self, widget, event, gti):
         """
         Buttons press on slider
         Used to reset value to default on double click
         """
+        g, t, i = gti
         if event.type == gtk.gdk._2BUTTON_PRESS:
             p = self.plugin.get_parameter(g, t, i)
             v = p.get_value_default()
@@ -827,13 +837,14 @@ class ParameterView(gtk.VBox):
             player.history_commit("reset plugin parameter")
             # s.emit_stop_by_name('button-press-event')
 
-    def on_mousewheel(self, widget, event, (g, t, i)):
+    def on_mousewheel(self, widget, event, gti):
         """
         Sent when the mousewheel is used on a slider.
 
         @param event: A mouse event.
         @type event: wx.MouseEvent
         """
+        g, t, i = gti
         nl, s, vl = self.pid2ctrls[(g, t, i)]
         v = self.plugin.get_parameter_value(g, t, i)
         p = self.plugin.get_parameter(g, t, i)
@@ -869,13 +880,14 @@ class ParameterView(gtk.VBox):
             text = "%i" % v
         vl.set_label(text)
 
-    def on_scroll_changed(self, widget, scroll, value, (g, t, i)):
+    def on_scroll_changed(self, widget, scroll, value, gti):
         """
         Event handler for changes in slider movements.
 
         @param event: A scroll event.
         @type event: wx.ScrollEvent
         """
+        g, t, i = gti
         nl, s, vl = self.pid2ctrls[(g, t, i)]
         p = self.plugin.get_parameter(g, t, i)
         minv = p.get_value_min()
@@ -887,15 +899,16 @@ class ParameterView(gtk.VBox):
         return True
 
 
-class DataEntry(gtk.Dialog):
+class DataEntry(Gtk.Dialog):
     """
     A data entry control meant for numerical input of slider values.
     """
 
-    def __init__(self, (minval, maxval, v), parent):
+    def __init__(self, minmaxv, parent):
         """
         Initializer.
         """
+        minval, maxval, v = minmaxv
         gtk.Dialog.__init__(self,
                             "Edit Value",
                             parent.get_toplevel(),
@@ -922,7 +935,7 @@ class DataEntry(gtk.Dialog):
         self.response(gtk.RESPONSE_OK)
 
 
-class RackPanel(gtk.VBox):
+class RackPanel(Gtk.VBox):
     """
     Rack panel.
 
@@ -972,7 +985,7 @@ class RackPanel(gtk.VBox):
         """
         Updates the full view.
         """
-        print "rack:update_all"
+        print("rack:update_all")
         addlist, rmlist = diff(
             self.panels.keys(), common.get_plugin_infos().keys())
         for plugin in rmlist:

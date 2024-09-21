@@ -30,8 +30,7 @@ if __name__ == '__main__':
     raise SystemExit
 
 import neil.com as com
-import gtk
-import gobject
+from gi.repository import Gtk
 
 from neil.utils import PLUGIN_FLAGS_MASK, ROOT_PLUGIN_FLAGS,\
      GENERATOR_PLUGIN_FLAGS, EFFECT_PLUGIN_FLAGS,\
@@ -75,7 +74,7 @@ AREA_PANNING = 1
 AREA_LED = 2
 
 
-class AttributesDialog(gtk.Dialog):
+class AttributesDialog(Gtk.Dialog):
     """
     Displays plugin atttributes and allows to edit them.
     """
@@ -190,7 +189,7 @@ class AttributesDialog(gtk.Dialog):
                 self.plugin.set_attribute_value(i, self.attribs[i])
 
 
-class ParameterDialog(gtk.Dialog):
+class ParameterDialog(Gtk.Dialog):
     """
     Displays parameter sliders for a plugin in a new Dialog.
     """
@@ -282,7 +281,7 @@ class PresetDialogManager:
         dlg.show_all()
 
 
-class PresetDialog(gtk.Dialog):
+class PresetDialog(Gtk.Dialog):
     """
     Displays parameter sliders for a plugin in a new Dialog.
     """
@@ -324,7 +323,7 @@ DRAG_FORMATS = [
 ]
 
 
-class RoutePanel(gtk.VBox):
+class RoutePanel(Gtk.VBox):
     """
     Contains the view panel and manages parameter dialogs.
     """
@@ -368,7 +367,7 @@ class RoutePanel(gtk.VBox):
         self.view.redraw()
 
 
-class VolumeSlider(gtk.Window):
+class VolumeSlider(Gtk.Window):
     """
     A temporary popup volume control for the router. Can
     only be summoned parametrically and will vanish when the
@@ -489,7 +488,7 @@ class VolumeSlider(gtk.Window):
         self.drawingarea.grab_remove()
 
 
-class RouteView(gtk.DrawingArea):
+class RouteView(Gtk.DrawingArea):
     """
     Allows to monitor and control plugins and their connections.
     """

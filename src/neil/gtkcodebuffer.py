@@ -21,8 +21,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import gtk
-import pango
+from gi.repository import Gtk
+from gi.repository import Pango
 import re
 import sys
 import os.path
@@ -41,18 +41,18 @@ DEFAULT_STYLES = {
     'comment':      {'foreground': '#0000FF'},
     'preprocessor': {'foreground': '#A020F0'},
     'keyword':      {'foreground': '#A52A2A',
-                     'weight': pango.WEIGHT_BOLD},
+                     'weight': Pango.Weight.BOLD},
     'special':      {'foreground': 'turquoise'},
     'mark1':        {'foreground': '#008B8B'},
     'mark2':        {'foreground': '#6A5ACD'},
     'string':       {'foreground': '#FF00FF'},
     'number':       {'foreground': '#FF00FF'},
     'datatype':     {'foreground': '#2E8B57',
-                     'weight': pango.WEIGHT_BOLD},
+                     'weight': Pango.Weight.BOLD},
     'function':     {'foreground': '#008A8C'},
 
     'link':         {'foreground': '#0000FF',
-                     'underline': pango.UNDERLINE_SINGLE}}
+                     'underline': Pango.Underline.SINGLE}}
 
 
         
@@ -295,28 +295,28 @@ class SyntaxLoader(ContentHandler, LanguageDefinition):
         function. """
     
     # some translation-tables for the style-defs:
-    style_weight_table =    {'ultralight': pango.WEIGHT_ULTRALIGHT,
-                             'light': pango.WEIGHT_LIGHT,
-                             'normal': pango.WEIGHT_NORMAL,
-                             'bold':   pango.WEIGHT_BOLD,
-                             'ultrabold': pango.WEIGHT_ULTRABOLD,
-                             'heavy': pango.WEIGHT_HEAVY}
-    style_variant_table =   {'normal': pango.VARIANT_NORMAL,
-                             'smallcaps': pango.VARIANT_SMALL_CAPS}
-    style_underline_table = {'none': pango.UNDERLINE_NONE,
-                             'single': pango.UNDERLINE_SINGLE,
-                             'double': pango.UNDERLINE_DOUBLE}
-    style_style_table =     {'normal': pango.STYLE_NORMAL,
-                             'oblique': pango.STYLE_OBLIQUE,
-                             'italic': pango.STYLE_ITALIC}                                                   
+    style_weight_table =    {'ultralight': Pango.Weight.ULTRALIGHT,
+                             'light': Pango.Weight.LIGHT,
+                             'normal': Pango.Weight.NORMAL,
+                             'bold':   Pango.Weight.BOLD,
+                             'ultrabold': Pango.Weight.ULTRABOLD,
+                             'heavy': Pango.Weight.HEAVY}
+    style_variant_table =   {'normal': Pango.Variant.NORMAL,
+                             'smallcaps': Pango.Variant.SMALL_CAPS}
+    style_underline_table = {'none': Pango.Underline.NONE,
+                             'single': Pango.Underline.SINGLE,
+                             'double': Pango.Underline.DOUBLE}
+    style_style_table =     {'normal': Pango.Style.NORMAL,
+                             'oblique': Pango.Style.OBLIQUE,
+                             'italic': Pango.Style.ITALIC}                                                   
     style_scale_table =     {
-                            'xx_small': pango.SCALE_XX_SMALL,
-                            'x_small':  pango.SCALE_X_SMALL,
-                            'small':  pango.SCALE_SMALL,
-                            'medium':  pango.SCALE_MEDIUM,
-                            'large':  pango.SCALE_LARGE,
-                            'x_large':  pango.SCALE_X_LARGE,
-                            'xx_large': pango.SCALE_XX_LARGE,
+#                            'xx_small': Pango.SCALE.XX_SMALL,
+#                            'x_small':  Pango.Scale.X_SMALL,
+#                            'small':  Pango.Scale.SMALL,
+#                            'medium':  Pango.Scale.MEDIUM,
+#                            'large':  Pango.Scale.LARGE,
+#                            'x_large':  Pango.Scale.X_LARGE,
+#                            'xx_large': Pango.Scale.XX_LARGE,
                             }
                           
                           
