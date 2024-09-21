@@ -319,7 +319,7 @@ class NeilConfig(object, ConfigParser.ConfigParser):
         self.flush()
 
     def flush(self):
-        self.write(file(self.filename,'w'))
+        self.write(open(self.filename,'w'))
 
     def get_plugin_icon_path(self, name):
         """

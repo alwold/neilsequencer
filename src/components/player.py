@@ -140,7 +140,7 @@ class NeilPlayer(Player, PropertyEventHandler):
         self.__event_stats = False
         # enumerate zzub_event_types and prepare unwrappers for the different types
         self.event_id_to_name = {}
-        for enumname, cfg in self._event_types_.iteritems():
+        for enumname, cfg in self._event_types_.items():
             val = getattr(zzub, enumname)
             #assert val not in self.event_id_to_name, "value %s (%s) already registered." % (val, eventname)
             # where is eventname defined?
