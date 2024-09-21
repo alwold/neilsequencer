@@ -1,4 +1,4 @@
-#encoding: latin-1
+# encoding: latin-1
 
 # Neil
 # Modular Sequencer
@@ -29,105 +29,107 @@ from neil.utils import add_scrollbars
 from neil.common import MARGIN, MARGIN0, MARGIN2, MARGIN3
 import neil.com as com
 
+
 class InfoPanel(gtk.VBox):
     """
     Contains the info view.
     """
     __neil__ = dict(
-        id = 'neil.core.infopanel',
-        singleton = True,
-        categories = [
+        id='neil.core.infopanel',
+        singleton=True,
+        categories=[
             'neil.viewpanel',
             'view',
-	    ]
-        )		
+        ]
+    )
 
     __view__ = dict(
-        label = "Info",
-        stockid = "neil_info",
-        shortcut = 'F11',
-        order = 11,
-        )
+        label="Info",
+        stockid="neil_info",
+        shortcut='F11',
+        order=11,
+    )
 
     def __init__(self, *args, **kwds):
-	"""
-	Initializer.
-	"""
-	gtk.VBox.__init__(self, False, MARGIN)
-	self.set_border_width(MARGIN)
-	self.view = InfoView()
-	self.pack_start(add_scrollbars(self.view))
+        """
+        Initializer.
+        """
+        gtk.VBox.__init__(self, False, MARGIN)
+        self.set_border_width(MARGIN)
+        self.view = InfoView()
+        self.pack_start(add_scrollbars(self.view))
         eventbus = com.get('neil.core.eventbus')
         eventbus.document_loaded += self.update_all
 
     def handle_focus(self):
-	self.view.grab_focus()
+        self.view.grab_focus()
 
     def reset(self):
-	"""
-	Resets the router view. Used when
-	a new song is being loaded.
-	"""
-	self.view.reset()
+        """
+        Resets the router view. Used when
+        a new song is being loaded.
+        """
+        self.view.reset()
 
     def update_all(self):
-	self.view.update()
+        self.view.update()
+
 
 class InfoView(gtk.TextView):
     """
     Allows to enter and view text saved with the module.
-    """	
+    """
 
     def __init__(self):
-	"""
-	Initializer.
-	"""
-	gtk.TextView.__init__(self)
-	self.set_wrap_mode(gtk.WRAP_WORD)
-	self.get_buffer().connect('changed', self.on_edit)
+        """
+        Initializer.
+        """
+        gtk.TextView.__init__(self)
+        self.set_wrap_mode(gtk.WRAP_WORD)
+        self.get_buffer().connect('changed', self.on_edit)
         self.modify_font(pango.FontDescription('monospace 8'))
 
     def on_edit(self, buffer_):
-	"""
-	Handler for text changes.
+        """
+        Handler for text changes.
 
-	@param event: Event
-	@type event: wx.Event
-	"""
-	player = com.get('neil.core.player')
+        @param event: Event
+        @type event: wx.Event
+        """
+        player = com.get('neil.core.player')
         text = self.get_buffer().get_property('text')
-	player.set_infotext(text)
+        player.set_infotext(text)
 
     def reset(self):
-	"""
-	Resets the view.
-	"""
-	self.get_buffer().set_property('text', '')
+        """
+        Resets the view.
+        """
+        self.get_buffer().set_property('text', '')
 
     def update(self):
-	"""
-	Updates the view.
-	"""
-	player = com.get('neil.core.player')
-	text = player.get_infotext()
-	self.get_buffer().set_property('text', text)
+        """
+        Updates the view.
+        """
+        player = com.get('neil.core.player')
+        text = player.get_infotext()
+        self.get_buffer().set_property('text', text)
 
 
 _all__ = [
     'InfoPanel',
     'InfoView',
-    ]
+]
 
 __neil__ = dict(
-    classes = [
+    classes=[
         InfoPanel,
         InfoView,
-	],
-    )
+    ],
+)
 
 
 if __name__ == '__main__':
     import sys
     from main import run
-    #sys.argv.append(filepath('demosongs/test.bmx'))
+    # sys.argv.append(filepath('demosongs/test.bmx'))
     run(sys.argv)
