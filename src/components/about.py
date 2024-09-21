@@ -75,7 +75,7 @@ def about_visit_website(dialog, link, user_data):
 
 def about_send_email(dialog, link, user_data):
     import webbrowser
-    print link
+    print(link)
     webbrowser.open_new('mailto:'+link)
 
 gtk.about_dialog_set_url_hook(about_visit_website, None)
