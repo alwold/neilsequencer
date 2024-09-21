@@ -905,6 +905,8 @@ class Argument(zzubIDLObject):
 		if ('class_' in tm) and not tm['class_'].members: # handle class?
 			self.opaque_class = True
 		self.py_arg = self.name
+		if self.typename == 'string':
+			self.py_arg = f'bytes({self.name}, \'ASCII\')'
 		if 'out' in self.argdirs:
 			if not self.opaque_class:
 				self.extract_value = True
