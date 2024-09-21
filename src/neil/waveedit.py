@@ -22,9 +22,9 @@
 Provides dialogs, classes and controls to edit samples.
 """
 
-import gtk
-import pango
-import pangocairo
+from gi.repository import Gtk
+from gi.repository import Pango
+from gi.repository import PangoCairo
 import os, sys
 from utils import prepstr, db2linear, linear2db, note2str, file_filter
 from utils import read_int, write_int, add_scrollbars, new_image_button,\
@@ -44,12 +44,12 @@ DOTSIZE = 8
 EXACT = 0
 NEXT = 1
 
-class WaveEditPanel(gtk.VBox):
+class WaveEditPanel(Gtk.VBox):
     def __init__(self, wavetable):
-        gtk.VBox.__init__(self, False, MARGIN)
+        Gtk.VBox.__init__(self, False, MARGIN)
         self.wavetable = wavetable
         self.view = WaveEditView(wavetable)
-        self.viewport = gtk.Viewport()
+        self.viewport = Gtk.Viewport()
         self.viewport.add(self.view)
         self.pack_start(self.viewport)
         self.set_border_width(MARGIN)
@@ -92,7 +92,7 @@ class WaveEditPanel(gtk.VBox):
         self.view.level.normalize()
         self.update()
         
-class WaveEditView(gtk.DrawingArea):
+class WaveEditView(Gtk.DrawingArea):
     """
     Envelope viewer.
 
@@ -117,8 +117,8 @@ class WaveEditView(gtk.DrawingArea):
         self.right_dragging = False
         self.right_drag_start = 0
         self.stretching = False
-        gtk.DrawingArea.__init__(self)
-        self.add_events(gtk.gdk.ALL_EVENTS_MASK)
+        Gtk.DrawingArea.__init__(self)
+        self.add_events(Gtk.gdk.ALL_EVENTS_MASK)
         self.connect('button-press-event', self.on_button_down)
         self.connect('button-release-event', self.on_button_up)
         self.connect('motion-notify-event', self.on_motion)
@@ -219,10 +219,10 @@ class WaveEditView(gtk.DrawingArea):
         b, e = self.range
         diffl = s - b
         diffr = e - s
-        if event.direction == gtk.gdk.SCROLL_DOWN:
+        if event.direction == Gtk.gdk.SCROLL_DOWN:
             diffl *= 2
             diffr *= 2
-        elif event.direction == gtk.gdk.SCROLL_UP:
+        elif event.direction == Gtk.gdk.SCROLL_UP:
             diffl /= 2
             diffr /= 2
         self.set_range(s - diffl, s + diffr)
@@ -251,15 +251,15 @@ class WaveEditView(gtk.DrawingArea):
             title = "Export Selection"
         else:
             title = "Export Slices"
-        dlg = gtk.FileChooserDialog(title, parent=self.get_toplevel(), action=gtk.FILE_CHOOSER_ACTION_SAVE,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        dlg = Gtk.FileChooserDialog(title, parent=self.get_toplevel(), action=Gtk.FILE_CHOOSER_ACTION_SAVE,
+            buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL, Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
         dlg.set_current_name(filename)
         dlg.set_do_overwrite_confirmation(True)
         dlg.add_filter(file_filter('Wave Files (*.wav)', '*.wav'))
         response = dlg.run()
         filepath = dlg.get_filename()
         dlg.destroy()
-        if response != gtk.RESPONSE_OK:
+        if response != Gtk.RESPONSE_OK:
             return
         if self.selection:
             begin,end = self.selection
@@ -272,7 +272,7 @@ class WaveEditView(gtk.DrawingArea):
                 else:
                     end = self.peaks[i+1]
                 filepath = "%s%03i%s" % (filename, i, fileext)
-                print filepath
+                print(filepath)
                 self.wave.save_sample_range(0, filepath, x, end)
 
     def on_enter(self, widget, event):
@@ -343,7 +343,7 @@ class WaveEditView(gtk.DrawingArea):
         if (event.button == 1):
             s, a = self.client_to_sample(mx,my)
             # If a user double-clicks - clear the selection.
-            if (event.type == gtk.gdk._2BUTTON_PRESS):
+            if (event.type == Gtk.gdk._2BUTTON_PRESS):
                 self.selection = None
                 self.dragging = False
                 self.redraw()
@@ -476,11 +476,11 @@ class WaveEditView(gtk.DrawingArea):
             self.near_end_selection_marker(mx, my) or
             self.near_start_loop_marker(mx, my) or
             self.near_end_loop_marker(mx, my)):
-            resizer = gtk.gdk.Cursor(gtk.gdk.SB_H_DOUBLE_ARROW)
+            resizer = Gtk.gdk.Cursor(Gtk.gdk.SB_H_DOUBLE_ARROW)
             self.window.set_cursor(resizer)
         else:
             if (not self.dragging) and (not self.start_loop_dragging) and (not self.end_loop_dragging):
-                arrow = gtk.gdk.Cursor(gtk.gdk.ARROW)
+                arrow = Gtk.gdk.Cursor(Gtk.gdk.ARROW)
                 self.window.set_cursor(arrow)
         if self.dragging == True:
             if s < self.startpos:
@@ -517,7 +517,7 @@ class WaveEditView(gtk.DrawingArea):
         self.redraw()
 
     def set_sensitive(self, enable):
-        gtk.DrawingArea.set_sensitive(self, enable)
+        Gtk.DrawingArea.set_sensitive(self, enable)
         self.redraw()
 
     def draw_zoom_indicator(self, ctx):
@@ -538,7 +538,7 @@ class WaveEditView(gtk.DrawingArea):
         width, height = self.get_client_size()
         begin, end = self.range
         if self.level.get_wave().get_flags() & zzub.zzub_wave_flag_loop:
-            print self.loop_start, self.loop_end
+            print(self.loop_start, self.loop_end)
             if self.start_loop_dragging:
                 loop_start = self.loop_start
             else:

@@ -20,7 +20,7 @@
 
 from pathconfig import path_cfg
 import os,sys,glob
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 SECTION_NAME = 'Neil COM'
 OPTIONS = [

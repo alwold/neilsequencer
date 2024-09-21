@@ -27,8 +27,8 @@ if __name__ == '__main__':
     os.system('../../bin/neil-combrowser neil.core.wavetablepanel')
     raise SystemExit
 
-import gtk
-import gobject
+from gi.repository import Gtk
+#import gobject
 import os, sys, stat
 from neil.utils import prepstr, db2linear, linear2db, note2str, filepath, \
      new_listview, new_image_button, add_scrollbars, file_filter, question, \
@@ -44,7 +44,7 @@ from neil.common import MARGIN, MARGIN2, MARGIN3
 import neil.com as com
 from neil.utils import Menu
 
-class WavetablePanel(gtk.VBox):
+class WavetablePanel(Gtk.VBox):
     """
     Wavetable editor.
 
@@ -76,17 +76,17 @@ class WavetablePanel(gtk.VBox):
         self.working_directory = ''
         self.files = []
         self.needfocus = True
-        gtk.VBox.__init__(self)
-        self.instrpanel = gtk.HPaned()
+        Gtk.VBox.__init__(self)
+        self.instrpanel = Gtk.HPaned()
         self.instrpanel.set_border_width(MARGIN2)
         self.libpanel = \
-            gtk.FileChooserDialog(title="Open Sample",
-                                  action=gtk.FILE_CHOOSER_ACTION_OPEN,
-                                  buttons=(gtk.STOCK_CANCEL,
-                                           gtk.RESPONSE_CANCEL,
-                                           gtk.STOCK_OPEN,
-                                           gtk.RESPONSE_OK))
-        preview = gtk.VBox(False, MARGIN)
+            Gtk.FileChooserDialog(title="Open Sample",
+                                  action=Gtk.FILE_CHOOSER_ACTION_OPEN,
+                                  buttons=(Gtk.STOCK_CANCEL,
+                                           Gtk.RESPONSE_CANCEL,
+                                           Gtk.STOCK_OPEN,
+                                           Gtk.RESPONSE_OK))
+        preview = Gtk.VBox(False, MARGIN)
         #preview.set_size_request(100,-1)
 
         #btnopen = new_stock_image_button(gtk.STOCK_ADD, "Add/Insert Instrument", self.tooltips)
@@ -99,7 +99,7 @@ class WavetablePanel(gtk.VBox):
         #self.tooltips.set_tip(btneditfile, "Open Sample in External Editor")
         #self.ohg.connect(btneditfile,'clicked', self.on_edit_file)
 
-        chkautoplay = gtk.CheckButton("_Automatic Preview")
+        chkautoplay = Gtk.CheckButton("_Automatic Preview")
         chkautoplay.set_active(False)
         self.chkautoplay = chkautoplay
 
@@ -111,14 +111,14 @@ class WavetablePanel(gtk.VBox):
         #hbox.pack_end(chkautoplay, expand=False)
 
         #self.libpanel.set_extra_widget(hbox)
-        self.previewdesc = gtk.Label()
+        self.previewdesc = Gtk.Label()
         self.previewdesc.set_alignment(0, 0)
-        btnpreviewplay = new_stock_image_button(gtk.STOCK_MEDIA_PLAY, "Preview Sample")
+        btnpreviewplay = new_stock_image_button(Gtk.STOCK_MEDIA_PLAY, "Preview Sample")
         self.ohg.connect(btnpreviewplay, 'clicked', self.on_play_filelist_wave)
-        btnpreviewstop = new_stock_image_button(gtk.STOCK_MEDIA_STOP, "Stop Preview")
+        btnpreviewstop = new_stock_image_button(Gtk.STOCK_MEDIA_STOP, "Stop Preview")
         self.ohg.connect(btnpreviewstop, 'clicked', self.on_stop_wave)
 
-        hbox = gtk.HBox(False, MARGIN)
+        hbox = Gtk.HBox(False, MARGIN)
         hbox.pack_start(btnpreviewplay, expand=False)
         hbox.pack_start(btnpreviewstop, expand=False)
         preview.pack_start(hbox, expand=False)
@@ -170,27 +170,27 @@ class WavetablePanel(gtk.VBox):
         #~ imglist = wx.ImageList(16,16)
         #~ self.IMG_SAMPLE_WAVE = imglist.Add(wx.Bitmap(filepath("res/wave.png"), wx.BITMAP_TYPE_ANY))
         #~ self.samplelist.AssignImageList(imglist, wx.IMAGE_LIST_SMALL)
-        self.btnloadsample = new_stock_image_button(gtk.STOCK_OPEN, "Load Sample")
-        self.btnstoresample = new_stock_image_button(gtk.STOCK_SAVE_AS, "Save Sample")
-        self.btnstop = new_stock_image_button(gtk.STOCK_MEDIA_STOP, "Stop Preview")
-        self.btnplay = new_stock_image_button(gtk.STOCK_MEDIA_PLAY, "Preview Sample")
-        self.btnrename = new_stock_image_button(gtk.STOCK_BOLD, "Rename Instrument")
-        self.btnclear = new_stock_image_button(gtk.STOCK_REMOVE, "Remove Instrument")
+        self.btnloadsample = new_stock_image_button(Gtk.STOCK_OPEN, "Load Sample")
+        self.btnstoresample = new_stock_image_button(Gtk.STOCK_SAVE_AS, "Save Sample")
+        self.btnstop = new_stock_image_button(Gtk.STOCK_MEDIA_STOP, "Stop Preview")
+        self.btnplay = new_stock_image_button(Gtk.STOCK_MEDIA_PLAY, "Preview Sample")
+        self.btnrename = new_stock_image_button(Gtk.STOCK_BOLD, "Rename Instrument")
+        self.btnclear = new_stock_image_button(Gtk.STOCK_REMOVE, "Remove Instrument")
         #self.btnfitloop = new_image_button(imagepath("fitloop.png"), "Fit Loop", self.tooltips)
         #self.btnstrloop = new_image_button(imagepath("fitloop.png"), "Stretch Loop", self.tooltips)
-        self.samplename = gtk.Label("")
+        self.samplename = Gtk.Label("")
         self.samplename.set_alignment(0, 0.5)
-        self.chkloop = gtk.CheckButton("_Loop")
-        self.edloopstart = gtk.Entry()
+        self.chkloop = Gtk.CheckButton("_Loop")
+        self.edloopstart = Gtk.Entry()
         self.edloopstart.set_size_request(50, -1)
-        self.edloopend = gtk.Entry()
+        self.edloopend = Gtk.Entry()
         self.edloopend.set_size_request(50, -1)
-        self.edsamplerate = gtk.Entry()
+        self.edsamplerate = Gtk.Entry()
         self.edsamplerate.set_size_request(50, -1)
-        self.chkpingpong = gtk.CheckButton("_Ping Pong")
+        self.chkpingpong = Gtk.CheckButton("_Ping Pong")
         #self.cbmachine = gtk.combo_box_new_text()
         #self.cbenvelope = gtk.combo_box_new_text()
-        self.chkenable = gtk.CheckButton("Use Envelope")
+        self.chkenable = Gtk.CheckButton("Use Envelope")
         self.envelope = EnvelopeView(self)
         self.waveedit = WaveEditPanel(self)
 
@@ -200,15 +200,15 @@ class WavetablePanel(gtk.VBox):
         #self.btn_end_prev = gtk.Button("<")
         #self.btn_end_next = gtk.Button(">")
 
-        samplebuttons = gtk.HBox(False, MARGIN)
+        samplebuttons = Gtk.HBox(False, MARGIN)
         samplebuttons.pack_start(self.btnloadsample, expand=False)
         samplebuttons.pack_start(self.btnstoresample, expand=False)
         samplebuttons.pack_start(self.btnrename, expand=False)
         samplebuttons.pack_start(self.btnclear, expand=False)
-        samplesel = gtk.VBox(False, MARGIN)
+        samplesel = Gtk.VBox(False, MARGIN)
         samplesel.pack_start(samplebuttons, expand=False)
         samplesel.pack_end(add_scrollbars(self.samplelist))
-        loopprops = gtk.HBox(False, MARGIN)
+        loopprops = Gtk.HBox(False, MARGIN)
         loopprops.pack_start(self.btnplay, expand=False)
         loopprops.pack_start(self.btnstop, expand=False)
         loopprops.pack_start(self.chkloop, expand=False)
@@ -222,14 +222,14 @@ class WavetablePanel(gtk.VBox):
         loopprops.pack_start(self.edsamplerate, expand=False)
         #loopprops.pack_start(self.btnfitloop, expand=False)
         #loopprops.pack_start(self.btnstrloop, expand=False)
-        envprops = gtk.HBox(False, MARGIN)
+        envprops = Gtk.HBox(False, MARGIN)
         #envprops.pack_start(self.cbmachine, expand=False)
         #envprops.pack_start(self.cbenvelope, expand=False)
         envprops.pack_start(self.chkenable, expand=False)
-        sampleprops = gtk.VBox(False, MARGIN)
+        sampleprops = Gtk.VBox(False, MARGIN)
         sampleprops.pack_start(loopprops, expand=False)
-        nbsampleprops = gtk.VPaned()
-        envsection = gtk.VBox(False, MARGIN)
+        nbsampleprops = Gtk.VPaned()
+        envsection = Gtk.VBox(False, MARGIN)
         envsection.set_border_width(MARGIN)
         envsection.pack_start(envprops, expand=False)
         self.envscrollwin = add_scrollbars(self.envelope)
@@ -277,7 +277,7 @@ class WavetablePanel(gtk.VBox):
             try:
                 self.libpanel.set_current_folder(currentpath)
             except:
-                print "couldn't set current sample browser path: '%s'." % currentpath
+                print("couldn't set current sample browser path: '%s'." % currentpath)
 
         eventbus = com.get('neil.core.eventbus')
         eventbus.zzub_wave_allocated += self.update_samplelist
@@ -379,7 +379,7 @@ class WavetablePanel(gtk.VBox):
         if not files:
             return
         sel = self.get_sample_selection()
-        if question(self, '<b><big>Really delete selected files?</big></b>', False) != gtk.RESPONSE_YES:
+        if question(self, '<b><big>Really delete selected files?</big></b>', False) != Gtk.RESPONSE_YES:
             return
         for file in files:
             os.remove(file)
@@ -393,7 +393,7 @@ class WavetablePanel(gtk.VBox):
         if not(files) or len(files) > 1:
             return
         data_entry = DataEntry(self, "Rename File", "New Name:")
-        if data_entry.run() == gtk.RESPONSE_OK:
+        if data_entry.run() == Gtk.RESPONSE_OK:
             try:
                 value = data_entry.edit.get_text()
                 filename = os.path.basename(files[0])
@@ -411,7 +411,7 @@ class WavetablePanel(gtk.VBox):
         Swap instrument with another
         """
         data_entry = DataEntry(self, "Swap Instruments", "With #:")
-        if data_entry.run() == gtk.RESPONSE_OK:
+        if data_entry.run() == Gtk.RESPONSE_OK:
             try:
                 selects = self.get_sample_selection()
                 player = com.get('neil.core.player')
@@ -450,7 +450,7 @@ class WavetablePanel(gtk.VBox):
         if not(selects) or len(selects) > 1:
             return
         data_entry = DataEntry(self, "Rename Instrument", "New Name:")
-        if data_entry.run() == gtk.RESPONSE_OK:
+        if data_entry.run() == Gtk.RESPONSE_OK:
             try:
                 value = data_entry.edit.get_text()
                 target = self.get_sample_selection()[0]
@@ -492,7 +492,7 @@ class WavetablePanel(gtk.VBox):
         try:
             v = int(self.edloopstart.get_text())
         except ValueError:
-            print "invalid value."
+            print("invalid value.")
             return
         player = com.get('neil.core.player')
         for i in self.get_sample_selection():
@@ -514,7 +514,7 @@ class WavetablePanel(gtk.VBox):
         try:
             v = int(self.edloopend.get_text())
         except ValueError:
-            print "invalid value."
+            print("invalid value.")
             return
         player = com.get('neil.core.player')
         for i in self.get_sample_selection():
@@ -613,9 +613,9 @@ class WavetablePanel(gtk.VBox):
         """
         sel = self.get_sample_selection()
         if len(sel) > 1:
-            if question(self, '<b><big>Really delete %s instruments?</big></b>' % len(sel), False) != gtk.RESPONSE_YES:
+            if question(self, '<b><big>Really delete %s instruments?</big></b>' % len(sel), False) != Gtk.RESPONSE_YES:
                 return
-        elif question(self, '<b><big>Really delete instrument?</big></b>', False) != gtk.RESPONSE_YES:
+        elif question(self, '<b><big>Really delete instrument?</big></b>', False) != Gtk.RESPONSE_YES:
             return
         player = com.get('neil.core.player')
         for i in sel:
@@ -689,15 +689,15 @@ class WavetablePanel(gtk.VBox):
                 filename = os.path.splitext(os.path.basename(origpath))[0] + '.wav'
             else:
                 filename = w.get_name() + '.wav'
-            dlg = gtk.FileChooserDialog(title="Export Sample", parent=self.get_toplevel(), action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                    buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+            dlg = Gtk.FileChooserDialog(title="Export Sample", parent=self.get_toplevel(), action=Gtk.FILE_CHOOSER_ACTION_SAVE,
+                    buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL, Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
             dlg.set_current_name(filename)
             dlg.set_do_overwrite_confirmation(True)
             dlg.add_filter(file_filter('Wave Files (*.wav)', '*.wav'))
             response = dlg.run()
             filepath = dlg.get_filename()
             dlg.destroy()
-            if response == gtk.RESPONSE_OK:
+            if response == Gtk.RESPONSE_OK:
                 player.save_wave(w, filepath)
             else:
                 return
@@ -743,7 +743,7 @@ class WavetablePanel(gtk.VBox):
         Loads a sample from the file list into the sample list of the song.
         """
         response = self.libpanel.run()
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             filenames = self.libpanel.get_filenames()
             samplepaths = [path for path in filenames if os.path.isfile(path)]
             self.load_samples(samplepaths)
@@ -779,7 +779,7 @@ class WavetablePanel(gtk.VBox):
         @type event: wx.MouseEvent
         """
         #  Plays the selected file
-        if (event.button == 1) and (event.type == gtk.gdk._2BUTTON_PRESS):
+        if (event.button == 1) and (event.type == Gtk.gdk._2BUTTON_PRESS):
             # double click
             self.on_play_wave(event)
             #I think this makes much more sense..
@@ -860,7 +860,7 @@ class WavetablePanel(gtk.VBox):
         @type event: wx.KeyEvent
         """
         # Read the name of the key pressed.
-        k = gtk.gdk.keyval_name(event.keyval)
+        k = Gtk.gdk.keyval_name(event.keyval)
         # When space button is pressed play the wave.
         if k == 'Space':
             self.on_play_wave(event)
@@ -884,10 +884,10 @@ class WavetablePanel(gtk.VBox):
         @param event: Key event
         @type event: wx.KeyEvent
         """
-        k = gtk.gdk.keyval_name(event.keyval)
+        k = Gtk.gdk.keyval_name(event.keyval)
         mask = event.state
         kv = event.keyval
-        print k, kv
+        print(k, kv)
         if k == 'Escape':
             #this doesn't seem to do anything, and set_current_page
             #doesn't exist!
@@ -1086,7 +1086,7 @@ class WavetablePanel(gtk.VBox):
         player.history_commit("fit loop")
 
 
-class DataEntry(gtk.Dialog):
+class DataEntry(Gtk.Dialog):
     """
     A data entry control for renaming files
     """
@@ -1094,15 +1094,15 @@ class DataEntry(gtk.Dialog):
         """
         Initializer.
         """
-        gtk.Dialog.__init__(self,
+        Gtk.Dialog.__init__(self,
                 title,
                 parent.get_toplevel(),
-                gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                (gtk.STOCK_OK, gtk.RESPONSE_OK, gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL),
+                Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+                (Gtk.STOCK_OK, Gtk.RESPONSE_OK, Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL),
         )
-        self.label = gtk.Label(label)
-        self.edit = gtk.Entry()
-        s = gtk.HBox()
+        self.label = Gtk.Label(label)
+        self.edit = Gtk.Entry()
+        s = Gtk.HBox()
         s.pack_start(self.label, expand=False)
         s.pack_start(self.edit)
         self.vbox.pack_start(s, expand=False)
@@ -1112,7 +1112,7 @@ class DataEntry(gtk.Dialog):
         self.edit.connect('activate', self.on_text_enter)
 
     def on_text_enter(self, widget):
-        self.response(gtk.RESPONSE_OK)
+        self.response(Gtk.RESPONSE_OK)
 
 
 __all__ = [
