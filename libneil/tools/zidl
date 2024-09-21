@@ -1150,6 +1150,8 @@ class Function(zzubIDLObject):
             if arg.opaque_class:
                 class_ = arg.typemap_cfg['class_']
                 return class_.name + '._new_from_handle(' + argname + ')'
+            if arg.typename == 'string':
+                return argname + '.decode("utf-8")'
             return argname
 
         if not self.ret_arg or not self.ret_arg.python:
