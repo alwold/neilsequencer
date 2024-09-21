@@ -232,7 +232,7 @@ class NeilPlayer(Player, PropertyEventHandler):
         for pluginloader in self.get_pluginloader_list():
             if is_streamer(pluginloader):
                 uri = pluginloader.get_uri()
-                for j in xrange(pluginloader.get_stream_format_count()):
+                for j in range(pluginloader.get_stream_format_count()):
                     ext = '.' + pluginloader.get_stream_format_ext(j)
                     if ext in self.__stream_ext_uri_mappings:
                         print >> sys.stderr, "Found another mapping for " + ext + "! Skipping " + uri
@@ -490,7 +490,7 @@ class NeilPlayer(Player, PropertyEventHandler):
             aname = a[0].get_pattern_name(a[1])
             bname = b[0].get_pattern_name(b[1])
             return cmp(aname.lower(), bname.lower())
-        patterns = sorted([(plugin, i) for i in xrange(plugin.get_pattern_count())], cmp_func)
+        patterns = sorted([(plugin, i) for i in range(plugin.get_pattern_count())], cmp_func)
         if not patterns:
             return
         if direction == -1:
@@ -584,7 +584,7 @@ class NeilPlayer(Player, PropertyEventHandler):
         """
         Returns a list of sequences
         """
-        return [self.get_sequence(i) for i in xrange(self.get_sequence_track_count())]
+        return [self.get_sequence(i) for i in range(self.get_sequence_track_count())]
 
     def get_current_sequencer(self):
         return self
@@ -691,7 +691,7 @@ class NeilPlayer(Player, PropertyEventHandler):
                 # if we have a context plugin, prepend connections
                 inplugs = []
                 # first, record all connections
-                for index in xrange(plugin.get_input_connection_count()):
+                for index in range(plugin.get_input_connection_count()):
                     if plugin.get_input_connection_type(index) != zzub.zzub_connection_type_audio:
                         continue
                     input = plugin.get_input_connection_plugin(index)
@@ -741,7 +741,7 @@ class NeilPlayer(Player, PropertyEventHandler):
         inplugs = []
         outplugs = []
         # record all input connections
-        for index in xrange(plugin.get_input_connection_count()):
+        for index in range(plugin.get_input_connection_count()):
             if plugin.get_input_connection_type(index) != zzub.zzub_connection_type_audio:
                 continue
             input = plugin.get_input_connection_plugin(index)
@@ -749,7 +749,7 @@ class NeilPlayer(Player, PropertyEventHandler):
             pan = plugin.get_parameter_value(zzub.zzub_parameter_group_connection, index, 1)
             inplugs.append((input, amp, pan))
         # record all output connections
-        for index in xrange(plugin.get_output_connection_count()):
+        for index in range(plugin.get_output_connection_count()):
             if plugin.get_output_connection_type(index) != zzub.zzub_connection_type_audio:
                 continue
             output = plugin.get_output_connection_plugin(index)

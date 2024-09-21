@@ -1182,7 +1182,7 @@ class IteratorFunction(zzubIDLObject):
 	def write_py_method(self, parent, f):
 		print('\tdef ' + self.name + '(self):', file=f)
 		self.write_py_docstr(f, 2)
-		print('\t\tfor index in xrange(self.' + self.get_count_func + '()):', file=f)
+		print('\t\tfor index in range(self.' + self.get_count_func + '()):', file=f)
 		print('\t\t\tyield self.' + self.get_item_func + '(index)', file=f)
 			
 		print('\t', file=f)
