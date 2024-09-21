@@ -24,9 +24,8 @@ A view that allows browsing available extension interfaces and documentation.
 This module can also be executed standalone.
 """
 
-import gtk
+from gi.repository import Gtk
 import gobject
-gobject.threads_init()
 import os
 import inspect
 
@@ -35,35 +34,35 @@ import neil.utils as utils
 
 import neil.contextlog as contextlog
 
-import pango
+from gi.repository import Pango
 import fnmatch
 
 MARGIN = 6
 
-VIEW_CLASS = gtk.TextView
-BUFFER_CLASS = gtk.TextBuffer
+VIEW_CLASS = Gtk.TextView
+BUFFER_CLASS = Gtk.TextBuffer
 
-import thread
+#import thread
 import time
 import code
 
-class PythonConsoleDialog(gtk.Dialog):
+class PythonConsoleDialog(Gtk.Dialog):
 	__neil__ = dict(
 		id = 'neil.pythonconsole.dialog',
 		singleton = True,
 	)
 	
 	def __init__(self, hide_on_delete=True):
-		gtk.Dialog.__init__(self,
+		Gtk.Dialog.__init__(self,
 			"Python Console")
 		if hide_on_delete:
 			self.connect('delete-event', self.hide_on_delete)
 		self.resize(600,500)
-		vpack = gtk.VBox()
-		hpack = gtk.HBox()
-		self.shell = gtk.MenuBar()
-		toolitem = gtk.MenuItem("Tools")
-		self.toolmenu = gtk.Menu()
+		vpack = Gtk.VBox()
+		hpack = Gtk.HBox()
+		self.shell = Gtk.MenuBar()
+		toolitem = Gtk.MenuItem("Tools")
+		self.toolmenu = Gtk.Menu()
 		toolitem.set_submenu(self.toolmenu)
 		self.shell.append(toolitem)
 		self.locals = {}
@@ -99,10 +98,10 @@ class PythonConsoleDialog(gtk.Dialog):
 		# "ProFontWindows 9"
 		view.modify_font(pango.FontDescription(cfg.get_pattern_font('Monospace')))
 		view.set_editable(False)
-		view.set_wrap_mode(gtk.WRAP_WORD)
+		view.set_wrap_mode(Gtk.WRAP_WORD)
 		self.consoleview = view
 		self.buffer = buffer
-		self.entry = gtk.combo_box_entry_new_text()
+		self.entry = Gtk.combo_box_entry_new_text()
 		self.entry.child.modify_font(pango.FontDescription(cfg.get_pattern_font('Monospace')))
 		renderer = self.entry.get_cells()[0]
 		renderer.set_property('font-desc', pango.FontDescription(cfg.get_pattern_font('Monospace')))
@@ -110,9 +109,9 @@ class PythonConsoleDialog(gtk.Dialog):
 		self.entry.child.connect('activate', self.on_entry_activate)
 		self.textmark = self.buffer.create_mark(None, self.buffer.get_end_iter(), False)
 
-		scrollwin = gtk.ScrolledWindow()
-		scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-		scrollwin.set_shadow_type(gtk.SHADOW_IN)
+		scrollwin = Gtk.ScrolledWindow()
+		scrollwin.set_policy(Gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		scrollwin.set_shadow_type(Gtk.SHADOW_IN)
 		scrollwin.add(self.consoleview)
 		
 		vpack.pack_start(self.shell, False)
@@ -131,7 +130,7 @@ class PythonConsoleDialog(gtk.Dialog):
 	def add_tool(self, cmd, name = None, add_to_config=True):
 		if not name:
 			name = cmd
-		item = gtk.MenuItem(name)
+		item = Gtk.MenuItem(name)
 		item.connect('activate', self.exec_tool, cmd)
 		item.show()
 		self.toolmenu.append(item)
@@ -144,11 +143,11 @@ class PythonConsoleDialog(gtk.Dialog):
 		
 	def list_categories(self):
 		for category in com.categories:
-			print category
+			print(category)
 		
 	def list_factories(self):
 		for factory,item in com.factories.iteritems():
-			print factory,'=',item['classobj']
+			print(factory,'=',item['classobj'])
 			
 	def list_plugins(self, pattern='*'):
 		uris = []
@@ -169,7 +168,7 @@ class PythonConsoleDialog(gtk.Dialog):
 		anchor = self.buffer.create_child_anchor(self.buffer.get_end_iter())
 		self.consoleview.add_child_at_anchor(widget, anchor)
 		widget.show_all()
-		print
+		print()
 		
 	def push_text(self, text):
 		if self.compiler.push(text):
@@ -177,7 +176,7 @@ class PythonConsoleDialog(gtk.Dialog):
 			self.entry.child.select_region(99,-1)
 		
 	def command(self, text):
-		print '>>> ' + text
+		print('>>> ' + text)
 		gobject.timeout_add(50, self.push_text, text)
 		
 	def on_entry_activate(self, widget):
@@ -213,7 +212,7 @@ class PythonConsoleMenuItem:
 	
 	def __init__(self, menu):
 		# create a menu item
-		item = gtk.MenuItem(label="Show _Python Console")
+		item = Gtk.MenuItem(label="Show _Python Console")
 		# connect the menu item to our handler
 		item.connect('activate', self.on_menuitem_activate)
 		# append the item to the menu
@@ -236,6 +235,6 @@ if __name__ == '__main__': # extension mode
 	com.load_packages()
 	# running standalone
 	browser = com.get('neil.pythonconsole.dialog', False)
-	browser.connect('destroy', lambda widget: gtk.main_quit())
+	browser.connect('destroy', lambda widget: Gtk.main_quit())
 	browser.show_all()
-	gtk.main()
+	Gtk.main()

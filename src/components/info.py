@@ -22,15 +22,15 @@
 Provides an info view which allows to enter text.
 """
 
-import gtk
-import pango
+from gi.repository import Gtk
+from gi.repository import Pango
 import neil.common as common
 from neil.utils import add_scrollbars
 from neil.common import MARGIN, MARGIN0, MARGIN2, MARGIN3
 import neil.com as com
 
 
-class InfoPanel(gtk.VBox):
+class InfoPanel(Gtk.VBox):
     """
     Contains the info view.
     """
@@ -54,7 +54,7 @@ class InfoPanel(gtk.VBox):
         """
         Initializer.
         """
-        gtk.VBox.__init__(self, False, MARGIN)
+        Gtk.VBox.__init__(self, False, MARGIN)
         self.set_border_width(MARGIN)
         self.view = InfoView()
         self.pack_start(add_scrollbars(self.view))
@@ -75,7 +75,7 @@ class InfoPanel(gtk.VBox):
         self.view.update()
 
 
-class InfoView(gtk.TextView):
+class InfoView(Gtk.TextView):
     """
     Allows to enter and view text saved with the module.
     """
@@ -84,8 +84,8 @@ class InfoView(gtk.TextView):
         """
         Initializer.
         """
-        gtk.TextView.__init__(self)
-        self.set_wrap_mode(gtk.WRAP_WORD)
+        Gtk.TextView.__init__(self)
+        self.set_wrap_mode(Gtk.WRAP_WORD)
         self.get_buffer().connect('changed', self.on_edit)
         self.modify_font(pango.FontDescription('monospace 8'))
 
