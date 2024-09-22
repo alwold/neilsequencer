@@ -1,6 +1,7 @@
 from traceback import format_exception, print_exc as traceback_print_exc
 import sys
 from gi.repository import Gtk
+from gi.repository import GObject
 
 Parent = None
 
@@ -45,8 +46,8 @@ def error(parent, msg, msg2=None, details=None, offer_quit=False):
                 raise SystemExit
 
         def quit_on_cancel(dlg, response_id):
-            if response_id == Gtk.Response.REJECT:
-                gobject.timeout_add(1, delayed_quit)
+            if response_id == Gtk.ResponseType.REJECT:
+                GObject.timeout_add(1, delayed_quit)
         dialog.connect('response', quit_on_cancel)
     response = dialog.run()
     dialog.destroy()

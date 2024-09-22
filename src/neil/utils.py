@@ -721,7 +721,7 @@ def new_stock_image_button(stockid, tooltip=None):
         Creates a button with a stock image.
         """
         image = Gtk.Image()
-        image.set_from_stock(stockid, Gtk.ICON_SIZE_BUTTON)
+        image.set_from_stock(stockid, Gtk.IconSize.BUTTON)
         button = Gtk.Button()
         button.set_image(image)
         button.set_tooltip_text(tooltip)
@@ -765,7 +765,7 @@ def new_theme_image_toggle_button(name, tooltip=None, tooltips_object=None):
         """
         Creates a toggle button with a default icon theme image.
         """
-        image = new_theme_image(name,gtk.ICON_SIZE_BUTTON)
+        image = new_theme_image(name,Gtk.IconSize.BUTTON)
         button = Gtk.ToggleButton()
         if tooltips_object:
                 tooltips_object.set_tip(button, tooltip)
@@ -847,12 +847,12 @@ def format_filesize(size):
                 return "%i bytes" % size
 
 def set_clipboard_text(data):
-        clipboard = gtk.clipboard_get()
+        clipboard = Gtk.clipboard_get()
         clipboard.set_text(data, len(data))
         clipboard.store()
 
 def get_clipboard_text():
-        clipboard = gtk.clipboard_get()
+        clipboard = Gtk.clipboard_get()
         return clipboard.wait_for_text()
 
 def diff(oldlist, newlist):

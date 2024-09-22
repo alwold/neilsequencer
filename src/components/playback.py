@@ -23,6 +23,7 @@ Provides dialog class for cpu monitor.
 """
 
 from gi.repository import Gtk
+from gi.repository import GObject
 from neil.utils import prepstr, add_scrollbars
 import neil.utils as utils, os, stat
 import neil.common as common
@@ -57,22 +58,22 @@ class PlaybackInfo(Gtk.Dialog):
         """
         Initializer.
         """
-        gtk.Dialog.__init__(self)
+        Gtk.Dialog.__init__(self)
         self.set_title("Playback")
-        sg1 = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        sg2 = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        sg1 = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
+        sg2 = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
         def add_row(name):
-            import pango
-            c1 = gtk.Label()
-            c1.modify_font(pango.FontDescription("Monospace 10"))
+            from gi.repository import Pango
+            c1 = Gtk.Label()
+            c1.modify_font(Pango.FontDescription("Monospace 10"))
             c1.set_markup("<b>%s</b>" % name)
             c1.set_alignment(1, 0.5)
-            c2 = gtk.Label()
-            c2.modify_font(pango.FontDescription("Monospace 10"))
+            c2 = Gtk.Label()
+            c2.modify_font(Pango.FontDescription("Monospace 10"))
             c2.set_alignment(1, 0.5)
-            hbox = gtk.HBox(False, MARGIN)
-            hbox.pack_start(c1, expand=False)
-            hbox.pack_start(c2, expand=False)
+            hbox = Gtk.HBox(False, MARGIN)
+            hbox.pack_start(c1, expand=False, fill=True, padding=0)
+            hbox.pack_start(c2, expand=False, fill=True, padding=0)
             sg1.add_widget(c1)
             sg2.add_widget(c2)
             self.vbox.add(hbox)
@@ -84,7 +85,7 @@ class PlaybackInfo(Gtk.Dialog):
         self.update_label()
         self.set_deletable(False)
         self.set_resizable(False)
-        gobject.timeout_add(100, self.on_timer)
+        GObject.timeout_add(100, self.on_timer)
 
     def on_timer(self):
         """

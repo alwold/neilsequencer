@@ -22,7 +22,8 @@ if __name__ == '__main__':
 	import os
 	os.environ['NEIL_BASE_PATH'] = '/home/paniq/devel/neil'
 import neil.com as com
-import gtk
+from gi.repository import Gtk
+from gi.repository import Gdk
 
 import glob, os
 from neil.utils import filepath, get_root_folder_path, iconpath, imagepath
@@ -55,12 +56,12 @@ class IconLibrary:
 	
 	def __init__(self):
 		sizenames = [
-			gtk.ICON_SIZE_MENU,
-			gtk.ICON_SIZE_SMALL_TOOLBAR,
-			gtk.ICON_SIZE_LARGE_TOOLBAR,
-			gtk.ICON_SIZE_BUTTON,
-			gtk.ICON_SIZE_DND,
-			gtk.ICON_SIZE_DIALOG,
+			Gtk.IconSize.MENU,
+			Gtk.IconSize.SMALL_TOOLBAR,
+			Gtk.IconSize.LARGE_TOOLBAR,
+			Gtk.IconSize.BUTTON,
+			Gtk.IconSize.DND,
+			Gtk.IconSize.DIALOG,
 		]
 		icons = {}
 		for searchpath in ICON_SEARCHPATH:
@@ -68,14 +69,14 @@ class IconLibrary:
 				mask = searchpath + '/*' + ext
 				for filename in glob.glob(mask):
 					key = os.path.splitext(os.path.basename(filename))[0]
-					pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
+					pixbuf = Gdk.pixbuf_new_from_file(filename)
 					w,h = pixbuf.get_width(),pixbuf.get_height()
 					iconsizes = icons.get(key, {})
 					iconsizes[(w,h)] = pixbuf
 					icons[key] = iconsizes
 		for key,iconsizes in icons.iteritems():
 			for size in sizenames:
-				w,h = gtk.icon_size_lookup(size)
+				w,h = Gtk.icon_size_lookup(size)
 				if (w,h) in iconsizes:
 					pixbuf = iconsizes[(w,h)]
 				else:
@@ -89,14 +90,14 @@ class IconLibrary:
 							bestw = d
 							pixbuf = icon
 				#print "new icon: %s (%r = %i,%i ~ %i,%i)" % (key,size,w,h,pixbuf.get_width(),pixbuf.get_height())
-				gtk.icon_theme_add_builtin_icon(key, size, pixbuf)
+				Gtk.icon_theme_add_builtin_icon(key, size, pixbuf)
 					
 	def register_single(self, stockid, label, key=''):
 		if key:
-			key = gtk.gdk.keyval_from_name(key)
+			key = Gdk.keyval_from_name(key)
 		else:
 			key = 0
-		gtk.stock_add((
+		Gtk.stock_add((
 			(stockid, label, 0, key, 'neil'),
 		))
 
