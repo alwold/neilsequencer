@@ -30,6 +30,8 @@ if __name__ == '__main__':
 
 import neil.com as com
 from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import GObject
 from gi.repository import Pango
 
 from neil.utils import prepstr
@@ -69,29 +71,29 @@ class PatternDialog(Gtk.Dialog):
         """
         Initialization.
         """
-        gtk.Dialog.__init__(self,
+        Gtk.Dialog.__init__(self,
                 "Pattern Properties",
                 parent.get_toplevel(),
-                gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
                 None
         )
-        vbox = gtk.VBox(False, MARGIN)
+        vbox = Gtk.VBox(False, MARGIN)
         vbox.set_border_width(MARGIN)
-        self.btnok = self.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
-        self.btncancel = self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-        self.namelabel = gtk.Label("Name")
-        self.edtname = gtk.Entry()
-        self.lengthlabel = gtk.Label("Length")
-        self.lengthbox = gtk.combo_box_entry_new_text()
-        self.chkswitch = gtk.CheckButton('Switch to new pattern')
+        self.btnok = self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        self.btncancel = self.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
+        self.namelabel = Gtk.Label("Name")
+        self.edtname = Gtk.Entry()
+        self.lengthlabel = Gtk.Label("Length")
+        self.lengthbox = Gtk.combo_box_entry_new_text()
+        self.chkswitch = Gtk.CheckButton('Switch to new pattern')
         for size in patternsizes:
             self.lengthbox.append_text(str(size))
-        self.rowslabel = gtk.Label("Rows")
-        sgroup1 = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        sgroup2 = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        self.rowslabel = Gtk.Label("Rows")
+        sgroup1 = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
+        sgroup2 = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
 
         def add_row(c1, c2):
-            row = gtk.HBox(False, MARGIN)
+            row = Gtk.HBox(False, MARGIN)
             c1.set_alignment(1, 0.5)
             row.pack_start(c1, expand=False)
             row.pack_start(c2)
@@ -107,7 +109,7 @@ class PatternDialog(Gtk.Dialog):
         self.show_all()
 
     def on_enter(self, widget):
-        self.response(gtk.RESPONSE_OK)
+        self.response(Gtk.RESPONSE_OK)
 
 # pattern dialog modes
 DLGMODE_NEW = 0
@@ -151,7 +153,7 @@ def show_pattern_dialog(parent, name, length, dlgmode, letswitch=True):
     response = dlg.run()
     dlg.hide_all()
     result = None
-    if response == gtk.RESPONSE_OK:
+    if response == Gtk.RESPONSE_OK:
         switch = int(dlg.chkswitch.get_active())
         config.get_config().set_default_int('SwitchToNewPattern', switch)
         length = int(dlg.lengthbox.child.get_text())
@@ -172,12 +174,12 @@ class PatternToolBar(Gtk.HBox):
         Initialization.
         """
         player = com.get('neil.core.player')
-        gtk.HBox.__init__(self, False, MARGIN)
+        Gtk.HBox.__init__(self, False, MARGIN)
         self.pattern_view = pattern_view
         self.set_border_width(MARGIN)
         eventbus = com.get('neil.core.eventbus')
 
-        self.pluginselect = gtk.combo_box_new_text()
+        self.pluginselect = Gtk.ComboBoxText()
         self.pluginselect.set_size_request(100, 0)
         self.pluginselect_handler =\
             self.pluginselect.connect('changed', self.set_plugin_sel)
@@ -187,9 +189,9 @@ class PatternToolBar(Gtk.HBox):
         eventbus.document_loaded += self.pluginselect_update
         eventbus.active_plugins_changed += self.pluginselect_update
 
-        self.patternlabel = gtk.Label()
+        self.patternlabel = Gtk.Label()
         self.patternlabel.set_text_with_mnemonic("_Patt")
-        self.patternselect = gtk.combo_box_new_text()
+        self.patternselect = Gtk.ComboBoxText()
         self.patternselect.set_tooltip_text("The pattern to edit")
         self.patternselect.set_size_request(100, 0)
         self.patternselect_handler =\
@@ -202,9 +204,9 @@ class PatternToolBar(Gtk.HBox):
         self.patternlabel.set_mnemonic_widget(self.patternselect)
 
         # Wave selector combo box.
-        self.wavelabel = gtk.Label()
+        self.wavelabel = Gtk.Label()
         self.wavelabel.set_text_with_mnemonic("_Wave")
-        self.waveselect = gtk.combo_box_new_text()
+        self.waveselect = Gtk.ComboBoxText()
         self.waveselect.set_tooltip_text("Which wave to use")
         self.waveselect.set_size_request(100, 0)
         self.waveselect_handler =\
@@ -217,9 +219,9 @@ class PatternToolBar(Gtk.HBox):
         self.wavelabel.set_mnemonic_widget(self.waveselect)
 
         # An octave selector combo box.
-        self.octavelabel = gtk.Label()
+        self.octavelabel = Gtk.Label()
         self.octavelabel.set_text_with_mnemonic("_Oct")
-        self.octaveselect = gtk.combo_box_new_text()
+        self.octaveselect = Gtk.ComboBoxText()
         self.octaveselect.set_tooltip_text("Choose which octave you can enter notes from")
         self.octavelabel.set_mnemonic_widget(self.octaveselect)
         for octave in range(1, 9):
@@ -233,34 +235,34 @@ class PatternToolBar(Gtk.HBox):
         eventbus.octave_changed += self.octave_update
 
         # An edit step selector combo box.
-        self.edit_step_label = gtk.Label()
+        self.edit_step_label = Gtk.Label()
         self.edit_step_label.set_text_with_mnemonic("_Step")
-        self.edit_step_box = gtk.combo_box_new_text()
+        self.edit_step_box = Gtk.ComboBoxText()
         self.edit_step_box.set_tooltip_text("Set how many rows the cursor will jump when editting")
         for step in range(12):
             self.edit_step_box.append_text(str(step + 1))
         self.edit_step_box.set_active(0)
         self.edit_step_box.connect('changed', self.edit_step_changed)
 
-        self.playnotes = gtk.CheckButton(label="_Play")
+        self.playnotes = Gtk.CheckButton(label="_Play")
         self.playnotes.set_active(True)
         self.playnotes.set_tooltip_text("If checked, the notes will be played as you enter them in the editor")
         self.playnotes.connect('clicked', self.on_playnotes_click)
 
-        self.btnhelp = new_stock_image_button(gtk.STOCK_HELP)
+        self.btnhelp = new_stock_image_button(Gtk.STOCK_HELP)
         self.btnhelp.set_tooltip_text("Machine help page")
         self.btnhelp.connect('clicked', self.on_button_help)
 
         self.pack_start(self.pluginselect, expand=False)
         self.pack_start(self.patternselect, expand=False)
         self.pack_start(self.waveselect, expand=False)
-        self.pack_start(gtk.VSeparator(), expand=False)
+        self.pack_start(Gtk.VSeparator(), expand=False)
         self.pack_start(self.octavelabel, expand=False)
         self.pack_start(self.octaveselect, expand=False)
         self.pack_start(self.edit_step_label, expand=False)
         self.pack_start(self.edit_step_box, expand=False)
         self.pack_start(self.playnotes, expand=False)
-        self.pack_start(gtk.VSeparator(), expand=False)
+        self.pack_start(Gtk.VSeparator(), expand=False)
         self.pack_start(self.btnhelp, expand=False)
 
     def on_button_help(self, *args):
@@ -269,7 +271,7 @@ class PatternToolBar(Gtk.HBox):
             return
         name = filenameify(player.active_plugins[0].get_pluginloader().get_name())
         if not show_machine_manual(name):
-            info = gtk.MessageDialog(self.get_toplevel(), flags=0, type=gtk.MESSAGE_INFO, buttons=gtk.BUTTONS_OK, message_format="Sorry, there's no help for this plugin yet")
+            info = Gtk.MessageDialog(self.get_toplevel(), flags=0, type=Gtk.MESSAGE_INFO, buttons=Gtk.BUTTONS_OK, message_format="Sorry, there's no help for this plugin yet")
             info.run()
             info.destroy()
 
@@ -434,42 +436,42 @@ class PatternPanel(Gtk.VBox):
         """
         Initialization.
         """
-        gtk.VBox.__init__(self)
-        self.statusbar = gtk.HBox(False, MARGIN)
+        Gtk.VBox.__init__(self)
+        self.statusbar = Gtk.HBox(False, MARGIN)
         self.statusbar.set_border_width(MARGIN0)
-        vscroll = gtk.VScrollbar()
-        hscroll = gtk.HScrollbar()
+        vscroll = Gtk.VScrollbar()
+        hscroll = Gtk.HScrollbar()
         self.statuslabels = []
 
-        label = gtk.Label()
+        label = Gtk.Label()
         self.statuslabels.append(label)
-        self.statusbar.pack_start(label, expand=False)
-        self.statusbar.pack_start(gtk.VSeparator(), expand=False)
+        self.statusbar.pack_start(label, False, True, 0)
+        self.statusbar.pack_start(Gtk.VSeparator(), False, True, 0)
 
-        label = gtk.Label()
+        label = Gtk.Label()
         self.statuslabels.append(label)
-        self.statusbar.pack_start(label, expand=False)
-        self.statusbar.pack_start(gtk.VSeparator(), expand=False)
+        self.statusbar.pack_start(label, False, True, 0)
+        self.statusbar.pack_start(Gtk.VSeparator(), False, True, 0)
 
-        label = gtk.Label()
+        label = Gtk.Label()
         self.statuslabels.append(label)
-        self.statusbar.pack_start(label, expand=False)
-        self.statusbar.pack_start(gtk.VSeparator(), expand=False)
+        self.statusbar.pack_start(label, False, True, 0)
+        self.statusbar.pack_start(Gtk.VSeparator(), False, True, 0)
 
-        label = gtk.Label()
+        label = Gtk.Label()
         self.statuslabels.append(label)
-        self.statusbar.pack_end(label, expand=False)
+        self.statusbar.pack_end(label, False, True, 0)
 
         self.view = PatternView(self, hscroll, vscroll)
-        self.viewport = gtk.Viewport()
+        self.viewport = Gtk.Viewport()
         self.viewport.add(self.view)
         self.toolbar = PatternToolBar(self.view)
         self.view.statusbar = self.statusbar
         self.pack_start(self.toolbar, expand=False)
-        scrollwin = gtk.Table(2, 2)
-        scrollwin.attach(self.viewport, 0, 1, 0, 1, gtk.FILL | gtk.EXPAND, gtk.FILL | gtk.EXPAND)
-        scrollwin.attach(vscroll, 1, 2, 0, 1, 0, gtk.FILL)
-        scrollwin.attach(hscroll, 0, 1, 1, 2, gtk.FILL, 0)
+        scrollwin = Gtk.Table(2, 2)
+        scrollwin.attach(self.viewport, 0, 1, 0, 1, Gtk.FILL | Gtk.EXPAND, Gtk.FILL | Gtk.EXPAND)
+        scrollwin.attach(vscroll, 1, 2, 0, 1, 0, Gtk.FILL)
+        scrollwin.attach(hscroll, 0, 1, 1, 2, Gtk.FILL, 0)
         self.pack_start(scrollwin)
         self.pack_end(self.statusbar, expand=False)
 
@@ -676,12 +678,12 @@ class PatternView(Gtk.DrawingArea):
         self.factors = None
         self.play_notes = True
         self.current_plugin = ""
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
         # "Bitstream Vera Sans Mono"
         self.update_font()
         # implements horizontal scrolling
         self.start_col = 0
-        self.add_events(gtk.gdk.ALL_EVENTS_MASK)
+        self.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
         self.set_property('can-focus', True)
 
         self.accel_map = AcceleratorMap()
@@ -733,7 +735,7 @@ class PatternView(Gtk.DrawingArea):
         self.connect('button-release-event', self.on_button_up)
         self.connect('motion-notify-event', self.on_motion)
         self.connect('scroll-event', self.on_mousewheel)
-        gobject.timeout_add(100, self.update_position)
+        GObject.timeout_add(100, self.update_position)
         self.hscroll.connect('change-value', self.on_hscroll_window)
         self.vscroll.connect('change-value', self.on_vscroll_window)
         eventbus = com.get('neil.core.eventbus')
@@ -777,13 +779,13 @@ class PatternView(Gtk.DrawingArea):
 
     def update_font(self):
         pctx = self.get_pango_context()
-        desc = pango.FontDescription(config.get_config().get_pattern_font())  # .get_font_description()
+        desc = Pango.FontDescription(config.get_config().get_pattern_font())  # .get_font_description()
         pctx.set_font_description(desc)
         self.fontdesc = desc
         self.font = pctx.load_font(desc)
         metrics = self.font.get_metrics(None)
-        fh = (metrics.get_ascent() + metrics.get_descent()) / pango.SCALE
-        fw = metrics.get_approximate_digit_width() / pango.SCALE
+        fh = (metrics.get_ascent() + metrics.get_descent()) / Pango.SCALE
+        fw = metrics.get_approximate_digit_width() / Pango.SCALE
         self.row_height = fh  # row height
         self.top_margin = fh  # top margin
         self.column_width = fw  # column width
@@ -1624,16 +1626,16 @@ class PatternView(Gtk.DrawingArea):
         Callback that responds to mousewheeling in pattern view.
         """
         mask = event.state
-        if mask & gtk.gdk.CONTROL_MASK:
-            if event.direction == gtk.gdk.SCROLL_UP:
+        if mask & Gtk.gdk.CONTROL_MASK:
+            if event.direction == Gtk.gdk.SCROLL_UP:
                 self.change_resolution(True)
-            elif event.direction == gtk.gdk.SCROLL_DOWN:
+            elif event.direction == Gtk.gdk.SCROLL_DOWN:
                 self.change_resolution(False)
         else:
-            if event.direction == gtk.gdk.SCROLL_UP:
+            if event.direction == Gtk.gdk.SCROLL_UP:
                 self.move_up(self.edit_step)
                 self.adjust_scrollbars()
-            elif event.direction == gtk.gdk.SCROLL_DOWN:
+            elif event.direction == Gtk.gdk.SCROLL_DOWN:
                 self.move_down(self.edit_step)
                 self.adjust_scrollbars()
 
@@ -1651,7 +1653,7 @@ class PatternView(Gtk.DrawingArea):
         if event.button == 1:
             x, y = int(event.x), int(event.y)
             row, group, track, index, subindex = self.pos_to_pattern((x, y))
-            if event.type == gtk.gdk._2BUTTON_PRESS:
+            if event.type == Gtk.gdk._2BUTTON_PRESS:
                 self.selection.mode = SEL_COLUMN
                 self.selection.begin = 0
                 self.selection.end = self.row_count
@@ -1900,11 +1902,11 @@ class PatternView(Gtk.DrawingArea):
         mask = event.state
         kv = event.keyval
         # convert keypad numbers
-        if gtk.gdk.keyval_from_name('KP_0') <= kv <= \
-               gtk.gdk.keyval_from_name('KP_9'):
-            kv = kv - gtk.gdk.keyval_from_name('KP_0') + \
-                 gtk.gdk.keyval_from_name('0')
-        k = gtk.gdk.keyval_name(kv)
+        if Gtk.gdk.keyval_from_name('KP_0') <= kv <= \
+               Gtk.gdk.keyval_from_name('KP_9'):
+            kv = kv - Gtk.gdk.keyval_from_name('KP_0') + \
+                 Gtk.gdk.keyval_from_name('0')
+        k = Gtk.gdk.keyval_name(kv)
         player = com.get('neil.core.player')
         eventbus = com.get('neil.core.eventbus')
         # shiftdown = mask & gtk.gdk.SHIFT_MASK
@@ -1914,7 +1916,7 @@ class PatternView(Gtk.DrawingArea):
             pass
         elif k == 'greater':
             player.activate_wave(1)
-        elif mask & gtk.gdk.SHIFT_MASK and k == 'Down':
+        elif mask & Gtk.gdk.SHIFT_MASK and k == 'Down':
             if not self.selection:
                 self.selection = self.Selection()
             if self.shiftselect == None:
@@ -1928,7 +1930,7 @@ class PatternView(Gtk.DrawingArea):
                 self.selection.end = self.row + 1
             self.adjust_selection()
             self.redraw()
-        elif mask & gtk.gdk.SHIFT_MASK and k == 'Up':
+        elif mask & Gtk.gdk.SHIFT_MASK and k == 'Up':
             if not self.selection:
                 self.selection = self.Selection()
             if self.shiftselect == None:
@@ -1942,7 +1944,7 @@ class PatternView(Gtk.DrawingArea):
                 self.selection.end = self.row + 1
             self.adjust_selection()
             self.redraw()
-        elif mask & gtk.gdk.SHIFT_MASK and (k == 'Right' or k == 'Left'):
+        elif mask & Gtk.gdk.SHIFT_MASK and (k == 'Right' or k == 'Left'):
             if not self.selection:
                 self.selection = self.Selection()
             if self.shiftselect == None:
@@ -1952,7 +1954,7 @@ class PatternView(Gtk.DrawingArea):
             self.selection.mode = (self.selection.mode + 1) % 4
             self.adjust_selection()
             self.redraw()
-        elif (mask & gtk.gdk.CONTROL_MASK):
+        elif (mask & Gtk.gdk.CONTROL_MASK):
             if k == 'b':
                 if not self.selection:
                     self.selection = self.Selection()
@@ -2210,7 +2212,7 @@ class PatternView(Gtk.DrawingArea):
         player = com.get('neil.core.player')
         if config.get_config().get_pattern_noteoff() == True:
             kv = event.keyval
-            k = gtk.gdk.keyval_name(kv)
+            k = Gtk.gdk.keyval_name(kv)
             if k == 'Shift_L' or k == 'Shift_R':
                 self.shiftselect = None
             if self.plugin:
@@ -2446,7 +2448,7 @@ class PatternView(Gtk.DrawingArea):
         cm = gc.get_colormap()
         w, h = self.get_client_size()
         bbrush = cm.alloc_color('#ffffff')
-        gc.set_function(gtk.gdk.XOR)
+        gc.set_function(Gtk.gdk.XOR)
         gc.set_foreground(bbrush)
         gc.set_background(bbrush)
         self.xor_gc = gc
@@ -2834,7 +2836,7 @@ class PatternView(Gtk.DrawingArea):
         Overriding a L{Canvas} method that paints onto an offscreen buffer.
         Draws the pattern view graphics.
         """
-        layout = pango.Layout(self.get_pango_context())
+        layout = Pango.Layout(self.get_pango_context())
         layout.set_font_description(self.fontdesc)
         layout.set_width(-1)
         self.draw_background(ctx)

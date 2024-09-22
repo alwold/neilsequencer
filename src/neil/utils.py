@@ -709,9 +709,9 @@ def new_image_button(path, tooltip, width=20, height=20):
         """
         Creates a button with a single image.
         """
-        image = gtk.Image()
-        image.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file_at_size(path, width, height))
-        button = gtk.Button()
+        image = Gtk.Image()
+        image.set_from_pixbuf(Gtk.gdk.pixbuf_new_from_file_at_size(path, width, height))
+        button = Gtk.Button()
         button.set_tooltip_text(tooltip)
         button.set_image(image)
         return button
@@ -720,9 +720,9 @@ def new_stock_image_button(stockid, tooltip=None):
         """
         Creates a button with a stock image.
         """
-        image = gtk.Image()
-        image.set_from_stock(stockid, gtk.ICON_SIZE_BUTTON)
-        button = gtk.Button()
+        image = Gtk.Image()
+        image.set_from_stock(stockid, Gtk.ICON_SIZE_BUTTON)
+        button = Gtk.Button()
         button.set_image(image)
         button.set_tooltip_text(tooltip)
         return button
@@ -731,9 +731,9 @@ def new_stock_image_toggle_button(stockid, tooltip=None, tooltips_object=None):
         """
         Creates a toggle button with a stock image.
         """
-        image = gtk.Image()
-        image.set_from_stock(stockid, gtk.ICON_SIZE_BUTTON)
-        button = gtk.ToggleButton()
+        image = Gtk.Image()
+        image.set_from_stock(stockid, Gtk.IconSize.BUTTON)
+        button = Gtk.ToggleButton()
         button.set_image(image)
         if tooltips_object:
                 tooltips_object.set_tip(button, tooltip)
@@ -745,17 +745,17 @@ def new_image_toggle_button(path, tooltip=None, width=20, height=20):
         """
         Creates a toggle button with a single image.
         """
-        image = gtk.Image()
-        image.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file_at_size(path, width, height))
-        button = gtk.ToggleButton()
+        image = Gtk.Image()
+        image.set_from_pixbuf(Gtk.gdk.pixbuf_new_from_file_at_size(path, width, height))
+        button = Gtk.ToggleButton()
         if tooltip:
             button.set_tooltip_text(tooltip)
         button.set_image(image)
         return button
 
 def new_theme_image(name,size):
-        theme = gtk.icon_theme_get_default()
-        image = gtk.Image()
+        theme = Gtk.icon_theme_get_default()
+        image = Gtk.Image()
         if theme.has_icon(name):
                 pixbuf = theme.load_icon(name, size, 0)
                 image.set_from_pixbuf(pixbuf)
@@ -766,7 +766,7 @@ def new_theme_image_toggle_button(name, tooltip=None, tooltips_object=None):
         Creates a toggle button with a default icon theme image.
         """
         image = new_theme_image(name,gtk.ICON_SIZE_BUTTON)
-        button = gtk.ToggleButton()
+        button = Gtk.ToggleButton()
         if tooltips_object:
                 tooltips_object.set_tip(button, tooltip)
         elif tooltip:
@@ -790,10 +790,10 @@ def add_scrollbars(view):
         """
         adds scrollbars around a view
         """
-        scrollwin = gtk.ScrolledWindow()
-        scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        if isinstance(view, gtk.TreeView):
-                scrollwin.set_shadow_type(gtk.SHADOW_IN)
+        scrollwin = Gtk.ScrolledWindow()
+        scrollwin.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        if isinstance(view, Gtk.TreeView):
+                scrollwin.set_shadow_type(Gtk.SHADOW_IN)
                 scrollwin.add(view)
         else:
                 scrollwin.add_with_viewport(view)
@@ -803,10 +803,10 @@ def add_vscrollbar(view):
         """
         adds a vertical scrollbar to a view
         """
-        scrollwin = gtk.ScrolledWindow()
-        scrollwin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        if isinstance(view, gtk.TreeView):
-                scrollwin.set_shadow_type(gtk.SHADOW_IN)
+        scrollwin = Gtk.ScrolledWindow()
+        scrollwin.set_policy(Gtk.POLICY_NEVER, Gtk.POLICY_AUTOMATIC)
+        if isinstance(view, Gtk.TreeView):
+                scrollwin.set_shadow_type(Gtk.SHADOW_IN)
                 scrollwin.add(view)
         else:
                 scrollwin.add_with_viewport(view)
@@ -816,10 +816,10 @@ def add_hscrollbar(view):
         """
         adds a vertical scrollbar to a view
         """
-        scrollwin = gtk.ScrolledWindow()
-        scrollwin.set_policy(gtk.POLICY_ALWAYS, gtk.POLICY_NEVER)
-        if isinstance(view, gtk.TreeView):
-                scrollwin.set_shadow_type(gtk.SHADOW_IN)
+        scrollwin = Gtk.ScrolledWindow()
+        scrollwin.set_policy(Gtk.POLICY_ALWAYS, Gtk.POLICY_NEVER)
+        if isinstance(view, Gtk.TreeView):
+                scrollwin.set_shadow_type(Gtk.SHADOW_IN)
                 scrollwin.add(view)
         else:
                 scrollwin.add_with_viewport(view)
@@ -941,7 +941,7 @@ def make_submenu_item(submenu, name):
         return item
 
 def make_stock_menu_item(stockid, func, frame=None, shortcut=None, *args):
-        item = gtk.ImageMenuItem(stockid)
+        item = Gtk.ImageMenuItem(stockid)
         if frame and shortcut:
                 acc = com.get('neil.core.accelerators')
                 acc.add_accelerator(shortcut, item)
@@ -950,25 +950,25 @@ def make_stock_menu_item(stockid, func, frame=None, shortcut=None, *args):
         return item
 
 def make_stock_tool_item(stockid, func, *args):
-        item = gtk.ToolButton(stockid)
+        item = Gtk.ToolButton(stockid)
         if func:
                 item.connect('clicked', func, *args)
         return item
 
 def make_stock_toggle_item(stockid, func, *args):
-        item = gtk.ToggleToolButton(stockid)
+        item = Gtk.ToggleToolButton(stockid)
         if func:
                 item.connect('toggled', func, *args)
         return item
 
 def make_stock_radio_item(stockid, func, *args):
-        item = gtk.RadioToolButton(stock_id=stockid)
+        item = Gtk.RadioToolButton(stock_id=stockid)
         if func:
                 item.connect('toggled', func, *args)
         return item
 
 def make_menu_item(label, desc, func, *args):
-        item = gtk.MenuItem(label=label)
+        item = Gtk.MenuItem(label=label)
         if desc:
                 item.set_tooltip_text(desc)
         if func:
@@ -976,7 +976,7 @@ def make_menu_item(label, desc, func, *args):
         return item
 
 def make_check_item(label, desc, func, *args):
-        item = gtk.CheckMenuItem(label=label)
+        item = Gtk.CheckMenuItem(label=label)
         if desc:
                 item.set_tooltip_text(desc)
         if func:
@@ -984,7 +984,7 @@ def make_check_item(label, desc, func, *args):
         return item
 
 def make_radio_item(label, desc, func, *args):
-        item = gtk.RadioMenuItem(label=label)
+        item = Gtk.RadioMenuItem(label=label)
         if desc:
                 item.set_tooltip_text(desc)
         if func:
@@ -1001,11 +1001,11 @@ def camelcase_to_unixstyle(s):
 
 def test_view(classname):
         obj = com.get(classname)
-        if isinstance(obj, gtk.Window):
+        if isinstance(obj, Gtk.Window):
                 pass
-        elif isinstance(obj, gtk.Dialog):
+        elif isinstance(obj, Gtk.Dialog):
                 pass
-        elif isinstance(obj, gtk.Widget) and not obj.get_parent():
+        elif isinstance(obj, Gtk.Widget) and not obj.get_parent():
                 dlg = com.get('neil.test.dialog', embed=obj, destroy_on_close=False)
 
 def show_manual():
@@ -1067,41 +1067,41 @@ class ObjectHandlerGroup:
 
 class Menu(Gtk.Menu):
         def add_separator(self):
-                self.append(gtk.SeparatorMenuItem())
+                self.append(Gtk.SeparatorMenuItem())
 
         def add_submenu(self, label, submenu = None):
                 if not submenu:
                         submenu = Menu()
-                item = gtk.MenuItem(label=label)
+                item = Gtk.MenuItem(label=label)
                 item.set_submenu(submenu)
                 self.append(item)
                 return item, submenu
 
         def add_item(self, label, func, *args):
-                item = gtk.MenuItem(label=label)
+                item = Gtk.MenuItem(label=label)
                 item.connect('activate', func, *args)
                 self.append(item)
                 return item
 
         def add_item_no_underline(self, label, func, *args):
-                item = gtk.MenuItem(label=label, use_underline=False)
+                item = Gtk.MenuItem(label=label, use_underline=False)
                 item.connect('activate', func, *args)
                 self.append(item)
                 return item
 
         def add_check_item(self, label, toggled, func, *args):
-                item = gtk.CheckMenuItem(label=label)
+                item = Gtk.CheckMenuItem(label=label)
                 item.set_active(toggled)
                 item.connect('toggled', func, *args)
                 self.append(item)
                 return item
 
         def add_image_item(self, label, icon_or_path, func, *args):
-                item = gtk.ImageMenuItem(stock_id=label)
+                item = Gtk.ImageMenuItem(stock_id=label)
                 if isinstance(icon_or_path, basestring):
-                        image = gtk.Image()
-                        image.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file(icon_or_path))
-                elif isinstance(icon_or_path, gtk.Image):
+                        image = Gtk.Image()
+                        image.set_from_pixbuf(Gtk.gdk.pixbuf_new_from_file(icon_or_path))
+                elif isinstance(icon_or_path, Gtk.Image):
                         image = icon_or_path
                 item.set_image(image)
                 item.connect('activate', func, *args)
@@ -1118,7 +1118,7 @@ class Menu(Gtk.Menu):
                 else:
                         event_button = 0
                         event_time = 0
-                gtk.Menu.popup(self, None, None, None, event_button, event_time)
+                Gtk.Menu.popup(self, None, None, None, event_button, event_time)
 
 class PropertyEventHandler:
         def get_eventbus(self):
@@ -1197,8 +1197,8 @@ def generate_ui_methods(class_, memberlist):
                 generate_ui_method(class_, membername, kwargs)
 
 def refresh_gui():
-        while gtk.events_pending():
-                gtk.main_iteration_do(block=False)
+        while Gtk.events_pending():
+                Gtk.main_iteration_do(block=False)
 
 def synchronize_list(old_list, new_list, insert_entry_func=None, del_entry_func=None, swap_entry_func=None):
         """
@@ -1262,8 +1262,8 @@ class AcceleratorMap:
 
         def add_accelerator(self, shortcut, func, *args, **kargs):
                 # cleanup string by converting to values and back
-                km_key, km_mod = gtk.accelerator_parse(shortcut)
-                shortcut = gtk.accelerator_name(km_key, km_mod)
+                km_key, km_mod = Gtk.accelerator_parse(shortcut)
+                shortcut = Gtk.accelerator_name(km_key, km_mod)
                 ref = None
                 funcname = None
                 if hasattr(func, 'im_self'):
@@ -1280,8 +1280,8 @@ class AcceleratorMap:
                 if successful.
                 """
                 # remove numlock from the key modifiers
-                key_mod = event.state & (~gtk.gdk.MOD2_MASK)
-                name = gtk.accelerator_name(event.keyval, key_mod)
+                key_mod = event.state & (~Gtk.gdk.MOD2_MASK)
+                name = Gtk.accelerator_name(event.keyval, key_mod)
                 if name == None:
                         return False
                 for shortcut, (ref,funcname,args,kargs) in self.__keymap.iteritems():
@@ -1375,10 +1375,10 @@ class ImageToggleButton(Gtk.ToggleButton):
     GTK ToggleButton with Image 
     """
     def __init__(self, path, tooltip=None, width=20, height=20):
-        from gtk import ToggleButton, Image
-        self.image = gtk.Image()
-        self.image.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file_at_size(path, width, height))
-        gtk.ToggleButton.__init__(self)
+        from Gtk import ToggleButton, Image
+        self.image = Gtk.Image()
+        self.image.set_from_pixbuf(Gtk.gdk.pixbuf_new_from_file_at_size(path, width, height))
+        Gtk.ToggleButton.__init__(self)
         if tooltip:
             self.set_tooltip_text(tooltip)
         self.set_image(self.image)

@@ -23,6 +23,7 @@ Provides dialog class for hd recorder control.
 """
 
 from gi.repository import Gtk
+from gi.repository import GObject
 import neil.utils as utils, os, stat
 from neil.utils import new_stock_image_toggle_button, ObjectHandlerGroup
 import neil.common as common
@@ -55,40 +56,40 @@ class HDRecorderDialog(Gtk.Dialog):
 		"""
 		Initializer.
 		"""
-		gtk.Dialog.__init__(self, 
+		Gtk.Dialog.__init__(self, 
 			"Hard Disk Recorder")
 		self.connect('delete-event', self.hide_on_delete)
 		#self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
 		#self.set_size_request(250,-1)
 		self.set_resizable(False)
-		btnsaveas = gtk.Button(stock=gtk.STOCK_SAVE_AS)
+		btnsaveas = Gtk.Button(stock=Gtk.STOCK_SAVE_AS)
 		btnsaveas.connect("clicked", self.on_saveas)
-		textposition = gtk.Label("")
+		textposition = Gtk.Label("")
 		self.hgroup = ObjectHandlerGroup()
-		self.btnrecord = new_stock_image_toggle_button(gtk.STOCK_MEDIA_RECORD)
+		self.btnrecord = new_stock_image_toggle_button(Gtk.STOCK_MEDIA_RECORD)
 		self.hgroup.connect(self.btnrecord, 'clicked', self.on_toggle_record)
-		chkauto = gtk.CheckButton("_Auto start/stop")
+		chkauto = Gtk.CheckButton("_Auto start/stop")
 		chkauto.connect("toggled", self.on_autostartstop)
 		self.btnsaveas = btnsaveas
 		self.textposition = textposition
 		self.chkauto = chkauto
 		# 0.3: DEAD
 		#self.chkauto.set_active(self.master.get_auto_write())
-		sizer = gtk.VBox(False, MARGIN)		
-		sizer.pack_start(btnsaveas, expand=False)
-		sizer.pack_start(textposition, expand=False)
-		sizer2 = gtk.HBox(False,MARGIN)
-		sizer3 = gtk.HButtonBox()
+		sizer = Gtk.VBox(False, MARGIN)		
+		sizer.pack_start(btnsaveas, False, True, 0)
+		sizer.pack_start(textposition, False, True, 0)
+		sizer2 = Gtk.HBox(False,MARGIN)
+		sizer3 = Gtk.HButtonBox()
 		sizer3.set_spacing(MARGIN)
-		sizer3.set_layout(gtk.BUTTONBOX_START)
-		sizer3.pack_start(self.btnrecord, expand=False)
-		sizer2.pack_start(sizer3, expand=False)
-		sizer2.pack_start(chkauto, expand=False)
-		sizer.pack_start(sizer2)
+		sizer3.set_layout(Gtk.ButtonBoxStyle.START)
+		sizer3.pack_start(self.btnrecord, False, True, 0)
+		sizer2.pack_start(sizer3, False, True, 0)
+		sizer2.pack_start(chkauto, False, True, 0)
+		sizer.pack_start(sizer2, True, True, 0)
 		sizer.set_border_width(MARGIN)
 		self.vbox.add(sizer)
 		self.filename = ''
-		gobject.timeout_add(100, self.on_timer)
+		GObject.timeout_add(100, self.on_timer)
 		eventbus = com.get('neil.core.eventbus')
 		eventbus.zzub_parameter_changed += self.on_zzub_parameter_changed
 		self.update_label()
@@ -153,18 +154,18 @@ class HDRecorderDialog(Gtk.Dialog):
 		"""
 		Handler for the "Save As..." button.
 		"""
-		dlg = gtk.FileChooserDialog(title="Save", parent=self, action=gtk.FILE_CHOOSER_ACTION_SAVE,
-			buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE, gtk.RESPONSE_OK)
+		dlg = Gtk.FileChooserDialog(title="Save", parent=self, action=Gtk.FILE_CHOOSER_ACTION_SAVE,
+			buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL, Gtk.STOCK_SAVE, Gtk.RESPONSE_OK)
 		)
 		player = com.get('neil.core.player')
 		dlg.set_do_overwrite_confirmation(True)
-		ffwav = gtk.FileFilter()
+		ffwav = Gtk.FileFilter()
 		ffwav.set_name("PCM Waves (*.wav)")
 		ffwav.add_pattern("*.wav")
 		dlg.set_filename(self.filename)
 		dlg.add_filter(ffwav)
 		result = dlg.run()
-		if result == gtk.RESPONSE_OK:
+		if result == Gtk.RESPONSE_OK:
 			self.filename = dlg.get_filename()
 			if (dlg.get_filter() == ffwav) and not (self.filename.endswith('.wav')):
 				self.filename += '.wav'
@@ -198,6 +199,6 @@ if __name__ == '__main__':
 	window = testplayer.TestWindow()
 	window.show_all()
 	dlg = HDRecorderDialog(window)
-	dlg.connect('destroy', lambda widget: gtk.main_quit())
+	dlg.connect('destroy', lambda widget: Gtk.main_quit())
 	dlg.show_all()
-	gtk.main()
+	Gtk.main()

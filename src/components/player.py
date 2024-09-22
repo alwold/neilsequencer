@@ -20,7 +20,7 @@
 
 from neil.utils import is_generator, is_effect, is_streamer, PropertyEventHandler, generate_ui_methods, refresh_gui
 from zzub import Player
-import gobject
+from gi.repository import GObject
 import neil.com as com
 import neil.common as common
 import os
@@ -203,7 +203,7 @@ class NeilPlayer(Player, PropertyEventHandler):
         eventbus.zzub_pre_delete_pattern += self.on_pre_delete_pattern
         self._callback = zzub.zzub_callback_t(self.handle_event)
         self.set_callback(self._callback, None)
-        gobject.timeout_add(int(1000 / 50), self.on_handle_events)
+        GObject.timeout_add(int(1000 / 50), self.on_handle_events)
         # event queue disabling count for overlapping disable calls
         self.__disable_level = 0
 
