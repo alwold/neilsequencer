@@ -483,7 +483,7 @@ class PreferencesDialog(Gtk.Dialog):
         Gtk.Dialog.__init__(self,
                             "Preferences",
                             parent,
-                            Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT)
+                            Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT)
         self.nb = Gtk.Notebook()
         self.nb.set_show_tabs(False)
         self.nb.set_border_width(MARGIN)
@@ -516,9 +516,9 @@ class PreferencesDialog(Gtk.Dialog):
         self.splitter.pack2(self.nb)
         self.vbox.add(self.splitter)
 
-        btnok = self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
-        self.add_button(Gtk.STOCK_APPLY, Gtk.RESPONSE_APPLY)
+        btnok = self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
         btnok.grab_default()
 
         self.connect('response', self.on_response)
@@ -528,9 +528,9 @@ class PreferencesDialog(Gtk.Dialog):
         self.nb.set_current_page(starting_tab_index)
 
     def on_response(self, widget, response):
-        if response == Gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             self.on_ok()
-        elif response == Gtk.RESPONSE_APPLY:
+        elif response == Gtk.ResponseType.APPLY:
             self.on_apply()
         else:
             self.destroy()
