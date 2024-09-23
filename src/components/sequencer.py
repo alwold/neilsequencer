@@ -944,7 +944,7 @@ class SequencerView(Gtk.DrawingArea):
         menu = Menu()
         pmenu = Menu()
         wavemenu = Menu()
-        for plugin in sorted(list(player.get_plugin_list()), lambda a, b: cmp(a.get_name().lower(), b.get_name().lower())):
+        for plugin in sorted(list(player.get_plugin_list()), key=lambda plugin: plugin.get_name().lower()):
             pmenu.add_item(prepstr(plugin.get_name().replace("_", "__")), self.on_popup_add_track, plugin)
         for i, name in enumerate(wave_names_generator()):
             wavemenu.add_item_no_underline(name, self.on_popup_record_to_wave, i + 1)
@@ -1282,7 +1282,7 @@ class SequencerView(Gtk.DrawingArea):
                     self.deselect()
                     self.dragging = True
                     self.grab_add()
-            if event.type == Gdk._2BUTTON_PRESS:  # double-click
+            if event.type == Gdk.EventType._2BUTTON_PRESS:  # double-click
                 m, index, bp = self.get_pattern_at(self.track, self.row)
                 if index == None:
                     track = self.get_track()
@@ -1306,7 +1306,7 @@ class SequencerView(Gtk.DrawingArea):
         @param event: Mouse event
         @type event: wx.MouseEvent
         """
-        x, y, state = self.get_parent_window().get_pointer()
+        window, x, y, state = self.get_parent_window().get_pointer()
         x = max(int(x), self.seq_left_margin)
         if self.dragging:
             select_track, select_row = self.pos_to_track_row((x, y))
@@ -1346,7 +1346,7 @@ class SequencerView(Gtk.DrawingArea):
     def redraw(self, *args):
         if self.get_parent_window() and self.get_parent_window().is_visible():
             rect = self.get_allocation()
-            self.get_parent_window().invalidate_rect((0, 0, rect.width, rect.height), False)
+            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, rect.width, rect.height), False)
 
     def on_left_up(self, widget, event):
         """

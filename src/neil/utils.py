@@ -867,7 +867,7 @@ def diff(oldlist, newlist):
 
 def wave_names_generator():
         player = com.get('neil.core.player')
-        for i in xrange(player.get_wave_count()):
+        for i in range(player.get_wave_count()):
                 w = player.get_wave(i)
                 name = "%02X. %s" % ((i + 1), prepstr(w.get_name()))
                 yield name
