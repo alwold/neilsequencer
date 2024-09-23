@@ -28,8 +28,7 @@ import os, glob, re
 
 from neil.utils import filepath, camelcase_to_unixstyle, etcpath, imagepath, iconpath, sharedpath, filenameify
 import neil.preset as preset
-import ConfigParser
-import new
+import configparser
 
 CONFIG_OPTIONS = dict(
     # insert all sections at this level, in the format
@@ -193,7 +192,7 @@ DEFAULT_THEME = {
     'PT Background' : 0xe0e0e0,
     }
 
-class NeilConfig(object, ConfigParser.ConfigParser):
+class NeilConfig(configparser.ConfigParser):
     """
     Streamlines access to the applications configuration. You should
     set all applications to and retrieve them from the config object.
@@ -208,7 +207,7 @@ class NeilConfig(object, ConfigParser.ConfigParser):
         """
         Initializer.
         """
-        ConfigParser.ConfigParser.__init__(self)
+        configparser.ConfigParser.__init__(self)
         self.filename = os.path.join(self.get_settings_folder(),'settings.cfg')
         self.read([self.filename])
         self._section = ''
