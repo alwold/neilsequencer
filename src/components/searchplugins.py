@@ -236,17 +236,8 @@ class SearchPluginsDialog(Gtk.Window):
             else:
                 return 3
 
-        def cmp_child(a, b):
-            c = cmp(get_type_rating(a), get_type_rating(b))
-            if c != 0:
-                return c
-            c = cmp(get_icon_rating(a), get_icon_rating(b))
-            if c != 0:
-                return c
-            c = cmp(get_rating(a), get_rating(b))
-            if c != 0:
-                return c
-            return cmp(a.get_name().lower(), b.get_name().lower())
+        def child_key(child):
+            return (get_type_rating(child), get_icon_rating(child), get_rating(child), child.get_name().lower())
 
         def get_type_text(pl):
             if is_generator(pl):
@@ -259,7 +250,7 @@ class SearchPluginsDialog(Gtk.Window):
                 return "Root"
             else:
                 return "Other"
-        for pl in sorted(plugins.values(), cmp_child):
+        for pl in sorted(plugins.values(), key=child_key):
             name = prepstr(pl.get_name())
             text = '<b>' + name + '</b>\n<small>' + \
                 get_type_text(pl) + '</small>'
