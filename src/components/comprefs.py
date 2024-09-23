@@ -76,14 +76,14 @@ class ComponentPanel(Gtk.VBox):
 			(None, GObject.TYPE_PYOBJECT),
 		])
 		self.compolist.set_headers_visible(False)
-		def cmp_package(a,b):
-			return cmp(a.name.lower(), b.name.lower())
-		packages = sorted(com.get_packages(), cmp_package)
+		def key_package(package):
+			return package.name.lower()
+		packages = sorted(com.get_packages(), key=key_package)
 		for package in packages:
 			text = '<b>' + package.name + '</b>' + '\n'
 			text += package.description
 			store.append([True, package.icon, text, package])
-		fssizer.pack_start(add_scrollbars(self.compolist))
+		fssizer.pack_start(add_scrollbars(self.compolist), expand=True, fill=True, padding=0)
 		self.add(frame1)
 		
 	def apply(self):

@@ -117,9 +117,9 @@ class GeneralPanel(Gtk.VBox):
             c1.set_alignment(1, 0.5)
             sg1.add_widget(c1)
             sg2.add_widget(c2)
-            row.pack_start(c1, expand=False)
-            row.pack_end(c2)
-            fssizer.pack_start(row, expand=False)
+            row.pack_start(c1, expand=False, fill=True, padding=0)
+            row.pack_end(c2, expand=True, fill=True, padding=0)
+            fssizer.pack_start(row, expand=False, fill=True, padding=0)
         add_row(Gtk.Label("Incremental Saves"), self.incsave)
         add_row(Gtk.Label("Draw Amp LEDs in Router"), self.leddraw)
         add_row(Gtk.Label("Auto Note-Off in Pattern Editor"), self.patnoteoff)
@@ -182,18 +182,18 @@ class DriverPanel(Gtk.VBox):
             row = Gtk.HBox(False, MARGIN)
             size_group.add_widget(c1)
             c1.set_alignment(1, 0.5)
-            row.pack_start(c1, expand=False)
-            row.pack_start(c2)
+            row.pack_start(c1, expand=False, fill=True, padding=0)
+            row.pack_start(c2, expand=True, fill=True, padding=0)
             return row
 
         sizer1 = Gtk.Frame.new("Audio Output")
         vbox = Gtk.VBox(False, MARGIN)
         vbox.pack_start(add_row(Gtk.Label("Driver"),
-                        self.cboutput), expand=False)
+                                self.cboutput), expand=False, fill=True, padding=0)
         vbox.pack_start(add_row(Gtk.Label("Samplerate"),
-                        self.cbsamplerate), expand=False)
+                                self.cbsamplerate), expand=False, fill=True, padding=0)
         vbox.pack_start(add_row(Gtk.Label("Latency"),
-                        self.cblatency), expand=False)
+                                self.cblatency), expand=False, fill=True, padding=0)
         vbox.set_border_width(MARGIN)
         sizer1.add(vbox)
         inputname, outputname, samplerate, buffersize = config.get_config().get_audiodriver_config()
@@ -285,9 +285,9 @@ class ControllerPanel(Gtk.VBox):
         hsizer = Gtk.HButtonBox()
         hsizer.set_spacing(MARGIN)
         hsizer.set_layout(Gtk.ButtonBoxStyle.START)
-        hsizer.pack_start(self.btnadd, expand=False)
-        hsizer.pack_start(self.btnremove, expand=False)
-        sizer1.pack_start(hsizer, expand=False)
+        hsizer.pack_start(self.btnadd, expand=False, fill=True, padding=0)
+        hsizer.pack_start(self.btnremove, expand=False, fill=True, padding=0)
+        sizer1.pack_start(hsizer, expand=False, fill=True, padding=0)
         self.add(frame1)
         self.btnadd.connect('clicked', self.on_add_controller)
         self.btnremove.connect('clicked', self.on_remove_controller)
@@ -459,13 +459,8 @@ class KeyboardPanel(Gtk.VBox):
             self.KEYMAPS[self.cblanguage.get_active()][0])
 
 
-def cmp_prefpanel(a, b):
-    a_order = (hasattr(a, '__prefpanel__')
-               and a.__prefpanel__.get('label', '')) or ''
-    b_order = (hasattr(b, '__prefpanel__')
-               and b.__prefpanel__.get('label', '')) or ''
-    return cmp(a_order, b_order)
-
+def key_prefpanel(panel):
+    return (hasattr(panel, '__prefpanel__') and panel.__prefpanel__.get('label', '')) or ''
 
 class PreferencesDialog(Gtk.Dialog):
     """
@@ -489,7 +484,7 @@ class PreferencesDialog(Gtk.Dialog):
         self.nb.set_border_width(MARGIN)
         self.nb.set_show_border(False)
         self.panels = sorted(com.get_from_category(
-            'neil.prefpanel'), cmp_prefpanel)
+            'neil.prefpanel'), key=key_prefpanel)
         starting_tab_index = 0
         for i, panel in enumerate(self.panels):
             if not hasattr(panel, '__prefpanel__'):
