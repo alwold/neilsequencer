@@ -757,7 +757,7 @@ class RouteView(Gtk.DrawingArea):
             return cx * (1 + x), cy * (1 + y)
         for mp in player.get_plugin_list():
             rx, ry = get_pixelpos(*mp.get_position())
-            for index in xrange(mp.get_input_connection_count()):
+            for index in range(mp.get_input_connection_count()):
                 crx, cry = get_pixelpos(*mp.get_input_connection_plugin(index).get_position())
                 cpx, cpy = (crx + rx) * 0.5, (cry + ry) * 0.5
                 dx, dy = cpx - mx, cpy - my
@@ -1304,7 +1304,7 @@ class RouteView(Gtk.DrawingArea):
                 if self.dragging and mp in player.active_plugins:
                     pinfo = self.get_plugin_info(mp)
                     rx, ry = get_pixelpos(*pinfo.dragpos)
-                for index in xrange(mp.get_input_connection_count()):
+                for index in range(mp.get_input_connection_count()):
                     targetmp = mp.get_input_connection_plugin(index)
                     pi = common.get_plugin_infos().get(targetmp)
                     if not pi.songplugin:

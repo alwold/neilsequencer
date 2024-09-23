@@ -84,7 +84,7 @@ class PluginInfoCollection:
 		return self.plugin_info.iteritems()
 		
 	def reset_plugingfx(self):
-		for k,v in self.plugin_info.iteritems():
+		for k,v in self.plugin_info.items():
 			v.reset_plugingfx()
 			
 	def add_plugin(self, mp):

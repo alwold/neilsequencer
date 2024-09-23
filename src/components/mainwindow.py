@@ -96,7 +96,7 @@ class FramePanel(Gtk.Notebook):
     self.show_all()
 
   def select_viewpanel(self, panel):
-    for index in xrange(self.get_n_pages()):
+    for index in range(self.get_n_pages()):
       if self.get_nth_page(index) == panel:
         self.set_current_page(index)
         if hasattr(panel, 'handle_focus'):
@@ -411,7 +411,7 @@ class NeilFrame(Gtk.Window):
       print("no history.")
       return
     print("----")
-    for index in xrange(historysize):
+    for index in range(historysize):
       desc = str(player.history_get_description(index))
       s = '#%i: "%s"' % (index,desc)
       if pos == index:
