@@ -770,7 +770,7 @@ class NeilFrame(Gtk.Window):
     """
     response = self.open_dlg.run()
     self.open_dlg.hide()
-    if response == Gtk.RESPONSE_OK:
+    if response == Gtk.ResponseType.OK:
       self.open_file(self.open_dlg.get_filename())
 
   def on_save(self, *args):
@@ -800,7 +800,7 @@ class NeilFrame(Gtk.Window):
     self.save_dlg.set_filename(player.document_path)
     response = self.save_dlg.run()
     self.save_dlg.hide()
-    if response == Gtk.RESPONSE_OK:
+    if response == Gtk.ResponseType.OK:
       filepath = self.save_dlg.get_filename()
       self.save_file(filepath)
     else:
@@ -889,9 +889,9 @@ class NeilFrame(Gtk.Window):
     else:
       text = "<big><b>Save changes?</b></big>"
     response = question(self, text)
-    if response == int(Gtk.RESPONSE_CANCEL) or response == int(Gtk.RESPONSE_DELETE_EVENT):
+    if response == int(Gtk.ResponseType.CANCEL) or response == int(Gtk.ResponseType.DELETE_EVENT):
       raise CancelException
-    elif response == int(Gtk.RESPONSE_YES):
+    elif response == int(Gtk.ResponseType.YES):
       self.save()
 
   def new(self, *args):
