@@ -1,4 +1,4 @@
-# encoding: latin-1
+# encoding: utf-8
 
 # Neil
 # Modular Sequencer
@@ -26,6 +26,7 @@ from neil.utils import filepath, imagepath
 import sys
 from neil.utils import prepstr
 from gi.repository import Gtk
+from gi.repository import GdkPixbuf
 
 NAME = "Neil"
 VERSION = "0.9"
@@ -108,7 +109,7 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_authors(AUTHORS)
         self.set_artists(ARTISTS)
         self.set_documenters(DOCUMENTERS)
-        self.set_logo(Gtk.gdk.pixbuf_new_from_file(imagepath("alien.png")))
+        self.set_logo(GdkPixbuf.Pixbuf.new_from_file(imagepath("alien.png")))
 
     def show(self):
         self.run()
