@@ -254,13 +254,13 @@ class PluginContextMenu(Gtk.Menu):
                 return tree
 
         def populate_from_tree(menu, tree):
-            for key, value in tree.iteritems():
+            for key, value in tree.items():
                 if type(value) is not type({}):
-                    icon = gtk.Image()
+                    icon = Gtk.Image()
                     filename = get_icon_name(value)
                     if os.path.isfile(filename):
                         icon.set_from_file(get_icon_name(value))
-                    item = gtk.ImageMenuItem(prepstr(key, fix_underscore=True))
+                    item = Gtk.ImageMenuItem(prepstr(key, fix_underscore=True))
                     item.set_image(icon)
                     item.connect('activate', create_plugin, value, connection)
                     menu.add(item)
@@ -281,7 +281,7 @@ class PluginContextMenu(Gtk.Menu):
         item, add_machine_menu = menu.add_submenu("Add machine")
         for pluginloader in player.get_pluginloader_list():
             plugins[pluginloader.get_uri()] = pluginloader
-        for uri, loader in plugins.iteritems():
+        for uri, loader in plugins.items():
             try:
                 path = self.plugin_tree[uri]
                 if connection and (path[0] not in ["Effects", "Analyzers"]):
@@ -360,7 +360,7 @@ class PluginContextMenu(Gtk.Menu):
     def on_machine_help(self, widget, mp):
         name = filenameify(mp.get_pluginloader().get_name())
         if not show_machine_manual(name):
-            info = gtk.MessageDialog(self.get_toplevel(), flags=0, type=gtk.MESSAGE_INFO, buttons=gtk.BUTTONS_OK, message_format="Sorry, there's no help for this plugin yet")
+            info = Gtk.MessageDialog(self.get_toplevel(), flags=0, type=Gtk.MESSAGE_INFO, buttons=Gtk.BUTTONS_OK, message_format="Sorry, there's no help for this plugin yet")
             info.run()
             info.destroy()
 

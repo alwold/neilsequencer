@@ -27,6 +27,8 @@ import time, sys, math, os, zzub
 from string import ascii_letters, digits
 import struct
 from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import GdkPixbuf
 import weakref
 import neil.com as com
 
@@ -420,7 +422,7 @@ def blend (color1, color2, weight = 0.5):
     """
         Blend (lerp) two gtk.gdk.Colors
     """
-    return gtk.gdk.Color (
+    return Gdk.Color (
         color1.red_float   * weight + color2.red_float   * (1 - weight),
         color1.green_float * weight + color2.green_float * (1 - weight),
         color1.blue_float  * weight + color2.blue_float  * (1 - weight))
@@ -482,19 +484,19 @@ def run_function_with_progress(parent, msg, allow_cancel, func, *args):
         """
         buttons = []
         if allow_cancel:
-                buttons = (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+                buttons = (Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
         else:
                 buttons = None
-        dialog = gtk.Dialog(
+        dialog = Gtk.Dialog(
                 '',
                 parent and parent.get_toplevel(),
                 gtk.DIALOG_DESTROY_WITH_PARENT,
                 buttons)
-        label = gtk.Label()
+        label = Gtk.Label()
         label.set_markup(msg)
         label.set_alignment(0,0.5)
-        progress = gtk.ProgressBar()
-        vbox = gtk.VBox(False, 6)
+        progress = Gtk.ProgressBar()
+        vbox = Gtk.VBox(False, 6)
         vbox.set_border_width(6)
         vbox.pack_start(label)
         vbox.pack_start(progress)
@@ -515,7 +517,7 @@ def run_function_with_progress(parent, msg, allow_cancel, func, *args):
         dialog.connect('response', on_response)
         def run_function(dlg, func, args):
                 if func(dlg, *args) and dlg._response == None:
-                        dlg.response(gtk.RESPONSE_OK)
+                        dlg.response(Gtk.RESPONSE_OK)
         gobject.timeout_add(50, update_progress, dialog)
         import thread
         thread.start_new_thread(run_function, (dialog,func,args))
@@ -527,18 +529,18 @@ def gettext(parent, msg, text=''):
     """
     Shows a dialog to get some text.
     """
-    dialog = gtk.Dialog(
+    dialog = Gtk.Dialog(
         '',
         parent and parent.get_toplevel(),
-        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-        (gtk.STOCK_OK, True, gtk.STOCK_CANCEL, False))
-    label = gtk.Label()
+        Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+        (Gtk.STOCK_OK, True, Gtk.STOCK_CANCEL, False))
+    label = Gtk.Label()
     label.set_markup(msg)
     label.set_alignment(0, 0.5)
-    entry = gtk.Entry()
+    entry = Gtk.Entry()
     entry.set_text(text)
     entry.connect('activate', lambda widget: dialog.response(True))
-    vbox = gtk.VBox(False, 6)
+    vbox = Gtk.VBox(False, 6)
     vbox.set_border_width(6)
     vbox.pack_start(label)
     vbox.pack_end(entry, expand=False)
@@ -554,15 +556,15 @@ def question(parent, msg, allowcancel = True):
         """
         Shows a question dialog.
         """
-        dialog = gtk.MessageDialog(parent.get_toplevel(),
-                                   gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   gtk.MESSAGE_QUESTION , gtk.BUTTONS_NONE)
+        dialog = Gtk.MessageDialog(parent.get_toplevel(),
+                                   Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+                                   Gtk.MESSAGE_QUESTION , Gtk.BUTTONS_NONE)
         dialog.set_markup(msg)
         dialog.add_buttons(
-                gtk.STOCK_YES, gtk.RESPONSE_YES,
-                gtk.STOCK_NO, gtk.RESPONSE_NO)
+                Gtk.STOCK_YES, Gtk.RESPONSE_YES,
+                Gtk.STOCK_NO, Gtk.RESPONSE_NO)
         if allowcancel:
-                dialog.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+                dialog.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
         response = dialog.run()
         dialog.destroy()
         return response
@@ -571,29 +573,29 @@ def error(parent, msg, msg2=None, details=None):
         """
         Shows an error message dialog.
         """
-        dialog = gtk.MessageDialog(parent and parent.get_toplevel(),
-                                   gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   gtk.MESSAGE_ERROR , gtk.BUTTONS_NONE)
+        dialog = Gtk.MessageDialog(parent and parent.get_toplevel(),
+                                   Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+                                   Gtk.MESSAGE_ERROR , Gtk.BUTTONS_NONE)
         dialog.set_markup(msg)
         dialog.set_resizable(True)
         if msg2:
                 dialog.format_secondary_text(msg2)
         if details:
-                expander = gtk.Expander("Details")
+                expander = Gtk.Expander("Details")
                 dialog.vbox.pack_start(expander, False, False, 0)
-                label = gtk.TextView()
+                label = Gtk.TextView()
                 label.set_editable(False)
                 label.get_buffer().set_property('text', details)
-                label.set_wrap_mode(gtk.WRAP_NONE)
+                label.set_wrap_mode(Gtk.WRAP_NONE)
 
-                sw = gtk.ScrolledWindow()
-                sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-                sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+                sw = Gtk.ScrolledWindow()
+                sw.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+                sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
                 
                 sw.add(label)
                 expander.add(sw)
                 dialog.show_all()
-        dialog.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK)
+        dialog.add_buttons(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
         response = dialog.run()
         dialog.destroy()
         return response
@@ -602,11 +604,11 @@ def message(parent, msg):
         """
         Shows an info message dialog.
         """
-        dialog = gtk.MessageDialog(parent.get_toplevel(),
-                                   gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   gtk.MESSAGE_INFO , gtk.BUTTONS_NONE)
+        dialog = Gtk.MessageDialog(parent.get_toplevel(),
+                                   Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+                                   Gtk.MESSAGE_INFO , Gtk.BUTTONS_NONE)
         dialog.set_markup(msg)
-        dialog.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK)
+        dialog.add_buttons(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
         response = dialog.run()
         dialog.destroy()
         return response
@@ -615,11 +617,11 @@ def warning(parent, msg):
         """
         Shows an warning message dialog.
         """
-        dialog = gtk.MessageDialog(parent.get_toplevel(),
-                                   gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   gtk.MESSAGE_WARNING, gtk.BUTTONS_NONE)
+        dialog = Gtk.MessageDialog(parent.get_toplevel(),
+                                   Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+                                   Gtk.MESSAGE_WARNING, Gtk.BUTTONS_NONE)
         dialog.set_markup(msg)
-        dialog.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK)
+        dialog.add_buttons(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
         response = dialog.run()
         dialog.destroy()
         return response
@@ -628,7 +630,7 @@ def new_listview(columns):
         """
         Creates a list store with multiple columns.
         """
-        treeview = gtk.TreeView()
+        treeview = Gtk.TreeView()
         treeview.set_rules_hint(True)
         store, columncontrols = new_liststore(treeview, columns)
         return treeview,store,columncontrols
@@ -637,7 +639,7 @@ def new_combobox(columns):
         """
         Creates a combobox.
         """
-        combobox = gtk.ComboBox()
+        combobox = Gtk.ComboBox()
         store, columncontrols = new_liststore(combobox, columns)
         return combobox
 
@@ -652,7 +654,7 @@ def new_liststore(view, columns):
                         checked = not checked
                         model.set(iter, self.column, checked)
 
-        liststore = gtk.ListStore(*[col[1] for col in columns])
+        liststore = Gtk.ListStore(*[col[1] for col in columns])
         view.set_model(liststore)
         columncontrols = []
         for i,args in enumerate(columns):
@@ -664,22 +666,22 @@ def new_liststore(view, columns):
                         name,coltype,options = args
                 if name == None:
                         continue
-                if isinstance(view, gtk.ComboBox):
+                if isinstance(view, Gtk.ComboBox):
                         if i > 0:
                                 break
                         column = view
                 else:
-                        column = gtk.TreeViewColumn(name)
+                        column = Gtk.TreeViewColumn(name)
                 if coltype == str:
-                        if isinstance(column, gtk.TreeViewColumn):
+                        if isinstance(column, Gtk.TreeViewColumn):
                                 column.set_resizable(True)
                         if options.get('icon',False):
-                                cellrenderer = gtk.CellRendererPixbuf()
+                                cellrenderer = Gtk.CellRendererPixbuf()
                                 column.pack_start(cellrenderer)
                                 column.add_attribute(cellrenderer, 'icon-name', i)
                         else:
-                                cellrenderer = gtk.CellRendererText()
-                                column.pack_start(cellrenderer)
+                                cellrenderer = Gtk.CellRendererText()
+                                column.pack_start(cellrenderer, expand=True)
                                 if options.get('markup',False):
                                         column.add_attribute(cellrenderer, 'markup', i)
                                 else:
@@ -689,19 +691,19 @@ def new_liststore(view, columns):
                 elif coltype == bool:
                         th = ToggledHandler()
                         th.column = i
-                        cellrenderer = gtk.CellRendererToggle()
+                        cellrenderer = Gtk.CellRendererToggle()
                         cellrenderer.connect('toggled', th.fixed_toggled, liststore)
                         column.pack_start(cellrenderer)
                         column.add_attribute(cellrenderer, 'active', i)
-                elif coltype == gtk.gdk.Pixbuf:
-                        cellrenderer = gtk.CellRendererPixbuf()
-                        column.pack_start(cellrenderer)
+                elif coltype == GdkPixbuf.Pixbuf:
+                        cellrenderer = Gtk.CellRendererPixbuf()
+                        column.pack_start(cellrenderer, expand=True)
                         column.add_attribute(cellrenderer, 'pixbuf', i)
-                if isinstance(view, gtk.TreeView):
+                if isinstance(view, Gtk.TreeView):
                         view.append_column(column)
                         column.set_sort_column_id(i)
                 columncontrols.append(column)
-        if isinstance(view, gtk.TreeView):
+        if isinstance(view, Gtk.TreeView):
                 view.set_search_column(0)
         return liststore, columncontrols
 
@@ -710,7 +712,7 @@ def new_image_button(path, tooltip, width=20, height=20):
         Creates a button with a single image.
         """
         image = Gtk.Image()
-        image.set_from_pixbuf(Gtk.gdk.pixbuf_new_from_file_at_size(path, width, height))
+        image.set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height))
         button = Gtk.Button()
         button.set_tooltip_text(tooltip)
         button.set_image(image)
@@ -746,7 +748,7 @@ def new_image_toggle_button(path, tooltip=None, width=20, height=20):
         Creates a toggle button with a single image.
         """
         image = Gtk.Image()
-        image.set_from_pixbuf(Gtk.gdk.pixbuf_new_from_file_at_size(path, width, height))
+        image.set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height))
         button = Gtk.ToggleButton()
         if tooltip:
             button.set_tooltip_text(tooltip)
@@ -754,7 +756,7 @@ def new_image_toggle_button(path, tooltip=None, width=20, height=20):
         return button
 
 def new_theme_image(name,size):
-        theme = Gtk.icon_theme_get_default()
+        theme = Gtk.IconTheme.get_default()
         image = Gtk.Image()
         if theme.has_icon(name):
                 pixbuf = theme.load_icon(name, size, 0)
@@ -791,9 +793,9 @@ def add_scrollbars(view):
         adds scrollbars around a view
         """
         scrollwin = Gtk.ScrolledWindow()
-        scrollwin.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        scrollwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         if isinstance(view, Gtk.TreeView):
-                scrollwin.set_shadow_type(Gtk.SHADOW_IN)
+                scrollwin.set_shadow_type(Gtk.ShadowType.IN)
                 scrollwin.add(view)
         else:
                 scrollwin.add_with_viewport(view)
@@ -804,9 +806,9 @@ def add_vscrollbar(view):
         adds a vertical scrollbar to a view
         """
         scrollwin = Gtk.ScrolledWindow()
-        scrollwin.set_policy(Gtk.POLICY_NEVER, Gtk.POLICY_AUTOMATIC)
+        scrollwin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         if isinstance(view, Gtk.TreeView):
-                scrollwin.set_shadow_type(Gtk.SHADOW_IN)
+                scrollwin.set_shadow_type(Gtk.ShadowType.IN)
                 scrollwin.add(view)
         else:
                 scrollwin.add_with_viewport(view)
@@ -817,9 +819,9 @@ def add_hscrollbar(view):
         adds a vertical scrollbar to a view
         """
         scrollwin = Gtk.ScrolledWindow()
-        scrollwin.set_policy(Gtk.POLICY_ALWAYS, Gtk.POLICY_NEVER)
+        scrollwin.set_policy(Gtk.PolicyType.ALWAYS, Gtk.PolicyType.NEVER)
         if isinstance(view, Gtk.TreeView):
-                scrollwin.set_shadow_type(Gtk.SHADOW_IN)
+                scrollwin.set_shadow_type(Gtk.ShadowType.IN)
                 scrollwin.add(view)
         else:
                 scrollwin.add_with_viewport(view)
@@ -847,12 +849,13 @@ def format_filesize(size):
                 return "%i bytes" % size
 
 def set_clipboard_text(data):
-        clipboard = Gtk.clipboard_get()
+        # TODO: verify these clipboard interactions work correctly
+        clipboard = Gtk.Clipboard.get(Gdk.Atom.intern("CLIPBOARD", False))
         clipboard.set_text(data, len(data))
         clipboard.store()
 
 def get_clipboard_text():
-        clipboard = Gtk.clipboard_get()
+        clipboard = Gtk.Clipboard.get(Gdk.Atom.intern("CLIPBOARD", False))
         return clipboard.wait_for_text()
 
 def diff(oldlist, newlist):
@@ -1097,10 +1100,10 @@ class Menu(Gtk.Menu):
                 return item
 
         def add_image_item(self, label, icon_or_path, func, *args):
-                item = Gtk.ImageMenuItem(stock_id=label)
-                if isinstance(icon_or_path, basestring):
+                item = Gtk.ImageMenuItem.new_from_stock(stock_id=label)
+                if isinstance(icon_or_path, str):
                         image = Gtk.Image()
-                        image.set_from_pixbuf(Gtk.gdk.pixbuf_new_from_file(icon_or_path))
+                        image.set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file(icon_or_path))
                 elif isinstance(icon_or_path, Gtk.Image):
                         image = icon_or_path
                 item.set_image(image)
@@ -1118,7 +1121,7 @@ class Menu(Gtk.Menu):
                 else:
                         event_button = 0
                         event_time = 0
-                Gtk.Menu.popup(self, None, None, None, event_button, event_time)
+                Gtk.Menu.popup(self, None, None, None, None, event_button, event_time)
 
 class PropertyEventHandler:
         def get_eventbus(self):
@@ -1280,7 +1283,7 @@ class AcceleratorMap:
                 if successful.
                 """
                 # remove numlock from the key modifiers
-                key_mod = event.state & (~Gtk.gdk.MOD2_MASK)
+                key_mod = event.state & (~Gdk.MOD2_MASK)
                 name = Gtk.accelerator_name(event.keyval, key_mod)
                 if name == None:
                         return False
@@ -1377,7 +1380,7 @@ class ImageToggleButton(Gtk.ToggleButton):
     def __init__(self, path, tooltip=None, width=20, height=20):
         from Gtk import ToggleButton, Image
         self.image = Gtk.Image()
-        self.image.set_from_pixbuf(Gtk.gdk.pixbuf_new_from_file_at_size(path, width, height))
+        self.image.set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, height))
         Gtk.ToggleButton.__init__(self)
         if tooltip:
             self.set_tooltip_text(tooltip)

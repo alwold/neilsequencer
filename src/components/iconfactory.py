@@ -23,7 +23,7 @@ if __name__ == '__main__':
 	os.environ['NEIL_BASE_PATH'] = '/home/paniq/devel/neil'
 import neil.com as com
 from gi.repository import Gtk
-from gi.repository import Gdk
+from gi.repository import GdkPixbuf
 
 import glob, os
 from neil.utils import filepath, get_root_folder_path, iconpath, imagepath
@@ -69,28 +69,28 @@ class IconLibrary:
 				mask = searchpath + '/*' + ext
 				for filename in glob.glob(mask):
 					key = os.path.splitext(os.path.basename(filename))[0]
-					pixbuf = Gdk.pixbuf_new_from_file(filename)
+					pixbuf = GdkPixbuf.Pixbuf.new_from_file(filename)
 					w,h = pixbuf.get_width(),pixbuf.get_height()
 					iconsizes = icons.get(key, {})
 					iconsizes[(w,h)] = pixbuf
 					icons[key] = iconsizes
-		for key,iconsizes in icons.iteritems():
+		for key,iconsizes in icons.items():
 			for size in sizenames:
-				w,h = Gtk.icon_size_lookup(size)
+				valid,w,h = Gtk.icon_size_lookup(size)
 				if (w,h) in iconsizes:
 					pixbuf = iconsizes[(w,h)]
 				else:
 					bestw = 999999
 					pixbuf = None
 					c = w*w + h*h
-					for (iw,ih),icon in iconsizes.iteritems():
+					for (iw,ih),icon in iconsizes.items():
 						l = iw*iw + ih*ih
 						d = abs(l - c)
 						if d < bestw:
 							bestw = d
 							pixbuf = icon
 				#print "new icon: %s (%r = %i,%i ~ %i,%i)" % (key,size,w,h,pixbuf.get_width(),pixbuf.get_height())
-				Gtk.icon_theme_add_builtin_icon(key, size, pixbuf)
+				Gtk.IconTheme.add_builtin_icon(key, size, pixbuf)
 					
 	def register_single(self, stockid, label, key=''):
 		if key:

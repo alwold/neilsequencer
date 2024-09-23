@@ -42,19 +42,19 @@ class PackageBrowserDialog(Gtk.Dialog):
     )
 
     def __init__(self, hide_on_delete=True):
-        gtk.Dialog.__init__(self, "Component Browser")
+        Gtk.Dialog.__init__(self, "Component Browser")
         if hide_on_delete:
             self.connect('delete-event', self.hide_on_delete)
         self.resize(600, 500)
         #self.ifacestore = gtk.TreeStore(gtk.gdk.Pixbuf, str, gobject.TYPE_PYOBJECT)
-        self.ifacestore = gtk.TreeStore(str, gobject.TYPE_PYOBJECT)
-        self.ifacelist = gtk.TreeView(self.ifacestore)
+        self.ifacestore = Gtk.TreeStore(str, gobject.TYPE_PYOBJECT)
+        self.ifacelist = Gtk.TreeView(self.ifacestore)
         self.ifacelist.set_property('headers-visible', False)
-        column = gtk.TreeViewColumn("Item")
+        column = Gtk.TreeViewColumn("Item")
         #~ cell = gtk.CellRendererPixbuf()
         #~ column.pack_start(cell, False)
         #~ column.set_attributes(cell, pixbuf=0)
-        cell = gtk.CellRendererText()
+        cell = Gtk.CellRendererText()
         column.pack_start(cell, True)
         column.set_attributes(cell, markup=0)
         self.ifacelist.append_column(column)
@@ -64,8 +64,8 @@ class PackageBrowserDialog(Gtk.Dialog):
         #         return exthost.resolve_path(path)
         #     else:
         #         return path
-        self.desc = gtk.TextView()
-        self.desc.set_wrap_mode(gtk.WRAP_WORD)
+        self.desc = Gtk.TextView()
+        self.desc.set_wrap_mode(Gtk.WRAP_WORD)
         self.desc.set_editable(False)
         #self.desc.set_justification(gtk.JUSTIFY_FILL)
         textbuffer = self.desc.get_buffer()
@@ -105,16 +105,16 @@ class PackageBrowserDialog(Gtk.Dialog):
             for category in metainfo.get('categories', []):
                 if category in catnodes:
                     create_classnode(catnodes[category], metainfo)
-        hsizer = gtk.HPaned()
+        hsizer = Gtk.HPaned()
         hsizer.set_border_width(MARGIN)
-        scrollwin = gtk.ScrolledWindow()
-        scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwin.set_shadow_type(gtk.SHADOW_IN)
+        scrollwin = Gtk.ScrolledWindow()
+        scrollwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        scrollwin.set_shadow_type(Gtk.ShadowType.IN)
         scrollwin.add(self.ifacelist)
         hsizer.pack1(scrollwin)
-        scrollwin = gtk.ScrolledWindow()
-        scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        scrollwin.set_shadow_type(gtk.SHADOW_IN)
+        scrollwin = Gtk.ScrolledWindow()
+        scrollwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        scrollwin.set_shadow_type(Gtk.ShadowType.IN)
         scrollwin.add(self.desc)
         hsizer.pack2(scrollwin)
         hsizer.set_position(300)
@@ -310,7 +310,7 @@ class PackageBrowserMenuItem:
 
     def __init__(self, menu):
         # create a menu item
-        item = gtk.MenuItem(label="Show _Component Browser")
+        item = Gtk.MenuItem(label="Show _Component Browser")
         # connect the menu item to our handler
         item.connect('activate', self.on_menuitem_activate)
         # append the item to the menu
@@ -329,6 +329,6 @@ __neil__ = dict(
 
 if __name__ == '__main__':  # extension mode
     browser = PackageBrowserDialog(False)
-    browser.connect('destroy', lambda widget: gtk.main_quit())
+    browser.connect('destroy', lambda widget: Gtk.main_quit())
     browser.show_all()
-    gtk.main()
+    Gtk.main()

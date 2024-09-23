@@ -57,7 +57,7 @@ class InfoPanel(Gtk.VBox):
         Gtk.VBox.__init__(self, False, MARGIN)
         self.set_border_width(MARGIN)
         self.view = InfoView()
-        self.pack_start(add_scrollbars(self.view))
+        self.pack_start(add_scrollbars(self.view), expand=True, fill=True, padding=0)
         eventbus = com.get('neil.core.eventbus')
         eventbus.document_loaded += self.update_all
 
@@ -85,9 +85,9 @@ class InfoView(Gtk.TextView):
         Initializer.
         """
         Gtk.TextView.__init__(self)
-        self.set_wrap_mode(Gtk.WRAP_WORD)
+        self.set_wrap_mode(Gtk.WrapMode.WORD)
         self.get_buffer().connect('changed', self.on_edit)
-        self.modify_font(pango.FontDescription('monospace 8'))
+        self.modify_font(Pango.FontDescription('monospace 8'))
 
     def on_edit(self, buffer_):
         """

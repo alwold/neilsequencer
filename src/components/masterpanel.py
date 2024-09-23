@@ -24,6 +24,7 @@ if __name__ == '__main__':
     raise SystemExit
 
 from gi.repository import Gtk
+from gi.repository import Gdk
 import cairo
 from neil.common import MARGIN
 from gi.repository import GObject
@@ -63,7 +64,7 @@ class AmpView(Gtk.DrawingArea):
         self.set_size_request(20, -1)
         self.connect("expose_event", self.expose)
         self.connect("configure_event", self.configure)
-        gobject.timeout_add(33, self.on_update)
+        GObject.timeout_add(33, self.on_update)
 
     def on_update(self):
         """
@@ -79,8 +80,8 @@ class AmpView(Gtk.DrawingArea):
         self.peaks[:self.hold] = [self.amp - std] * self.hold
 
         rect = self.get_allocation()
-        if self.window:
-            self.window.invalidate_rect((0, 0, rect.width, rect.height), False)
+        if self.get_parent_window():
+            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, rect.width, rect.height), False)
         return True
 
     def draw(self, ctx):
@@ -162,7 +163,7 @@ class AmpView(Gtk.DrawingArea):
         self.linear.add_color_stop_rgb(1, 0, .3, 0)
 
     def expose(self, widget, event):
-        context = widget.window.cairo_create()
+        context = widget.get_parent_window().cairo_create()
         self.draw(context)
         return False
 
@@ -185,7 +186,7 @@ class MasterPanel(Gtk.VBox):
         eventbus.zzub_parameter_changed += self.on_zzub_parameter_changed
         eventbus.document_loaded += self.update_all
         #eventbus.zzub_player_state_changed += self.on_zzub_player_state_changed
-        self.masterslider = gtk.VScale()
+        self.masterslider = Gtk.VScale()
         self.masterslider.set_draw_value(False)
         self.masterslider.set_range(0, 16384)
         self.masterslider.set_size_request(-1, 333)
@@ -201,9 +202,9 @@ class MasterPanel(Gtk.VBox):
 
         hbox = Gtk.HBox()
         hbox.set_border_width(MARGIN)
-        hbox.pack_start(self.ampl)
-        hbox.pack_start(self.masterslider)
-        hbox.pack_start(self.ampr)
+        hbox.pack_start(self.ampl, expand=True, fill=True, padding=0)
+        hbox.pack_start(self.masterslider, expand=True, fill=True, padding=0)
+        hbox.pack_start(self.ampr, expand=True, fill=True, padding=0)
         vbox = Gtk.VBox()
 
         self.clipbtn = Gtk.Button()
@@ -212,11 +213,11 @@ class MasterPanel(Gtk.VBox):
 
         self.volumelabel = Gtk.Label()
 
-        vbox.pack_start(self.clipbtn, expand=False, fill=False)
-        vbox.pack_start(hbox, expand=True, fill=True)
-        vbox.pack_start(self.volumelabel, expand=False, fill=False)
+        vbox.pack_start(self.clipbtn, expand=False, fill=False, padding=0)
+        vbox.pack_start(hbox, expand=True, fill=True, padding=0)
+        vbox.pack_start(self.volumelabel, expand=False, fill=False, padding=0)
 
-        self.pack_start(vbox)
+        self.pack_start(vbox, expand=True, fill=True, padding=0)
 
         self.update_all()
 
@@ -255,9 +256,9 @@ class MasterPanel(Gtk.VBox):
         """
         vol = self.masterslider.get_value()
         step = 16384 / 48
-        if event.direction == Gtk.gdk.SCROLL_UP:
+        if event.direction == Gdk.SCROLL_UP:
             vol += step
-        elif event.direction == Gtk.gdk.SCROLL_DOWN:
+        elif event.direction == Gdk.SCROLL_DOWN:
             vol -= step
         vol = min(max(0, vol), 16384)
         self.on_scroll_changed(None, None, vol)
@@ -267,12 +268,12 @@ class MasterPanel(Gtk.VBox):
         master = player.get_plugin(0)
         maxL, maxR = master.get_last_peak()
         self.clipbtn.set_label("%.1f dbFS" % utils.linear2db(min(maxL, maxR, 1.)))
-        self.clipbtn.modify_bg(Gtk.STATE_NORMAL, self.clipbtn_org_color)
+        self.clipbtn.modify_bg(Gtk.StateType.NORMAL, self.clipbtn_org_color)
 
     def on_clipped(self, widget, level):
         # db = utils.linear2db(level, widget.range)
         self.clipbtn.set_label('CLIP')
-        self.clipbtn.modify_bg(Gtk.STATE_NORMAL, Gtk.gdk.Color("#f00"))
+        self.clipbtn.modify_bg(Gtk.StateType.NORMAL, Gdk.Color("#f00"))
 
     def update_all(self):
         """

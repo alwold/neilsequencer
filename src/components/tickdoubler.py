@@ -38,7 +38,7 @@ class TickDoublerDialog(Gtk.Dialog):
 	)
 	
 	def __init__(self, hide_on_delete=True):
-		gtk.Dialog.__init__(self, "Change resolution of song")
+		Gtk.Dialog.__init__(self, "Change resolution of song")
 		
 		# do not destroy dialog on close
 		if hide_on_delete:
@@ -47,11 +47,11 @@ class TickDoublerDialog(Gtk.Dialog):
 		self.plugin = 0
 		self.resize(250, 10)
 
-		self.double_button = gtk.Button("Double")
+		self.double_button = Gtk.Button("Double")
 		self.double_button.connect("clicked", self.on_double, 2)
-		self.halve_button= gtk.Button("Halve")
+		self.halve_button= Gtk.Button("Halve")
 		self.halve_button.connect("clicked", self.on_double, 0.5)
-		hbox = gtk.HBox(False, 6)
+		hbox = Gtk.HBox(False, 6)
 		hbox.pack_start(self.double_button, expand=True)
 		hbox.pack_start(self.halve_button, expand=True)
 		self.vbox.pack_start(hbox, expand=False)
@@ -149,7 +149,7 @@ class TickDoublerMenuItem:
 	
 	def __init__(self, menu):
 		# create a menu item
-		item = gtk.MenuItem(label="Tick Doubler")
+		item = Gtk.MenuItem(label="Tick Doubler")
 		# connect the menu item to our handler
 		item.connect('activate', self.on_menuitem_activate)
 		# append the item to the menu

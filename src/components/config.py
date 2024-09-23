@@ -23,7 +23,7 @@
 Provides an object which eases access to the applications configuration.
 """
 
-import gtk
+from gi.repository import Gtk
 import os, glob, re
 
 from neil.utils import filepath, camelcase_to_unixstyle, etcpath, imagepath, iconpath, sharedpath, filenameify
@@ -630,7 +630,7 @@ class NeilConfig(object, ConfigParser.ConfigParser):
         """
         self.delete_section('Layout/'+windowid)
         self.set_section('Layout/'+windowid)
-        if isinstance(window, gtk.Window):
+        if isinstance(window, Gtk.Window):
             x,y = window.get_position()
             w,h = window.get_size()
             self.write_value("X", str(x))
@@ -643,10 +643,10 @@ class NeilConfig(object, ConfigParser.ConfigParser):
                 else:
                     maximize = 'false'
                 self.write_value("Maximize", maximize)
-        elif isinstance(window, gtk.Paned):
+        elif isinstance(window, Gtk.Paned):
             self.write_value("SashPosition", str(window.get_position()))
         else:
-            if window.window and window.get_property('visible'):
+            if window.get_parent_window() and window.get_property('visible'):
                 visible = 'true'
             else:
                 visible = 'false'
@@ -663,7 +663,7 @@ class NeilConfig(object, ConfigParser.ConfigParser):
         @type window: wx.Window
         """
         self.set_section('Layout/' + windowid)
-        if isinstance(window, gtk.Window):
+        if isinstance(window, Gtk.Window):
             try:
                 x = int(self.read_value('X'))
                 y = int(self.read_value('Y'))
@@ -678,7 +678,7 @@ class NeilConfig(object, ConfigParser.ConfigParser):
             #~ if hasattr(window, 'IsMaximized'):
                 #~ if self.read_value("Maximize") == 'true':
                     #~ window.Maximize()
-        elif isinstance(window, gtk.Paned):
+        elif isinstance(window, Gtk.Paned):
             try:
                 window.set_position(int(self.read_value("SashPosition")))
             except TypeError:

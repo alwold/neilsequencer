@@ -21,11 +21,12 @@
 import os
 from gi.repository import Gtk
 from gi.repository import Gdk
+from gi.repository import GdkPixbuf
 from neil.utils import format_time, ticks_to_time, prepstr, linear2db, db2linear, filepath, \
         is_debug, question, error, add_scrollbars, file_filter, new_stock_image_toggle_button, \
         new_stock_image_button, message, refresh_gui, show_manual
 import zzub
-import gobject
+from gi.repository import GObject
 import config
 import neil.errordlg as errordlg
 
@@ -61,7 +62,7 @@ class FramePanel(Gtk.Notebook):
 
   def __init__(self):
     Gtk.Notebook.__init__(self)
-    self.set_tab_pos(Gtk.POS_LEFT)
+    self.set_tab_pos(Gtk.PositionType.LEFT)
     self.set_show_border(True)
     self.set_border_width(1)
     self.set_show_tabs(True)
@@ -82,8 +83,8 @@ class FramePanel(Gtk.Notebook):
       header = Gtk.VBox()
       labelwidget = Gtk.Label(label)
       labelwidget.set_angle(90)
-      header.pack_start(labelwidget)
-      header.pack_start(new_theme_image(stockid, Gtk.ICON_SIZE_MENU))
+      header.pack_start(labelwidget, expand=True, fill=True, padding=0)
+      header.pack_start(new_theme_image(stockid, Gtk.IconSize.MENU), expand=True, fill=True, padding=0)
       header.show_all()
       if key:
         header.set_tooltip_text("%s (%s)" % (label, key))
@@ -161,7 +162,7 @@ class ViewMenu(Menu):
         self.connect('show', self.on_activate, item, view)
       elif stockid:
         item = self.add_image_item(label, new_theme_image(stockid,
-                                                          Gtk.ICON_SIZE_MENU),
+                                                          Gtk.IconSize.MENU),
                                    self.on_activate_item, view)
       else:
         item = self.add_item(label, self.on_activate_item)
@@ -335,19 +336,19 @@ class NeilFrame(Gtk.Window):
     self.framepanel = com.get('neil.core.framepanel')
 
     hbox = Gtk.HBox()
-    hbox.pack_start(self.framepanel)
-    hbox.pack_end(self.master, expand=False)
+    hbox.pack_start(self.framepanel, expand=True, fill=True, padding=0)
+    hbox.pack_end(self.master, expand=False, fill=True, padding=0)
     vbox.add(hbox)
 
-    vbox.pack_start(self.transport, expand=False)
+    vbox.pack_start(self.transport, expand=False, fill=True, padding=0)
 
     self.update_title()
-    Gtk.window_set_default_icon_list(
-            Gtk.gdk.pixbuf_new_from_file(hicoloriconpath("48x48/apps/neil.png")),
-            Gtk.gdk.pixbuf_new_from_file(hicoloriconpath("32x32/apps/neil.png")),
-            Gtk.gdk.pixbuf_new_from_file(hicoloriconpath("24x24/apps/neil.png")),
-            Gtk.gdk.pixbuf_new_from_file(hicoloriconpath("22x22/apps/neil.png")),
-            Gtk.gdk.pixbuf_new_from_file(hicoloriconpath("16x16/apps/neil.png")))
+    self.set_default_icon_list([
+            GdkPixbuf.Pixbuf.new_from_file(hicoloriconpath("48x48/apps/neil.png")),
+            GdkPixbuf.Pixbuf.new_from_file(hicoloriconpath("32x32/apps/neil.png")),
+            GdkPixbuf.Pixbuf.new_from_file(hicoloriconpath("24x24/apps/neil.png")),
+            GdkPixbuf.Pixbuf.new_from_file(hicoloriconpath("22x22/apps/neil.png")),
+            GdkPixbuf.Pixbuf.new_from_file(hicoloriconpath("16x16/apps/neil.png"))])
     self.resize(750, 550)
 
     self.connect('key-press-event', self.on_key_down)
@@ -356,11 +357,11 @@ class NeilFrame(Gtk.Window):
     
     self.framepanel.connect('switch-page', self.page_select)
 
-    gobject.timeout_add(500, self.update_title)
+    GObject.timeout_add(500, self.update_title)
     self.activated=0
 
     self.show_all()
-    self.master.hide_all()
+    self.master.hide()
     self.load_view()
 
     eventbus = com.get('neil.core.eventbus')
@@ -372,7 +373,7 @@ class NeilFrame(Gtk.Window):
       self.open_file(args[1])
     for driver in com.get_from_category('driver'):
       if driver.init_failed:
-        gobject.timeout_add(50, show_preferences, self, 1)
+        GObject.timeout_add(50, show_preferences, self, 1)
         break
 
   def on_undo(self, *args):
@@ -607,7 +608,7 @@ class NeilFrame(Gtk.Window):
       """
       Event handler for key events.
       """
-      k = Gtk.gdk.keyval_name(event.keyval)
+      k = Gdk.keyval_name(event.keyval)
       player = com.get('neil.core.player')
       driver = com.get('neil.core.driver.audio')
       if k == 'F6':
@@ -674,7 +675,7 @@ class NeilFrame(Gtk.Window):
       progBar.set_size_request(300, 40)
       progBar.set_fraction(0)
       progBar.show()
-      dlg.vbox.pack_start(progBar)
+      dlg.vbox.pack_start(progBar, expand=True, fill=True, padding=0)
       dlg.show()
       done = False
       def progress_callback():
@@ -682,7 +683,7 @@ class NeilFrame(Gtk.Window):
         return not done
       progBar.pulse()
       refresh_gui()
-      gobject.timeout_add(50, progress_callback)
+      GObject.timeout_add(50, progress_callback)
       player.load_ccm(filename)
       done = True
       # The following loads sequencer step size.
@@ -932,7 +933,7 @@ class NeilFrame(Gtk.Window):
     self.save_view()
     try:
       self.save_changes()
-      self.hide_all()
+      self.hide()
       return False
     except CancelException:
       return True

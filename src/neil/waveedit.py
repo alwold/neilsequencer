@@ -23,6 +23,7 @@ Provides dialogs, classes and controls to edit samples.
 """
 
 from gi.repository import Gtk
+from gi.repository import Gdk
 from gi.repository import Pango
 from gi.repository import PangoCairo
 import os, sys
@@ -51,7 +52,7 @@ class WaveEditPanel(Gtk.VBox):
         self.view = WaveEditView(wavetable)
         self.viewport = Gtk.Viewport()
         self.viewport.add(self.view)
-        self.pack_start(self.viewport)
+        self.pack_start(self.viewport, expand=True, fill=True, padding=0)
         self.set_border_width(MARGIN)
 
     def update(self, *args):
@@ -118,7 +119,7 @@ class WaveEditView(Gtk.DrawingArea):
         self.right_drag_start = 0
         self.stretching = False
         Gtk.DrawingArea.__init__(self)
-        self.add_events(Gtk.gdk.ALL_EVENTS_MASK)
+        self.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
         self.connect('button-press-event', self.on_button_down)
         self.connect('button-release-event', self.on_button_up)
         self.connect('motion-notify-event', self.on_motion)
@@ -163,9 +164,9 @@ class WaveEditView(Gtk.DrawingArea):
             self.sample_changed()
 
     def redraw(self):
-        if self.window:
+        if self.get_parent_window():
             w, h = self.get_client_size()
-            self.window.invalidate_rect((0, 0, w, h), False)
+            self.get_parent_window().invalidate_rect((0, 0, w, h), False)
 
     def update_digest(self, channel=0):
         if self.level == None:
@@ -477,11 +478,11 @@ class WaveEditView(Gtk.DrawingArea):
             self.near_start_loop_marker(mx, my) or
             self.near_end_loop_marker(mx, my)):
             resizer = Gtk.gdk.Cursor(Gtk.gdk.SB_H_DOUBLE_ARROW)
-            self.window.set_cursor(resizer)
+            self.get_parent_window().set_cursor(resizer)
         else:
             if (not self.dragging) and (not self.start_loop_dragging) and (not self.end_loop_dragging):
                 arrow = Gtk.gdk.Cursor(Gtk.gdk.ARROW)
-                self.window.set_cursor(arrow)
+                self.get_parent_window().set_cursor(arrow)
         if self.dragging == True:
             if s < self.startpos:
                 self.set_selection(s, self.startpos)

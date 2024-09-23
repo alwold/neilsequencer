@@ -28,7 +28,8 @@ if __name__ == '__main__':
     raise SystemExit
 
 from gi.repository import Gtk
-#import gobject
+from gi.repository import Gdk
+from gi.repository import GObject
 import os, sys, stat
 from neil.utils import prepstr, db2linear, linear2db, note2str, filepath, \
      new_listview, new_image_button, add_scrollbars, file_filter, question, \
@@ -81,11 +82,11 @@ class WavetablePanel(Gtk.VBox):
         self.instrpanel.set_border_width(MARGIN2)
         self.libpanel = \
             Gtk.FileChooserDialog(title="Open Sample",
-                                  action=Gtk.FILE_CHOOSER_ACTION_OPEN,
+                                  action=Gtk.FileChooserAction.OPEN,
                                   buttons=(Gtk.STOCK_CANCEL,
-                                           Gtk.RESPONSE_CANCEL,
+                                           Gtk.ResponseType.CANCEL,
                                            Gtk.STOCK_OPEN,
-                                           Gtk.RESPONSE_OK))
+                                           Gtk.ResponseType.OK))
         preview = Gtk.VBox(False, MARGIN)
         #preview.set_size_request(100,-1)
 
@@ -119,11 +120,11 @@ class WavetablePanel(Gtk.VBox):
         self.ohg.connect(btnpreviewstop, 'clicked', self.on_stop_wave)
 
         hbox = Gtk.HBox(False, MARGIN)
-        hbox.pack_start(btnpreviewplay, expand=False)
-        hbox.pack_start(btnpreviewstop, expand=False)
-        preview.pack_start(hbox, expand=False)
-        preview.pack_start(self.previewdesc, expand=False)
-        preview.pack_start(chkautoplay, expand=False)
+        hbox.pack_start(btnpreviewplay, expand=False, fill=True, padding=0)
+        hbox.pack_start(btnpreviewstop, expand=False, fill=True, padding=0)
+        preview.pack_start(hbox, expand=False, fill=True, padding=0)
+        preview.pack_start(self.previewdesc, expand=False, fill=True, padding=0)
+        preview.pack_start(chkautoplay, expand=False, fill=True, padding=0)
         preview.show_all()
 
         self.libpanel.set_preview_widget(preview)
@@ -159,11 +160,11 @@ class WavetablePanel(Gtk.VBox):
         #self.append_page(self.instrpanel, gtk.Label("Instruments"))
         #self.append_page(self.libpanel, gtk.Label("Library"))
         #self.set_current_page(0)
-        self.pack_start(self.instrpanel, expand=True)
+        self.pack_start(self.instrpanel, expand=True, fill=True, padding=0)
         self.samplelist, self.samplestore, columns = new_listview([
                 ('#', str),
                 ('Name', str),
-                (None, gobject.TYPE_PYOBJECT),
+                (None, GObject.TYPE_PYOBJECT),
         ])
         self.samplelist.get_selection().select_path(0)
         # XXX: TODO
@@ -201,43 +202,43 @@ class WavetablePanel(Gtk.VBox):
         #self.btn_end_next = gtk.Button(">")
 
         samplebuttons = Gtk.HBox(False, MARGIN)
-        samplebuttons.pack_start(self.btnloadsample, expand=False)
-        samplebuttons.pack_start(self.btnstoresample, expand=False)
-        samplebuttons.pack_start(self.btnrename, expand=False)
-        samplebuttons.pack_start(self.btnclear, expand=False)
+        samplebuttons.pack_start(self.btnloadsample, expand=False, fill=True, padding=0)
+        samplebuttons.pack_start(self.btnstoresample, expand=False, fill=True, padding=0)
+        samplebuttons.pack_start(self.btnrename, expand=False, fill=True, padding=0)
+        samplebuttons.pack_start(self.btnclear, expand=False, fill=True, padding=0)
         samplesel = Gtk.VBox(False, MARGIN)
-        samplesel.pack_start(samplebuttons, expand=False)
-        samplesel.pack_end(add_scrollbars(self.samplelist))
+        samplesel.pack_start(samplebuttons, expand=False, fill=True, padding=0)
+        samplesel.pack_end(add_scrollbars(self.samplelist), expand=True, fill=True, padding=0)
         loopprops = Gtk.HBox(False, MARGIN)
-        loopprops.pack_start(self.btnplay, expand=False)
-        loopprops.pack_start(self.btnstop, expand=False)
-        loopprops.pack_start(self.chkloop, expand=False)
+        loopprops.pack_start(self.btnplay, expand=False, fill=True, padding=0)
+        loopprops.pack_start(self.btnstop, expand=False, fill=True, padding=0)
+        loopprops.pack_start(self.chkloop, expand=False, fill=True, padding=0)
         #loopprops.pack_start(self.btn_start_prev, expand=False)
         #loopprops.pack_start(self.btn_start_next, expand=False)
-        loopprops.pack_start(self.edloopstart, expand=False)
-        loopprops.pack_start(self.edloopend, expand=False)
+        loopprops.pack_start(self.edloopstart, expand=False, fill=True, padding=0)
+        loopprops.pack_start(self.edloopend, expand=False, fill=True, padding=0)
         #loopprops.pack_start(self.btn_end_prev, expand=False)
         #loopprops.pack_start(self.btn_end_next, expand=False)
-        loopprops.pack_start(self.chkpingpong, expand=False)
-        loopprops.pack_start(self.edsamplerate, expand=False)
+        loopprops.pack_start(self.chkpingpong, expand=False, fill=True, padding=0)
+        loopprops.pack_start(self.edsamplerate, expand=False, fill=True, padding=0)
         #loopprops.pack_start(self.btnfitloop, expand=False)
         #loopprops.pack_start(self.btnstrloop, expand=False)
         envprops = Gtk.HBox(False, MARGIN)
         #envprops.pack_start(self.cbmachine, expand=False)
         #envprops.pack_start(self.cbenvelope, expand=False)
-        envprops.pack_start(self.chkenable, expand=False)
+        envprops.pack_start(self.chkenable, expand=False, fill=True, padding=0)
         sampleprops = Gtk.VBox(False, MARGIN)
-        sampleprops.pack_start(loopprops, expand=False)
+        sampleprops.pack_start(loopprops, expand=False, fill=True, padding=0)
         nbsampleprops = Gtk.VPaned()
         envsection = Gtk.VBox(False, MARGIN)
         envsection.set_border_width(MARGIN)
-        envsection.pack_start(envprops, expand=False)
+        envsection.pack_start(envprops, expand=False, fill=True, padding=0)
         self.envscrollwin = add_scrollbars(self.envelope)
-        envsection.pack_start(self.envscrollwin)
+        envsection.pack_start(self.envscrollwin, expand=True, fill=True, padding=0)
         self.waveedit.set_size_request(-1, 300)
         nbsampleprops.add1(self.waveedit)
         nbsampleprops.add2(envsection)
-        sampleprops.pack_start(nbsampleprops)
+        sampleprops.pack_start(nbsampleprops, expand=True, fill=True, padding=0)
         self.instrpanel.add1(samplesel)
         self.instrpanel.add2(sampleprops)
         self.instrpanel.set_position(250)
@@ -779,7 +780,7 @@ class WavetablePanel(Gtk.VBox):
         @type event: wx.MouseEvent
         """
         #  Plays the selected file
-        if (event.button == 1) and (event.type == Gtk.gdk._2BUTTON_PRESS):
+        if (event.button == 1) and (event.type == Gdk.EventType._2BUTTON_PRESS):
             # double click
             self.on_play_wave(event)
             #I think this makes much more sense..
@@ -860,7 +861,7 @@ class WavetablePanel(Gtk.VBox):
         @type event: wx.KeyEvent
         """
         # Read the name of the key pressed.
-        k = Gtk.gdk.keyval_name(event.keyval)
+        k = Gdk.keyval_name(event.keyval)
         # When space button is pressed play the wave.
         if k == 'Space':
             self.on_play_wave(event)
@@ -884,7 +885,7 @@ class WavetablePanel(Gtk.VBox):
         @param event: Key event
         @type event: wx.KeyEvent
         """
-        k = Gtk.gdk.keyval_name(event.keyval)
+        k = Gdk.keyval_name(event.keyval)
         mask = event.state
         kv = event.keyval
         print(k, kv)
@@ -1103,9 +1104,9 @@ class DataEntry(Gtk.Dialog):
         self.label = Gtk.Label(label)
         self.edit = Gtk.Entry()
         s = Gtk.HBox()
-        s.pack_start(self.label, expand=False)
-        s.pack_start(self.edit)
-        self.vbox.pack_start(s, expand=False)
+        s.pack_start(self.label, expand=False, fill=True, padding=0)
+        s.pack_start(self.edit, expand=True, fill=True, padding=0)
+        self.vbox.pack_start(s, expand=False, fill=True, padding=0)
         self.edit.grab_focus()
         self.edit.select_region(1, -1)
         self.show_all()

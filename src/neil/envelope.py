@@ -23,6 +23,7 @@ Provides dialogs, classes and controls to display/load/save envelopes
 """
 
 from gi.repository import Gtk
+from gi.repository import Gdk
 import os
 import sys
 import math
@@ -50,16 +51,16 @@ class SimpleEnvelope(Gtk.DrawingArea):
         self.currentpoint = None
         self.dragging = False
         self.showpoints = False
-        gtk.DrawingArea.__init__(self)
-        self.add_events(gtk.gdk.ALL_EVENTS_MASK)
+        Gtk.DrawingArea.__init__(self)
+        self.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
         self.connect('button-press-event', self.on_button_down)
         self.connect('button-release-event', self.on_button_up)
         self.connect('motion-notify-event', self.on_motion)
         self.connect('enter-notify-event', self.on_enter)
         self.connect('leave-notify-event', self.on_leave)
         self.connect('expose_event', self.expose)
-        self.context_menu = gtk.Menu()
-        self.reset = gtk.MenuItem("Reset")
+        self.context_menu = Gtk.Menu()
+        self.reset = Gtk.MenuItem("Reset")
         self.reset.show()
         self.reset.connect('button-press-event', self.on_reset)
         self.context_menu.append(self.reset)
@@ -74,9 +75,9 @@ class SimpleEnvelope(Gtk.DrawingArea):
         return rect.width, rect.height
 
     def redraw(self):
-        if self.window:
+        if self.get_parent_window():
             w, h = self.get_client_size()
-            self.window.invalidate_rect((0, 0, w, h), False)
+            self.get_parent_window().invalidate_rect((0, 0, w, h), False)
 
     def on_enter(self, widget, event):
         """
@@ -110,7 +111,7 @@ class SimpleEnvelope(Gtk.DrawingArea):
             px, py = point
             if (bestindex == None) and (px > x):
                 bestindex = i
-            rc = gtk.gdk.Rectangle(px - ds, py - ds, DOTSIZE, DOTSIZE)
+            rc = Gdk.Rectangle(px - ds, py - ds, DOTSIZE, DOTSIZE)
             if sum(rc.intersect((x, y, 1, 1))):
                 return i, EXACT
         return bestindex, NEXT
@@ -159,7 +160,7 @@ class SimpleEnvelope(Gtk.DrawingArea):
         """
         Callback that responds to mouse motion over the envelope view.
         """
-        mx, my, state = self.window.get_pointer()
+        mx, my, state = self.get_parent_window().get_pointer()
         mx, my = int(mx), int(my)
         if self.dragging:
             x, y = self.pixel_to_env((mx, my))
@@ -301,8 +302,8 @@ class EnvelopeView(Gtk.DrawingArea):
         self.currentpoint = None
         self.dragging = False
         self.showpoints = False
-        gtk.DrawingArea.__init__(self)
-        self.add_events(gtk.gdk.ALL_EVENTS_MASK)
+        Gtk.DrawingArea.__init__(self)
+        self.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
         self.connect('button-press-event', self.on_button_down)
         self.connect('button-release-event', self.on_button_up)
         self.connect('motion-notify-event', self.on_motion)
@@ -311,53 +312,53 @@ class EnvelopeView(Gtk.DrawingArea):
         self.connect('expose_event', self.expose)
 
         # Menu that get's activated when you click right mouse button.
-        self.context_menu = gtk.Menu()
+        self.context_menu = Gtk.Menu()
 
-        self.sustain = gtk.MenuItem("Sustain")
+        self.sustain = Gtk.MenuItem("Sustain")
         self.sustain.show()
         self.sustain.connect('button-press-event', self.on_set_sustain)
         self.context_menu.append(self.sustain)
 
-        self.delete = gtk.MenuItem("Delete")
+        self.delete = Gtk.MenuItem("Delete")
         self.delete.show()
         self.delete.connect('button-press-event', self.on_delete_point)
         self.context_menu.append(self.delete)
 
-        self.reset = gtk.MenuItem("Reset")
+        self.reset = Gtk.MenuItem("Reset")
         self.reset.show()
         self.reset.connect('button-press-event', self.on_reset)
         self.context_menu.append(self.reset)
 
-        separator = gtk.SeparatorMenuItem()
+        separator = Gtk.SeparatorMenuItem()
         separator.show()
         self.context_menu.append(separator)
 
-        self.load = gtk.MenuItem("Load")
+        self.load = Gtk.MenuItem("Load")
         self.load.show()
         self.load.connect('button-press-event', self.on_load)
         self.context_menu.append(self.load)
 
-        self.save = gtk.MenuItem("Save")
+        self.save = Gtk.MenuItem("Save")
         self.save.show()
         self.save.connect('button-press-event', self.on_save)
         self.context_menu.append(self.save)
 
         self.open_dialog =\
-            gtk.FileChooserDialog(title="Open Envelope File",
-                                  action=gtk.FILE_CHOOSER_ACTION_OPEN,
-                                  buttons=(gtk.STOCK_CANCEL,
-                                           gtk.RESPONSE_CANCEL,
-                                           gtk.STOCK_OPEN,
-                                           gtk.RESPONSE_OK))
+            Gtk.FileChooserDialog(title="Open Envelope File",
+                                  action=Gtk.FileChooserAction.OPEN,
+                                  buttons=(Gtk.STOCK_CANCEL,
+                                           Gtk.ResponseType.CANCEL,
+                                           Gtk.STOCK_OPEN,
+                                           Gtk.ResponseType.OK))
         self.save_dialog =\
-            gtk.FileChooserDialog(title="Save Envelope File",
-                                  action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                                  buttons=(gtk.STOCK_CANCEL,
-                                           gtk.RESPONSE_CANCEL,
-                                           gtk.STOCK_OPEN,
-                                           gtk.RESPONSE_OK))
+            Gtk.FileChooserDialog(title="Save Envelope File",
+                                  action=Gtk.FileChooserAction.SAVE,
+                                  buttons=(Gtk.STOCK_CANCEL,
+                                           Gtk.ResponseType.CANCEL,
+                                           Gtk.STOCK_OPEN,
+                                           Gtk.ResponseType.OK))
 
-        self.filter_ = gtk.FileFilter()
+        self.filter_ = Gtk.FileFilter()
         self.filter_.set_name("Buzz Envelope File (*.bef)")
         self.filter_.add_pattern("*.bef")
         self.open_dialog.add_filter(self.filter_)
@@ -373,9 +374,9 @@ class EnvelopeView(Gtk.DrawingArea):
         return rect.width, rect.height
 
     def redraw(self):
-        if self.window:
+        if self.get_parent_window():
             w, h = self.get_client_size()
-            self.window.invalidate_rect((0, 0, w, h), False)
+            self.get_parent_window().invalidate_rect((0, 0, w, h), False)
 
     def on_enter(self, widget, event):
         """
@@ -409,7 +410,7 @@ class EnvelopeView(Gtk.DrawingArea):
             px, py, f = point
             if (bestindex == None) and (px > x):
                 bestindex = i
-            rc = gtk.gdk.Rectangle(px - ds, py - ds, DOTSIZE, DOTSIZE)
+            rc = Gdk.Rectangle(px - ds, py - ds, DOTSIZE, DOTSIZE)
             if sum(rc.intersect((x, y, 1, 1))):
                 return i, EXACT
         return bestindex, NEXT
@@ -463,7 +464,7 @@ class EnvelopeView(Gtk.DrawingArea):
         """
         Callback that responds to mouse motion over the envelope view.
         """
-        mx, my, state = self.window.get_pointer()
+        mx, my, state = self.get_parent_window().get_pointer()
         mx, my = int(mx), int(my)
         if self.dragging:
             x, y, f = self.envelope.get_point(self.currentpoint)
@@ -509,7 +510,7 @@ class EnvelopeView(Gtk.DrawingArea):
         Callback responding to the 'load' context menu item.
         """
         response = self.open_dialog.run()
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             while self.envelope.get_point_count() > 2:
                 self.envelope.delete_point(1)
             filename = self.open_dialog.get_filename()
@@ -537,7 +538,7 @@ class EnvelopeView(Gtk.DrawingArea):
         Callback responding to the 'save' context menu item.
         """
         response = self.save_dialog.run()
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             points = []
             sustainindex = -1
             for i, (x, y, f) in enumerate(self.envelope.get_point_list()):
@@ -607,7 +608,7 @@ class EnvelopeView(Gtk.DrawingArea):
                 self.envelope.get_point_list()]
 
     def set_sensitive(self, enable):
-        gtk.DrawingArea.set_sensitive(self, enable)
+        Gtk.DrawingArea.set_sensitive(self, enable)
         self.redraw()
 
     def draw(self, ctx):

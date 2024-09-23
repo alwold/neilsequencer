@@ -39,7 +39,7 @@ import zzub
 DRAG_FORMAT_PLUGIN_URI = 0
 
 DRAG_FORMATS = [
-    ('application/x-neil-plugin-uri', 0, DRAG_FORMAT_PLUGIN_URI)
+    Gtk.TargetEntry('application/x-neil-plugin-uri', 0, DRAG_FORMAT_PLUGIN_URI)
 ]
 
 
@@ -72,7 +72,7 @@ class SearchPluginsDialog(Gtk.Window):
         self.searchbox = Gtk.Entry()
         self.treeview = Gtk.TreeView()
         new_liststore(self.treeview, [
-            ('Icon', Gtk.gdk.Pixbuf),
+            ('Icon', GdkPixbuf.Pixbuf),
             ('Name', str, dict(markup=True)),
             (None, object),
             (None, str, dict(markup=True)),
@@ -80,8 +80,8 @@ class SearchPluginsDialog(Gtk.Window):
 
         # checkboxes
         self.check_containers = [Gtk.HBox() for i in range(2)]
-        self.vbox.pack_end(self.check_containers[1], False, False)
-        self.vbox.pack_end(self.check_containers[0], False, False)
+        self.vbox.pack_end(self.check_containers[1], False, False, padding=0)
+        self.vbox.pack_end(self.check_containers[0], False, False, padding=0)
 
         self.show_generators_button = Gtk.CheckButton(label="Generators")
         self.check_containers[0].add(self.show_generators_button)
@@ -105,15 +105,15 @@ class SearchPluginsDialog(Gtk.Window):
         self.treeview.set_headers_visible(False)
         self.treeview.set_rules_hint(True)
         self.populate()
-        self.vbox.pack_start(add_scrollbars(self.treeview))
-        self.vbox.pack_end(self.searchbox, False, False)
+        self.vbox.pack_start(add_scrollbars(self.treeview), expand=True, fill=True, padding=0)
+        self.vbox.pack_end(self.searchbox, expand=False, fill=False, padding=0)
         self.searchbox.connect("changed", self.on_entry_changed)
         self.filter = self.store.filter_new()
         self.filter.set_visible_func(self.filter_item, data=None)
         self.treeview.set_model(self.filter)
         self.treeview.set_tooltip_column(3)
-        self.treeview.drag_source_set(Gtk.gdk.BUTTON1_MASK | Gtk.gdk.BUTTON3_MASK,
-                                      DRAG_FORMATS, Gtk.gdk.ACTION_COPY | Gtk.gdk.ACTION_MOVE)
+        self.treeview.drag_source_set(Gdk.ModifierType.BUTTON1_MASK | Gdk.ModifierType.BUTTON3_MASK,
+                                      DRAG_FORMATS, Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
         self.treeview.connect('drag_data_get', self.on_treeview_drag_data_get)
         cfg = com.get('neil.core.config')
         self.searchbox.set_text(cfg.pluginlistbrowser_search_term)
@@ -207,7 +207,7 @@ class SearchPluginsDialog(Gtk.Window):
         cfg = com.get('neil.core.config')
         for pluginloader in player.get_pluginloader_list():
             plugins[pluginloader.get_uri()] = pluginloader
-        theme = Gtk.icon_theme_get_default()
+        theme = Gtk.IconTheme.get_default()
 
         def get_type_rating(n):
             uri = n.get_uri()
@@ -275,7 +275,7 @@ class SearchPluginsDialog(Gtk.Window):
             author = pl.get_author().replace('<', '&lt;').replace('>', '&gt;')
             tooltip += 'Written by ' + prepstr(author)
             if icon and theme.has_icon(icon):
-                pixbuf = theme.load_icon(icon, Gtk.ICON_SIZE_MENU, 0)
+                pixbuf = theme.load_icon(icon, Gtk.IconSize.MENU, 0)
             self.store.append([pixbuf, text, pl, tooltip])
 
 

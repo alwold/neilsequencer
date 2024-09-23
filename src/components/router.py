@@ -31,6 +31,8 @@ if __name__ == '__main__':
 
 import neil.com as com
 from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import GObject
 
 from neil.utils import PLUGIN_FLAGS_MASK, ROOT_PLUGIN_FLAGS,\
      GENERATOR_PLUGIN_FLAGS, EFFECT_PLUGIN_FLAGS,\
@@ -92,13 +94,13 @@ class AttributesDialog(Gtk.Dialog):
         @param plugin: Plugin object.
         @type plugin: wx.Plugin
         """
-        gtk.Dialog.__init__(self,
+        Gtk.Dialog.__init__(self,
                 "Attributes",
                 parent.get_toplevel(),
-                gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
                 None
         )
-        vbox = gtk.VBox(False, MARGIN)
+        vbox = Gtk.VBox(False, MARGIN)
         vbox.set_border_width(MARGIN)
         self.plugin = plugin
         self.pluginloader = plugin.get_pluginloader()
@@ -111,14 +113,14 @@ class AttributesDialog(Gtk.Dialog):
                 ('Default', str),
         ])
         vbox.add(add_scrollbars(self.attriblist))
-        hsizer = gtk.HButtonBox()
+        hsizer = Gtk.HButtonBox()
         hsizer.set_spacing(MARGIN)
-        hsizer.set_layout(gtk.BUTTONBOX_START)
-        self.edvalue = gtk.Entry()
+        hsizer.set_layout(Gtk.BUTTONBOX_START)
+        self.edvalue = Gtk.Entry()
         self.edvalue.set_size_request(50, -1)
-        self.btnset = gtk.Button("_Set")
-        self.btnok = self.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
-        self.btncancel = self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+        self.btnset = Gtk.Button("_Set")
+        self.btnok = self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        self.btncancel = self.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
         hsizer.pack_start(self.edvalue, expand=False)
         hsizer.pack_start(self.btnset, expand=False)
         vbox.pack_start(hsizer, expand=False)
@@ -184,7 +186,7 @@ class AttributesDialog(Gtk.Dialog):
         """
         Called when the "ok" or "cancel" button is being pressed.
         """
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             for i in range(len(self.attribs)):
                 self.plugin.set_attribute_value(i, self.attribs[i])
 
@@ -201,7 +203,7 @@ class ParameterDialog(Gtk.Dialog):
     )
 
     def __init__(self, manager, plugin, parent):
-        gtk.Dialog.__init__(self, parent=parent.get_toplevel())
+        Gtk.Dialog.__init__(self, parent=parent.get_toplevel())
         self.plugin = plugin
         self.manager = manager
         self.manager.plugin_dialogs[plugin] = self
@@ -287,7 +289,7 @@ class PresetDialog(Gtk.Dialog):
     """
     def __init__(self, manager, plugin, parent):
         #gtk.Dialog.__init__(self, parent=parent.get_toplevel())
-        gtk.Dialog.__init__(self, parent=com.get('neil.core.window.root'))
+        Gtk.Dialog.__init__(self, parent=com.get('neil.core.window.root'))
         self.plugin = plugin
         self.manager = manager
         self.manager.preset_dialogs[plugin] = self
@@ -319,7 +321,7 @@ class PresetDialog(Gtk.Dialog):
 DRAG_FORMAT_PLUGIN_URI = 0
 
 DRAG_FORMATS = [
-        ('application/x-neil-plugin-uri', 0, DRAG_FORMAT_PLUGIN_URI)
+        Gtk.TargetEntry('application/x-neil-plugin-uri', 0, DRAG_FORMAT_PLUGIN_URI)
 ]
 
 
@@ -348,7 +350,7 @@ class RoutePanel(Gtk.VBox):
         """
         Initializer.
         """
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         self.view = com.get('neil.core.router.view', self)
         self.add(self.view)
 
@@ -380,13 +382,13 @@ class VolumeSlider(Gtk.Window):
         self.parent_window = parent
         self.plugin = None
         self.index = -1
-        gtk.Window.__init__(self, gtk.WINDOW_POPUP)
-        self.drawingarea = gtk.DrawingArea()
+        Gtk.Window.__init__(self, Gtk.WindowType.POPUP)
+        self.drawingarea = Gtk.DrawingArea()
         self.add(self.drawingarea)
-        self.drawingarea.add_events(gtk.gdk.ALL_EVENTS_MASK)
+        self.drawingarea.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
         self.drawingarea.set_property('can-focus', True)
         self.resize(VOLBARWIDTH, VOLBARHEIGHT)
-        self.hide_all()
+        self.hide()
         self.drawingarea.connect('motion-notify-event', self.on_motion)
         self.drawingarea.connect('expose-event', self.expose)
         self.drawingarea.connect('button-release-event', self.on_left_up)
@@ -396,7 +398,7 @@ class VolumeSlider(Gtk.Window):
         return False
 
     def redraw(self):
-        if self.window:
+        if self.get_parent_window():
             rect = self.drawingarea.get_allocation()
             window = self.drawingarea.window
             window.invalidate_rect((0, 0, rect.width, rect.height), False)
@@ -444,7 +446,7 @@ class VolumeSlider(Gtk.Window):
             drawable.draw_rectangle(gc, True, 1, pos + 1,
                                     VOLBARWIDTH - 2, VOLKNOBHEIGHT - 2)
 
-        black = cm.alloc_color(gtk.gdk.color_parse("black"))
+        black = cm.alloc_color(Gdk.color_parse("black"))
         gc.set_foreground(black)
         import pango
         layout = pango.Layout(self.get_pango_context())
@@ -484,7 +486,7 @@ class VolumeSlider(Gtk.Window):
         @type event: wx.MouseEvent
         """
         self.parent_window.redraw()
-        self.hide_all()
+        self.hide()
         self.drawingarea.grab_remove()
 
 
@@ -533,7 +535,7 @@ class RouteView(Gtk.DrawingArea):
         @param rootwindow: Main window.
         @type rootwindow: NeilFrame
         """
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
         self.panel = parent
         self.routebitmap = None
         # self.peaks = {}
@@ -547,7 +549,7 @@ class RouteView(Gtk.DrawingArea):
         self.chordnotes = []
         self.update_colors()
         self.volume_slider = VolumeSlider(self)
-        self.add_events(gtk.gdk.ALL_EVENTS_MASK)
+        self.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
         self.set_property('can-focus', True)
         self.connect('button-press-event', self.on_left_down)
         self.connect('button-release-event', self.on_left_up)
@@ -557,7 +559,7 @@ class RouteView(Gtk.DrawingArea):
         self.connect('key-release-event', self.on_key_jazz_release, None)
         self.connect('size-allocate', self.on_size_allocate)
         if config.get_config().get_led_draw() == True:
-            gobject.timeout_add(100, self.on_draw_led_timer)
+            GObject.timeout_add(100, self.on_draw_led_timer)
         self.drag_dest_set(0, DRAG_FORMATS, 0)
         self.connect('drag_motion', self.on_drag_motion)
         self.connect('drag_drop', self.on_drag_drop)
@@ -829,8 +831,8 @@ class RouteView(Gtk.DrawingArea):
             return self.on_context_menu(widget, event)
         if not event.button in (1, 2):
             return
-        if (event.button == 1) and (event.type == gtk.gdk._2BUTTON_PRESS):
-            self.window.set_cursor(None)
+        if (event.button == 1) and (event.type == Gdk.EventType._2BUTTON_PRESS):
+            self.get_parent_window().set_cursor(None)
             return self.on_left_dclick(widget, event)
         mx, my = int(event.x), int(event.y)
         res = self.get_plugin_at((mx, my))
@@ -841,23 +843,23 @@ class RouteView(Gtk.DrawingArea):
                 self.redraw()
             else:
                 if not mp in player.active_plugins:
-                    if (event.state & gtk.gdk.SHIFT_MASK):
+                    if (event.state & Gdk.SHIFT_MASK):
                         player.active_plugins = [mp] + player.active_plugins
                     else:
                         player.active_plugins = [mp]
                 if not mp in player.active_patterns and is_generator(mp):
-                    if (event.state & gtk.gdk.SHIFT_MASK):
+                    if (event.state & Gdk.SHIFT_MASK):
                         player.active_patterns = [(mp, 0)] + player.active_patterns
                     else:
                         player.active_patterns = [(mp, 0)]
                 player.set_midi_plugin(mp)
-                if (event.state & gtk.gdk.CONTROL_MASK) or (event.button == 2):
+                if (event.state & Gdk.CONTROL_MASK) or (event.button == 2):
                     if is_controller(mp):
                         pass
                     else:
                         self.connecting = True
                         self.connectpos = int(mx), int(my)
-                        self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.CROSSHAIR))
+                        self.get_parent_window().set_cursor(Gdk.Cursor(Gdk.CROSSHAIR))
                 if not self.connecting:
                     for plugin in player.active_plugins:
                         pinfo = self.get_plugin_info(plugin)
@@ -865,13 +867,13 @@ class RouteView(Gtk.DrawingArea):
                         x, y = self.float_to_pixel(pinfo.dragpos)
                         pinfo.dragoffset = x - mx, y - my
                     self.dragging = True
-                    self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.FLEUR))
+                    self.get_parent_window().set_cursor(Gdk.Cursor(Gdk.FLEUR))
                     self.grab_add()
         else:
             res = self.get_connection_at((mx, my))
             if res:
                 mp, index = res
-                ox, oy = self.window.get_origin()
+                ox, oy = self.get_parent_window().get_origin()
                 connectiontype = mp.get_input_connection_type(index)
                 if connectiontype == zzub.zzub_connection_type_audio:
                     self.volume_slider.display((ox + mx, oy + my), mp, index)
@@ -888,14 +890,14 @@ class RouteView(Gtk.DrawingArea):
         @param event: Mouse event.
         @type event: wx.MouseEvent
         """
-        x, y, state = self.window.get_pointer()
+        window, x, y, state = self.get_parent_window().get_pointer()
         if self.dragging:
             player = com.get('neil.core.player')
             ox, oy = self.dragoffset
             mx, my = int(x), int(y)
             size = self.get_allocation()
             x, y = max(0, min(mx - ox, size.width)), max(0, min(my - oy, size.height))
-            if (event.state & gtk.gdk.CONTROL_MASK):
+            if (event.state & Gdk.CONTROL_MASK):
                 # quantize position
                 x = int(float(x) / QUANTIZEX + 0.5) * QUANTIZEX
                 y = int(float(y) / QUANTIZEY + 0.5) * QUANTIZEY
@@ -911,7 +913,7 @@ class RouteView(Gtk.DrawingArea):
             res = self.get_plugin_at((x, y))
             if res:
                 mp, (mx, my), area = res
-                self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1) if area == AREA_LED else None)
+                self.get_parent_window().set_cursor(Gdk.Cursor(Gdk.HAND1) if area == AREA_LED else None)
         return True
 
     def on_left_up(self, widget, event):
@@ -925,12 +927,12 @@ class RouteView(Gtk.DrawingArea):
         player = com.get('neil.core.player')
         if self.dragging:
             self.dragging = False
-            self.window.set_cursor(None)
+            self.get_parent_window().set_cursor(None)
             self.grab_remove()
             ox, oy = self.dragoffset
             size = self.get_allocation()
             x, y = max(0, min(mx - ox, size.width)), max(0, min(my - oy, size.height))
-            if (event.state & gtk.gdk.CONTROL_MASK):
+            if (event.state & Gdk.CONTROL_MASK):
                 # quantize position
                 x = int(float(x) / QUANTIZEX + 0.5) * QUANTIZEX
                 y = int(float(y) / QUANTIZEY + 0.5) * QUANTIZEY
@@ -953,9 +955,9 @@ class RouteView(Gtk.DrawingArea):
         if res:
             mp, (x, y), area = res
             if area == AREA_LED:
-                self.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
+                self.get_parent_window().set_cursor(Gdk.Cursor(Gdk.HAND1))
         else:
-            self.window.set_cursor(None)
+            self.get_parent_window().set_cursor(None)
 
     def update_all(self):
         self.update_colors()
@@ -968,7 +970,7 @@ class RouteView(Gtk.DrawingArea):
         # TODO: find some other way to find out whether we are really visible
         #if self.rootwindow.get_current_panel() != self.panel:
         #       return True
-        if self.window:
+        if self.get_parent_window():
             player = com.get('neil.core.player')
             rect = self.get_allocation()
             w, h = rect.width, rect.height
@@ -979,7 +981,7 @@ class RouteView(Gtk.DrawingArea):
             PW, PH = PLUGINWIDTH / 2, PLUGINHEIGHT / 2
             for mp, (rx, ry) in ((mp, get_pixelpos(*mp.get_position())) for mp in player.get_plugin_list()):
                 rx, ry = rx - PW, ry - PH
-                self.window.invalidate_rect((int(rx), int(ry), PLUGINWIDTH, PLUGINHEIGHT), False)
+                self.get_parent_window().invalidate_rect(Gdk.Rectangle(int(rx), int(ry), PLUGINWIDTH, PLUGINHEIGHT), False)
         return True
 
     def expose(self, widget, event):
@@ -988,10 +990,10 @@ class RouteView(Gtk.DrawingArea):
         return False
 
     def redraw(self):
-        if self.window:
+        if self.get_parent_window():
             self.routebitmap = None
             rect = self.get_allocation()
-            self.window.invalidate_rect((0, 0, rect.width, rect.height), False)
+            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, rect.width, rect.height), False)
 
     def draw_leds(self):
         """
@@ -1000,7 +1002,7 @@ class RouteView(Gtk.DrawingArea):
         player = com.get('neil.core.player')
         if player.is_loading():
             return
-        gc = self.window.new_gc()
+        gc = self.get_parent_window().new_gc()
         cm = gc.get_colormap()
         #cfg = config.get_config()
         rect = self.get_allocation()
@@ -1038,7 +1040,7 @@ class RouteView(Gtk.DrawingArea):
                 return brush2cm(brushes[flag])
 
             if not pi.plugingfx:
-                pi.plugingfx = gtk.gdk.Pixmap(self.window, PLUGINWIDTH, PLUGINHEIGHT, -1)
+                pi.plugingfx = Gdk.Pixmap(self.get_parent_window(), PLUGINWIDTH, PLUGINHEIGHT, -1)
                 # adjust colour for muted plugins
                 color = brushes[self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT]
                 gc.set_foreground(cm.alloc_color(color))
@@ -1055,7 +1057,7 @@ class RouteView(Gtk.DrawingArea):
                                             PLUGINWIDTH - 1, PLUGINHEIGHT - 1)
 
                 #  inner border
-                border = blend(cm.alloc_color(color), gtk.gdk.Color("#fff"), 0.65)
+                border = blend(cm.alloc_color(color), Gdk.Color("#fff"), 0.65)
                 gc.set_foreground(cm.alloc_color(border))
                 pi.plugingfx.draw_rectangle(gc, False, 1, 1, PLUGINWIDTH - 3, PLUGINHEIGHT - 3)
 
@@ -1074,14 +1076,14 @@ class RouteView(Gtk.DrawingArea):
                                                 PLUGINWIDTH / 2 - lw / 2 - 3,
                                                 PLUGINHEIGHT / 2 - lh / 2,
                                                 lw + 6, lh)
-                gc.set_foreground(cm.alloc_color(blend(flag2cm(self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT), gtk.gdk.Color("#fff"), 0.7)))
+                gc.set_foreground(cm.alloc_color(blend(flag2cm(self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT), Gdk.Color("#fff"), 0.7)))
                 pi.plugingfx.draw_layout(gc, PLUGINWIDTH / 2 - lw / 2 + 1, PLUGINHEIGHT / 2 - lh / 2 + 1, layout)
 
                 gc.set_foreground(flag2cm(self.COLOR_TEXT))
                 pi.plugingfx.draw_layout(gc, PLUGINWIDTH / 2 - lw / 2, PLUGINHEIGHT / 2 - lh / 2, layout)
             if config.get_config().get_led_draw() == True:
                 # led border
-                border = blend(flag2cm(self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT), gtk.gdk.Color("#000"), 0.5)
+                border = blend(flag2cm(self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT), Gdk.Color("#000"), 0.5)
                 gc.set_foreground(cm.alloc_color(border))
                 pi.plugingfx.draw_rectangle(gc, False, LEDOFSX, LEDOFSY, LEDWIDTH - 1, LEDHEIGHT - 1)
 
@@ -1133,7 +1135,7 @@ class RouteView(Gtk.DrawingArea):
 
                     # cpu border
                     color = brushes[self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT]
-                    border = blend(cm.alloc_color(color), gtk.gdk.Color("#000"), 0.5)
+                    border = blend(cm.alloc_color(color), Gdk.Color("#000"), 0.5)
                     gc.set_foreground(cm.alloc_color(border))
                     pi.plugingfx.draw_rectangle(gc, False, CPUOFSX, CPUOFSY, CPUWIDTH - 1, CPUHEIGHT - 1)
 
@@ -1145,7 +1147,7 @@ class RouteView(Gtk.DrawingArea):
                             gc.set_foreground(flag2cm(self.COLOR_CPU_ON))
                         pi.plugingfx.draw_rectangle(gc, True, CPUOFSX + 1, (CPUOFSY + CPUHEIGHT - height - 1), CPUWIDTH - 2, height)
             # shadow
-            cr = self.window.cairo_create()
+            cr = self.get_parent_window().cairo_create()
             cr.rectangle(rx + 3, ry + 3, PLUGINWIDTH, PLUGINHEIGHT)
             cr.set_source_rgba(0.0, 0.0, 0.0, 0.2)
             cr.fill()
@@ -1154,7 +1156,7 @@ class RouteView(Gtk.DrawingArea):
                 pass
 
             # flip plugin pixmap to screen
-            self.window.draw_drawable(gc, pi.plugingfx, 0, 0, int(rx), int(ry), -1, -1)
+            self.get_parent_window().draw_drawable(gc, pi.plugingfx, 0, 0, int(rx), int(ry), -1, -1)
 
     def draw(self, ctx):
         """
@@ -1283,7 +1285,7 @@ class RouteView(Gtk.DrawingArea):
             bmpctx.restore()
 
         if not self.routebitmap:
-            self.routebitmap = gtk.gdk.Pixmap(self.window, w, h, -1)
+            self.routebitmap = Gdk.Pixmap(self.get_parent_window(), w, h, -1)
             gc = self.routebitmap.new_gc()
             cm = gc.get_colormap()
             drawable = self.routebitmap
@@ -1319,12 +1321,12 @@ class RouteView(Gtk.DrawingArea):
                         amp = amp ** 0.5
                         #color = [amp, amp, amp]
                         #arrowcolors[zzub.zzub_connection_type_audio][0] = color
-                        c = blend(cm.alloc_color(cfg.get_color("MV Arrow")), gtk.gdk.Color("#000"), amp)
+                        c = blend(cm.alloc_color(cfg.get_color("MV Arrow")), Gdk.Color("#000"), amp)
                         arrowcolors[zzub.zzub_connection_type_audio][0] = [c.red_float, c.green_float, c.blue_float]
 
                     draw_line_arrow(bmpctx, arrowcolors[mp.get_input_connection_type(index)], int(crx), int(cry), int(rx), int(ry))
-        gc = self.window.new_gc()
-        self.window.draw_drawable(gc, self.routebitmap, 0, 0, 0, 0, -1, -1)
+        gc = self.get_parent_window().new_gc()
+        self.get_parent_window().draw_drawable(gc, self.routebitmap, 0, 0, 0, 0, -1, -1)
         if self.connecting:
             ctx.set_line_width(1)
             crx, cry = get_pixelpos(*player.active_plugins[0].get_position())
@@ -1336,8 +1338,8 @@ class RouteView(Gtk.DrawingArea):
     def on_key_jazz(self, widget, event, plugin):
         mask = event.state
         kv = event.keyval
-        k = gtk.gdk.keyval_name(kv)
-        if (mask & gtk.gdk.CONTROL_MASK):
+        k = Gdk.keyval_name(kv)
+        if (mask & Gdk.ModifierType.CONTROL_MASK):
             if k == 'Return':
                 com.get('neil.core.pluginbrowser', self)
                 return
@@ -1417,4 +1419,4 @@ if __name__ == '__main__':
     window.PAGE_ROUTE = 1
     window.index = 1
     window.show_all()
-    gtk.main()
+    Gtk.main()
