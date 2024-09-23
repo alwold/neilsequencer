@@ -557,14 +557,14 @@ def question(parent, msg, allowcancel = True):
         Shows a question dialog.
         """
         dialog = Gtk.MessageDialog(parent.get_toplevel(),
-                                   Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   Gtk.MESSAGE_QUESTION , Gtk.BUTTONS_NONE)
+                                   Gtk.DialogType.MODAL | Gtk.DialogType.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.QUESTION , Gtk.ButtonsType.NONE)
         dialog.set_markup(msg)
         dialog.add_buttons(
-                Gtk.STOCK_YES, Gtk.RESPONSE_YES,
-                Gtk.STOCK_NO, Gtk.RESPONSE_NO)
+                Gtk.STOCK_YES, Gtk.ResponseType.YES,
+                Gtk.STOCK_NO, Gtk.ResponseType.NO)
         if allowcancel:
-                dialog.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
+                dialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         response = dialog.run()
         dialog.destroy()
         return response
@@ -574,8 +574,8 @@ def error(parent, msg, msg2=None, details=None):
         Shows an error message dialog.
         """
         dialog = Gtk.MessageDialog(parent and parent.get_toplevel(),
-                                   Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   Gtk.MESSAGE_ERROR , Gtk.BUTTONS_NONE)
+                                   Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.ERROR, Gtk.ButtonsType.NONE)
         dialog.set_markup(msg)
         dialog.set_resizable(True)
         if msg2:
@@ -595,7 +595,7 @@ def error(parent, msg, msg2=None, details=None):
                 sw.add(label)
                 expander.add(sw)
                 dialog.show_all()
-        dialog.add_buttons(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         response = dialog.run()
         dialog.destroy()
         return response
@@ -677,7 +677,7 @@ def new_liststore(view, columns):
                                 column.set_resizable(True)
                         if options.get('icon',False):
                                 cellrenderer = Gtk.CellRendererPixbuf()
-                                column.pack_start(cellrenderer)
+                                column.pack_start(cellrenderer, expand=True)
                                 column.add_attribute(cellrenderer, 'icon-name', i)
                         else:
                                 cellrenderer = Gtk.CellRendererText()
@@ -693,7 +693,7 @@ def new_liststore(view, columns):
                         th.column = i
                         cellrenderer = Gtk.CellRendererToggle()
                         cellrenderer.connect('toggled', th.fixed_toggled, liststore)
-                        column.pack_start(cellrenderer)
+                        column.pack_start(cellrenderer, expand=True)
                         column.add_attribute(cellrenderer, 'active', i)
                 elif coltype == GdkPixbuf.Pixbuf:
                         cellrenderer = Gtk.CellRendererPixbuf()
