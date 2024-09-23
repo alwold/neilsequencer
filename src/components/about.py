@@ -69,22 +69,6 @@ DOCUMENTERS = [
 
 # AUTHORS = [prepstr(x) for x in AUTHORS]
 
-
-def about_visit_website(dialog, link, user_data):
-    import webbrowser
-    webbrowser.open_new(link)
-
-
-def about_send_email(dialog, link, user_data):
-    import webbrowser
-    print(link)
-    webbrowser.open_new('mailto:'+link)
-
-
-gtk.about_dialog_set_url_hook(about_visit_website, None)
-gtk.about_dialog_set_email_hook(about_send_email, None)
-
-
 class AboutDialog(Gtk.AboutDialog):
     """
     A simple about dialog with a text control and an OK button.
