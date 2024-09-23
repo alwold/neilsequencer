@@ -72,7 +72,7 @@ class GeneralPanel(Gtk.VBox):
         """
         Initializing.
         """
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         self.set_border_width(MARGIN)
         frame1 = Gtk.Frame("General Settings")
         fssizer = Gtk.VBox(False, MARGIN)
@@ -89,18 +89,18 @@ class GeneralPanel(Gtk.VBox):
         self.patternfont.set_use_size(True)
         self.patternfont.set_show_style(True)
         self.patternfont.set_show_size(True)
-        self.incsave = gtk.CheckButton()
-        self.leddraw = gtk.CheckButton()
-        self.curvearrows = gtk.CheckButton()
-        self.patnoteoff = gtk.CheckButton()
-        self.rackpanel = gtk.CheckButton()
+        self.incsave = Gtk.CheckButton()
+        self.leddraw = Gtk.CheckButton()
+        self.curvearrows = Gtk.CheckButton()
+        self.patnoteoff = Gtk.CheckButton()
+        self.rackpanel = Gtk.CheckButton()
         self.incsave.set_active(int(incsave))
         self.leddraw.set_active(int(leddraw))
         self.curvearrows.set_active(int(curvearrows))
         self.patnoteoff.set_active(int(patnoteoff))
         # self.rackpanel.set_active(rackpanel)
 
-        self.theme = gtk.combo_box_new_text()
+        self.theme = Gtk.combo_box_new_text()
         themes = os.listdir(sharedpath('themes'))
         self.theme.append_text('Default')
         for i, theme in enumerate(themes):
@@ -109,24 +109,24 @@ class GeneralPanel(Gtk.VBox):
             if name == config.get_config().active_theme:
                 self.theme.set_active(i)
 
-        sg1 = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        sg2 = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        sg1 = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
+        sg2 = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
 
         def add_row(c1, c2):
-            row = gtk.HBox(False, MARGIN)
+            row = Gtk.HBox(False, MARGIN)
             c1.set_alignment(1, 0.5)
             sg1.add_widget(c1)
             sg2.add_widget(c2)
             row.pack_start(c1, expand=False)
             row.pack_end(c2)
             fssizer.pack_start(row, expand=False)
-        add_row(gtk.Label("Incremental Saves"), self.incsave)
-        add_row(gtk.Label("Draw Amp LEDs in Router"), self.leddraw)
-        add_row(gtk.Label("Auto Note-Off in Pattern Editor"), self.patnoteoff)
-        add_row(gtk.Label("Pattern Font"), self.patternfont)
+        add_row(Gtk.Label("Incremental Saves"), self.incsave)
+        add_row(Gtk.Label("Draw Amp LEDs in Router"), self.leddraw)
+        add_row(Gtk.Label("Auto Note-Off in Pattern Editor"), self.patnoteoff)
+        add_row(Gtk.Label("Pattern Font"), self.patternfont)
         # add_row(gtk.Label("Rack Panel View (After Restart)"), self.rackpanel)
-        add_row(gtk.Label("Theme"), self.theme)
-        add_row(gtk.Label("Draw Curves in Router"), self.curvearrows)
+        add_row(Gtk.Label("Theme"), self.theme)
+        add_row(Gtk.Label("Draw Curves in Router"), self.curvearrows)
         self.add(frame1)
 
     def apply(self):
@@ -171,28 +171,28 @@ class DriverPanel(Gtk.VBox):
         """
         Initializing.
         """
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         self.set_border_width(MARGIN)
-        self.cboutput = gtk.combo_box_new_text()
-        self.cbsamplerate = gtk.combo_box_new_text()
-        self.cblatency = gtk.combo_box_new_text()
-        size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        self.cboutput = Gtk.combo_box_new_text()
+        self.cbsamplerate = Gtk.combo_box_new_text()
+        self.cblatency = Gtk.combo_box_new_text()
+        size_group = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
 
         def add_row(c1, c2):
-            row = gtk.HBox(False, MARGIN)
+            row = Gtk.HBox(False, MARGIN)
             size_group.add_widget(c1)
             c1.set_alignment(1, 0.5)
             row.pack_start(c1, expand=False)
             row.pack_start(c2)
             return row
 
-        sizer1 = gtk.Frame("Audio Output")
-        vbox = gtk.VBox(False, MARGIN)
-        vbox.pack_start(add_row(gtk.Label("Driver"),
+        sizer1 = Gtk.Frame("Audio Output")
+        vbox = Gtk.VBox(False, MARGIN)
+        vbox.pack_start(add_row(Gtk.Label("Driver"),
                         self.cboutput), expand=False)
-        vbox.pack_start(add_row(gtk.Label("Samplerate"),
+        vbox.pack_start(add_row(Gtk.Label("Samplerate"),
                         self.cbsamplerate), expand=False)
-        vbox.pack_start(add_row(gtk.Label("Latency"),
+        vbox.pack_start(add_row(Gtk.Label("Latency"),
                         self.cblatency), expand=False)
         vbox.set_border_width(MARGIN)
         sizer1.add(vbox)
@@ -267,10 +267,10 @@ class ControllerPanel(Gtk.VBox):
 
     def __init__(self):
         self.sort_column = 0
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         self.set_border_width(MARGIN)
-        frame1 = gtk.Frame("Controllers")
-        sizer1 = gtk.VBox(False, MARGIN)
+        frame1 = Gtk.Frame("Controllers")
+        sizer1 = Gtk.VBox(False, MARGIN)
         sizer1.set_border_width(MARGIN)
         frame1.add(sizer1)
         self.controllers, self.store, columns = new_listview([
@@ -278,13 +278,13 @@ class ControllerPanel(Gtk.VBox):
             ('Channel', str),
             ('Controller', str),
         ])
-        self.controllers.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.controllers.get_selection().set_mode(Gtk.SELECTION_MULTIPLE)
         sizer1.add(add_scrollbars(self.controllers))
-        self.btnadd = gtk.Button(stock=gtk.STOCK_ADD)
-        self.btnremove = gtk.Button(stock=gtk.STOCK_REMOVE)
-        hsizer = gtk.HButtonBox()
+        self.btnadd = Gtk.Button(stock=Gtk.STOCK_ADD)
+        self.btnremove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
+        hsizer = Gtk.HButtonBox()
         hsizer.set_spacing(MARGIN)
-        hsizer.set_layout(gtk.BUTTONBOX_START)
+        hsizer.set_layout(Gtk.BUTTONBOX_START)
         hsizer.pack_start(self.btnadd, expand=False)
         hsizer.pack_start(self.btnremove, expand=False)
         sizer1.pack_start(hsizer, expand=False)
@@ -315,7 +315,7 @@ class ControllerPanel(Gtk.VBox):
         Handles 'Remove' button click. Removes the selected controller from list.
         """
         store, sel = self.controllers.get_selection().get_selected_rows()
-        refs = [gtk.TreeRowReference(store, row) for row in sel]
+        refs = [Gtk.TreeRowReference(store, row) for row in sel]
         for ref in refs:
             store.remove(store.get_iter(ref.get_path()))
 
@@ -351,10 +351,10 @@ class MidiPanel(Gtk.VBox):
     )
 
     def __init__(self):
-        gtk.VBox.__init__(self, False, MARGIN)
+        Gtk.VBox.__init__(self, False, MARGIN)
         self.set_border_width(MARGIN)
-        frame1 = gtk.Frame("MIDI Input Devices")
-        sizer1 = gtk.VBox()
+        frame1 = Gtk.Frame("MIDI Input Devices")
+        sizer1 = Gtk.VBox()
         sizer1.set_border_width(MARGIN)
         frame1.add(sizer1)
         self.idevicelist, self.istore, columns = new_listview([
@@ -370,8 +370,8 @@ class MidiPanel(Gtk.VBox):
                 use = name.strip() in inputlist
                 self.istore.append([use, name])
         sizer1.add(add_scrollbars(self.idevicelist))
-        frame2 = gtk.Frame("MIDI Output Devices")
-        sizer2 = gtk.VBox()
+        frame2 = Gtk.Frame("MIDI Output Devices")
+        sizer2 = Gtk.VBox()
         sizer2.set_border_width(MARGIN)
         frame2.add(sizer2)
         self.odevicelist, self.ostore, columns = new_listview([
@@ -388,7 +388,7 @@ class MidiPanel(Gtk.VBox):
         sizer2.add(add_scrollbars(self.odevicelist))
         self.add(frame1)
         self.add(frame2)
-        label = gtk.Label(
+        label = Gtk.Label(
             "Checked MIDI devices will be used the next time you start Neil.")
         label.set_alignment(0, 0)
         self.pack_start(label, expand=False)
@@ -434,11 +434,11 @@ class KeyboardPanel(Gtk.VBox):
     ]
 
     def __init__(self):
-        gtk.VBox.__init__(self, False, MARGIN)
+        Gtk.VBox.__init__(self, False, MARGIN)
         self.set_border_width(MARGIN)
-        hsizer = gtk.HBox(False, MARGIN)
-        hsizer.pack_start(gtk.Label("Keyboard Map"), expand=False)
-        self.cblanguage = gtk.combo_box_new_text()
+        hsizer = Gtk.HBox(False, MARGIN)
+        hsizer.pack_start(Gtk.Label("Keyboard Map"), expand=False)
+        self.cblanguage = Gtk.combo_box_new_text()
         sel = 0
         lang = config.get_config().get_keymap_language()
         index = 0
@@ -480,11 +480,11 @@ class PreferencesDialog(Gtk.Dialog):
     )
 
     def __init__(self, parent=None, visible_panel=None):
-        gtk.Dialog.__init__(self,
+        Gtk.Dialog.__init__(self,
                             "Preferences",
                             parent,
-                            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
-        self.nb = gtk.Notebook()
+                            Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT)
+        self.nb = Gtk.Notebook()
         self.nb.set_show_tabs(False)
         self.nb.set_border_width(MARGIN)
         self.nb.set_show_border(False)
@@ -500,7 +500,7 @@ class PreferencesDialog(Gtk.Dialog):
                 continue
             if visible_panel == panel.__neil__['id']:
                 starting_tab_index = i
-            self.nb.append_page(panel, gtk.Label(label))
+            self.nb.append_page(panel, Gtk.Label(label))
         self.tab_list, self.tab_list_store, columns = new_listview([
                                                                    ('Name', str),])
         self.tab_list.set_headers_visible(False)
@@ -511,14 +511,14 @@ class PreferencesDialog(Gtk.Dialog):
                 self.nb.get_nth_page(i)).get_label()
             self.tab_list_store.append([tab_label])
         self.tab_list.connect('cursor-changed', self.on_tab_list_change)
-        self.splitter = gtk.HPaned()
+        self.splitter = Gtk.HPaned()
         self.splitter.pack1(add_scrollbars(self.tab_list))
         self.splitter.pack2(self.nb)
         self.vbox.add(self.splitter)
 
-        btnok = self.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
-        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-        self.add_button(gtk.STOCK_APPLY, gtk.RESPONSE_APPLY)
+        btnok = self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
+        self.add_button(Gtk.STOCK_APPLY, Gtk.RESPONSE_APPLY)
         btnok.grab_default()
 
         self.connect('response', self.on_response)
@@ -528,9 +528,9 @@ class PreferencesDialog(Gtk.Dialog):
         self.nb.set_current_page(starting_tab_index)
 
     def on_response(self, widget, response):
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             self.on_ok()
-        elif response == gtk.RESPONSE_APPLY:
+        elif response == Gtk.RESPONSE_APPLY:
             self.on_apply()
         else:
             self.destroy()
@@ -607,4 +607,4 @@ if __name__ == '__main__':
     window = testplayer.TestWindow()
     window.show_all()
     show_preferences(window)
-    gtk.main()
+    Gtk.main()
