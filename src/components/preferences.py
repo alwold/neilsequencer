@@ -74,7 +74,7 @@ class GeneralPanel(Gtk.VBox):
         """
         Gtk.VBox.__init__(self)
         self.set_border_width(MARGIN)
-        frame1 = Gtk.Frame("General Settings")
+        frame1 = Gtk.Frame.new("General Settings")
         fssizer = Gtk.VBox(False, MARGIN)
         fssizer.set_border_width(MARGIN)
         frame1.add(fssizer)
@@ -100,7 +100,7 @@ class GeneralPanel(Gtk.VBox):
         self.patnoteoff.set_active(int(patnoteoff))
         # self.rackpanel.set_active(rackpanel)
 
-        self.theme = Gtk.combo_box_new_text()
+        self.theme = Gtk.ComboBoxText.new()
         themes = os.listdir(sharedpath('themes'))
         self.theme.append_text('Default')
         for i, theme in enumerate(themes):
@@ -109,8 +109,8 @@ class GeneralPanel(Gtk.VBox):
             if name == config.get_config().active_theme:
                 self.theme.set_active(i)
 
-        sg1 = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
-        sg2 = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
+        sg1 = Gtk.SizeGroup.new(Gtk.SizeGroupMode.HORIZONTAL)
+        sg2 = Gtk.SizeGroup.new(Gtk.SizeGroupMode.HORIZONTAL)
 
         def add_row(c1, c2):
             row = Gtk.HBox(False, MARGIN)
@@ -173,10 +173,10 @@ class DriverPanel(Gtk.VBox):
         """
         Gtk.VBox.__init__(self)
         self.set_border_width(MARGIN)
-        self.cboutput = Gtk.combo_box_new_text()
-        self.cbsamplerate = Gtk.combo_box_new_text()
-        self.cblatency = Gtk.combo_box_new_text()
-        size_group = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
+        self.cboutput = Gtk.ComboBoxText.new()
+        self.cbsamplerate = Gtk.ComboBoxText.new()
+        self.cblatency = Gtk.ComboBoxText.new()
+        size_group = Gtk.SizeGroup.new(Gtk.SizeGroupMode.HORIZONTAL)
 
         def add_row(c1, c2):
             row = Gtk.HBox(False, MARGIN)
@@ -186,7 +186,7 @@ class DriverPanel(Gtk.VBox):
             row.pack_start(c2)
             return row
 
-        sizer1 = Gtk.Frame("Audio Output")
+        sizer1 = Gtk.Frame.new("Audio Output")
         vbox = Gtk.VBox(False, MARGIN)
         vbox.pack_start(add_row(Gtk.Label("Driver"),
                         self.cboutput), expand=False)
@@ -269,7 +269,7 @@ class ControllerPanel(Gtk.VBox):
         self.sort_column = 0
         Gtk.VBox.__init__(self)
         self.set_border_width(MARGIN)
-        frame1 = Gtk.Frame("Controllers")
+        frame1 = Gtk.Frame.new("Controllers")
         sizer1 = Gtk.VBox(False, MARGIN)
         sizer1.set_border_width(MARGIN)
         frame1.add(sizer1)
@@ -278,13 +278,13 @@ class ControllerPanel(Gtk.VBox):
             ('Channel', str),
             ('Controller', str),
         ])
-        self.controllers.get_selection().set_mode(Gtk.SELECTION_MULTIPLE)
+        self.controllers.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         sizer1.add(add_scrollbars(self.controllers))
         self.btnadd = Gtk.Button(stock=Gtk.STOCK_ADD)
         self.btnremove = Gtk.Button(stock=Gtk.STOCK_REMOVE)
         hsizer = Gtk.HButtonBox()
         hsizer.set_spacing(MARGIN)
-        hsizer.set_layout(Gtk.BUTTONBOX_START)
+        hsizer.set_layout(Gtk.ButtonBoxStyle.START)
         hsizer.pack_start(self.btnadd, expand=False)
         hsizer.pack_start(self.btnremove, expand=False)
         sizer1.pack_start(hsizer, expand=False)
@@ -353,7 +353,7 @@ class MidiPanel(Gtk.VBox):
     def __init__(self):
         Gtk.VBox.__init__(self, False, MARGIN)
         self.set_border_width(MARGIN)
-        frame1 = Gtk.Frame("MIDI Input Devices")
+        frame1 = Gtk.Frame.new("MIDI Input Devices")
         sizer1 = Gtk.VBox()
         sizer1.set_border_width(MARGIN)
         frame1.add(sizer1)
@@ -370,7 +370,7 @@ class MidiPanel(Gtk.VBox):
                 use = name.strip() in inputlist
                 self.istore.append([use, name])
         sizer1.add(add_scrollbars(self.idevicelist))
-        frame2 = Gtk.Frame("MIDI Output Devices")
+        frame2 = Gtk.Frame.new("MIDI Output Devices")
         sizer2 = Gtk.VBox()
         sizer2.set_border_width(MARGIN)
         frame2.add(sizer2)
@@ -391,7 +391,7 @@ class MidiPanel(Gtk.VBox):
         label = Gtk.Label(
             "Checked MIDI devices will be used the next time you start Neil.")
         label.set_alignment(0, 0)
-        self.pack_start(label, expand=False)
+        self.pack_start(label, expand=False, fill=True, padding=0)
 
     def apply(self):
         """
@@ -437,8 +437,8 @@ class KeyboardPanel(Gtk.VBox):
         Gtk.VBox.__init__(self, False, MARGIN)
         self.set_border_width(MARGIN)
         hsizer = Gtk.HBox(False, MARGIN)
-        hsizer.pack_start(Gtk.Label("Keyboard Map"), expand=False)
-        self.cblanguage = Gtk.combo_box_new_text()
+        hsizer.pack_start(Gtk.Label("Keyboard Map"), expand=False, fill=True, padding=0)
+        self.cblanguage = Gtk.ComboBoxText.new()
         sel = 0
         lang = config.get_config().get_keymap_language()
         index = 0
@@ -448,7 +448,7 @@ class KeyboardPanel(Gtk.VBox):
                 sel = index
             index += 1
         hsizer.add(self.cblanguage)
-        self.pack_start(hsizer, expand=False)
+        self.pack_start(hsizer, expand=False, fill=True, padding=0)
         self.cblanguage.set_active(sel)
 
     def apply(self):
