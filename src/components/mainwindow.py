@@ -47,10 +47,8 @@ from neil.utils import CancelException
 
 import neil.com as com
 
-def cmp_view(a,b):
-  a_order = (hasattr(a, '__view__') and a.__view__.get('order',0)) or 0
-  b_order = (hasattr(b, '__view__') and b.__view__.get('order',0)) or 0
-  return cmp(a_order, b_order)
+def view_key(view):
+  return (hasattr(view, '__view__') and view.__view__.get('order',0)) or 0
 
 class FramePanel(Gtk.Notebook):
   __neil__ = dict(
@@ -68,7 +66,7 @@ class FramePanel(Gtk.Notebook):
     self.set_show_tabs(True)
     com.get("neil.core.icons") # make sure theme icons are loaded
     defaultpanel = None
-    pages = sorted(com.get_from_category('neil.viewpanel'), cmp=cmp_view)
+    pages = sorted(com.get_from_category('neil.viewpanel'), key=view_key)
     for index, panel in enumerate(pages):
       if not hasattr(panel, '__view__'):
         print("panel",panel,"misses attribute __view__")
@@ -146,7 +144,7 @@ class ViewMenu(Menu):
 
   def __init__(self):
     Menu.__init__(self)
-    views = sorted(com.get_from_category('view'), cmp=cmp_view)
+    views = sorted(com.get_from_category('view'), key=view_key)
     com.get("neil.core.icons") # make sure theme icons are loaded
     accel = com.get('neil.core.accelerators')
     for view in views:
