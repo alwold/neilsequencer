@@ -20,7 +20,8 @@
 # Boston, MA  02110-1301, USA.
 
 from gi.repository import Gtk
-import gobject
+from gi.repository import Gdk
+from gi.repository import GdkPixbuf
 import neil.utils as utils
 import os
 import stat
