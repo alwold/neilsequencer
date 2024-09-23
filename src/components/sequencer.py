@@ -931,7 +931,7 @@ class SequencerView(Gtk.DrawingArea):
         player = com.get('neil.core.player')
         seq = player.get_current_sequencer()
         x, y = int(event.x), int(event.y)
-        track, row = self.pos_to_track_row((x, y))
+        track, row = self.pos_to_track_row(x, y)
         self.set_cursor_pos(max(min(track, seq.get_sequence_track_count()), 0), self.row)
         if self.selection_start != None:
             sel_sensitive = True
@@ -1268,7 +1268,7 @@ class SequencerView(Gtk.DrawingArea):
         player = com.get('neil.core.player')
         track_count = player.get_sequence_track_count()
         x, y = int(event.x), int(event.y)
-        track, row = self.pos_to_track_row((x, y))
+        track, row = self.pos_to_track_row(x, y)
         if event.button == 1:
             if track < track_count:
                 if track == -1:
