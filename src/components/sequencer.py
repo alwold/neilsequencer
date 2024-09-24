@@ -1433,12 +1433,12 @@ class SequencerView(Gtk.DrawingArea):
         else:
             self.vscroll.show()
         adj = self.hscroll.get_adjustment()
-        adj.set_all(self.startseqtime / self.step, 0,
+        adj.configure(self.startseqtime / self.step, 0,
                     int(vw + (w - self.seq_left_margin) /
                         float(self.seq_row_size) - 2),
                     1, 1, pw)
         adj = self.vscroll.get_adjustment()
-        adj.set_all(self.starttrack, 0, vh, 1, 1, ph)
+        adj.configure(self.starttrack, 0, vh, 1, 1, ph)
         #self.redraw()
 
     def get_virtual_size(self):
