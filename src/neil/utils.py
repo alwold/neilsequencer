@@ -557,7 +557,7 @@ def question(parent, msg, allowcancel = True):
         Shows a question dialog.
         """
         dialog = Gtk.MessageDialog(parent.get_toplevel(),
-                                   Gtk.DialogType.MODAL | Gtk.DialogType.DESTROY_WITH_PARENT,
+                                   Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                                    Gtk.MessageType.QUESTION , Gtk.ButtonsType.NONE)
         dialog.set_markup(msg)
         dialog.add_buttons(
