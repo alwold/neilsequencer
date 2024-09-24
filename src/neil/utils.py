@@ -1283,11 +1283,11 @@ class AcceleratorMap:
                 if successful.
                 """
                 # remove numlock from the key modifiers
-                key_mod = event.state & (~Gdk.MOD2_MASK)
+                key_mod = event.state & (~Gdk.ModifierType.MOD2_MASK)
                 name = Gtk.accelerator_name(event.keyval, key_mod)
                 if name == None:
                         return False
-                for shortcut, (ref,funcname,args,kargs) in self.__keymap.iteritems():
+                for shortcut, (ref,funcname,args,kargs) in self.__keymap.items():
                         if shortcut == name:
                                 if funcname:
                                         func = getattr(ref(), funcname)
