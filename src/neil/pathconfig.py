@@ -22,7 +22,7 @@
 Organizes finding Neils resources across the system.
 """
 
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 import sys, os
 
 HOME_CONFIG_DIR = '~/.neil'
