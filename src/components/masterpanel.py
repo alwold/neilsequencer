@@ -62,6 +62,7 @@ class AmpView(Gtk.DrawingArea):
         self.peaks = np.zeros(300)
         self.hold = 15
         self.set_size_request(20, -1)
+        # TODO: Convert to use Cairo drawing
         self.connect("draw", self.expose)
         self.connect("configure_event", self.configure)
         GObject.timeout_add(33, self.on_update)
