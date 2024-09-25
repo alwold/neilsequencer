@@ -309,7 +309,8 @@ class EnvelopeView(Gtk.DrawingArea):
         self.connect('motion-notify-event', self.on_motion)
         self.connect('enter-notify-event', self.on_enter)
         self.connect('leave-notify-event', self.on_leave)
-        self.connect('expose_event', self.expose)
+        # TODO: figure out how to do this
+        #self.connect('expose_event', self.expose)
 
         # Menu that get's activated when you click right mouse button.
         self.context_menu = Gtk.Menu()

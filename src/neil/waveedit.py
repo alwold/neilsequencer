@@ -126,7 +126,8 @@ class WaveEditView(Gtk.DrawingArea):
         self.connect('enter-notify-event', self.on_enter)
         self.connect('leave-notify-event', self.on_leave)
         self.connect('scroll-event', self.on_mousewheel)
-        self.connect("expose_event", self.expose)
+        # TODO: fix me
+        #self.connect("expose_event", self.expose)
 
         self.context_menu = Menu()
         
