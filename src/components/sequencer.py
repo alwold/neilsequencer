@@ -496,7 +496,8 @@ class SequencerView(Gtk.DrawingArea):
         Gtk.DrawingArea.__init__(self)
         self.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
         self.set_property('can-focus', True)
-        self.connect("expose_event", self.expose)
+        # TODO: convert to draw/cairo
+        #self.connect("expose_event", self.expose)
         self.connect('key-press-event', self.on_key_down)
         self.connect('button-press-event', self.on_left_down)
         self.connect('motion-notify-event', self.on_motion)
