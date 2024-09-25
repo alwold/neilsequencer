@@ -390,7 +390,8 @@ class VolumeSlider(Gtk.Window):
         self.resize(VOLBARWIDTH, VOLBARHEIGHT)
         self.hide()
         self.drawingarea.connect('motion-notify-event', self.on_motion)
-        self.drawingarea.connect('expose-event', self.expose)
+        # TODO: convert to use draw/cairo
+        #self.drawingarea.connect('expose-event', self.expose)
         self.drawingarea.connect('button-release-event', self.on_left_up)
 
     def expose(self, widget, event):
@@ -554,7 +555,8 @@ class RouteView(Gtk.DrawingArea):
         self.connect('button-press-event', self.on_left_down)
         self.connect('button-release-event', self.on_left_up)
         self.connect('motion-notify-event', self.on_motion)
-        self.connect("expose_event", self.expose)
+        # TODO: Convert to use draw/cairo
+        #self.connect("expose_event", self.expose)
         self.connect('key-press-event', self.on_key_jazz, None)
         self.connect('key-release-event', self.on_key_jazz_release, None)
         self.connect('size-allocate', self.on_size_allocate)
