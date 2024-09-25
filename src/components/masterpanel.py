@@ -228,7 +228,9 @@ class MasterPanel(Gtk.VBox):
         self.connect('realize', self.on_realize)
 
     def on_realize(self, widget):
-        self.clipbtn_org_color = self.clipbtn.get_style().bg[Gtk.STATE_NORMAL]
+        # TODO: figure out how to save/restore the background here
+        #self.clipbtn_org_color = self.clipbtn.get_style().bg[Gtk.STATE_NORMAL]
+        pass
 
     def on_zzub_parameter_changed(self, plugin, group, track, param, value):
         player = com.get('neil.core.player')
