@@ -34,11 +34,10 @@ import os
 import fnmatch
 import ctypes
 import time
-import Queue
 import neil.common as common
 import neil.preset as preset_module
 from neil.common import MARGIN, MARGIN2, MARGIN3, MARGIN0
-import cPickle
+import pickle
 import config
 import neil.com as com
 
@@ -346,7 +345,7 @@ class ParameterView(Gtk.VBox):
     def on_drag_data_get(self, btn, context, selection_data, info, time, gti):
         g, t, i = gti
         if info == self.DROP_TARGET_CTRL_SLIDER:
-            text = cPickle.dumps((self.plugin.get_id(), g, t, i))
+            text = pickle.dumps((self.plugin.get_id(), g, t, i))
             selection_data.set(selection_data.target, 8, text)
 
     def on_drag_data_delete(self, btn, context, data, gti):
@@ -385,7 +384,7 @@ class ParameterView(Gtk.VBox):
         player = com.get('neil.core.player')
         try:
             if data and data.format == 8:
-                plugin_id, sg, st, si = cPickle.loads(data.data)
+                plugin_id, sg, st, si = pickle.loads(data.data)
                 for plugin in player.get_plugin_list():
                     if plugin.get_id() == plugin_id:
                         self.connect_controller(plugin, sg, st, si, g, t, i)
