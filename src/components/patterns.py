@@ -33,6 +33,7 @@ from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GObject
 from gi.repository import Pango
+from gi.repository import PangoCairo
 
 from neil.utils import prepstr
 from neil.utils import get_clipboard_text, set_clipboard_text
@@ -728,7 +729,7 @@ class PatternView(Gtk.DrawingArea):
         self.accel_map.add_accelerator('<Control>minus',
                                        self.on_popup_delete_track)
         self.connect('key-press-event', self.accel_map.handle_key_press_event)
-        self.connect("expose_event", self.expose)
+        self.connect('draw', self.expose)
         self.connect('key-press-event', self.on_key_down)
         self.connect('key-release-event', self.on_key_up)
         self.connect('button-press-event', self.on_button_down)
@@ -1143,8 +1144,8 @@ class PatternView(Gtk.DrawingArea):
             return
         self.subindex = min(max(si, 0), self.subindex_count[self.group][self.index] - 1)
 
-    def expose(self, widget, *args):
-        self.context = widget.window.cairo_create()
+    def expose(self, widget, cairo):
+        self.context = cairo
         if self.current_plugin != self.get_plugin():
             self.pattern_changed()
             self.current_plugin = self.get_plugin()
@@ -1160,7 +1161,7 @@ class PatternView(Gtk.DrawingArea):
     def redraw(self, *args):
         if self.get_parent_window():
             w, h = self.get_client_size()
-            self.get_parent_window().invalidate_rect((0, 0, w, h), False)
+            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, w, h), False)
 
     def on_active_patterns_changed(self, selpatterns):
         if self.get_parent_window():
@@ -2606,18 +2607,16 @@ class PatternView(Gtk.DrawingArea):
     def draw_pattern_background(self, ctx, layout):
         """ Draw the background, lines, borders and row numbers """
         w, h = self.get_client_size()
-        gc = self.get_parent_window().new_gc()
-        cm = gc.get_colormap()
         cfg = config.get_config()
-        drawable = self.get_parent_window()
-        background = cm.alloc_color(cfg.get_color('PE BG'))
-        pen = cm.alloc_color(cfg.get_color('PE Row Numbers'))
-        gc.set_foreground(background)
-        drawable.draw_rectangle(gc, True, 0, 0, w, self.row_height)
-        drawable.draw_rectangle(gc, True, 0, 0, PATLEFTMARGIN, h)
+        background = cfg.get_float_color('PE BG')
+        pen = cfg.get_float_color('PE Row Numbers')
+        ctx.set_source_rgba(*background)
+        ctx.rectangle(0, 0, w, self.row_height)
+        ctx.rectangle(0, 0, PATLEFTMARGIN, h)
+        ctx.fill()
         if self.lines == None:
             return
-        gc.set_foreground(pen)
+        ctx.set_source_rgba(*pen)
         #drawable.draw_rectangle(gc, False, 0, 0, w - 1, h - 1)
         x, y = PATLEFTMARGIN, self.row_height
         row = self.start_row
@@ -2627,15 +2626,21 @@ class PatternView(Gtk.DrawingArea):
         s = '\n'. join([str(i) for i in xrange(row, row + num_rows)])
         layout.set_text(s)
         px, py = layout.get_pixel_size()
-        drawable.draw_layout(gc, x - 5 - px, y, layout)
+        ctx.move_to(x - 5 - px, y)
+        PangoCairo.update_layout(ctx, layout)
+        PangoCairo.show_layout(ctx, layout)
         # Draw a black vertical separator line
         y = self.row_height - 1
-        drawable.draw_line(gc, x, y, x, h)
+        ctx.move_to(x, y)
+        ctx.line_to(x, h)
+        ctx.stroke()
         # Draw a black horizontal separator line
-        drawable.draw_line(gc, PATLEFTMARGIN, y, w, y)
+        ctx.move_to(PATLEFTMARGIN, y)
+        ctx.line_to(w, y)
+        ctx.stroke()
         # The color of text as specified in config.py
-        text_color = cm.alloc_color(cfg.get_color('PE Track Numbers'))
-        gc.set_foreground(text_color)
+        text_color = cfg.get_float_color('PE Track Numbers')
+        ctx.set_source_rgba(*text_color)
         # Display track numbers in the middle of each track column at the to
         # For each existing track:
         for track in range(self.group_track_count[TRACK]):
@@ -2654,15 +2659,13 @@ class PatternView(Gtk.DrawingArea):
             # Get the size of the string when it will be displayed in pixels.
             px, py = layout.get_pixel_size()
             # And draw it so that it falls in the middle of the track column.
-            drawable.draw_layout(gc, x + width / 2 - px / 2,
-                                 self.row_height / 2 - (py / 2), layout)
+            ctx.move_to(x + width / 2 - px / 2, self.row_height / 2 - (py / 2))
+            PangoCairo.update_layout(ctx, layout)
+            PangoCairo.show_layout(ctx, layout)
 
     def draw_bar_marks(self, ctx):
         "Draw the horizontal bars every each fourth and eighth bar."
         w, h = self.get_client_size()
-        gc = self.get_parent_window().new_gc()
-        cm = gc.get_colormap()
-        drawable = self.get_parent_window()
 
         def draw_bar(row, group, track, color):
             """Draw a horizontal bar for a specified row in a
@@ -2670,15 +2673,16 @@ class PatternView(Gtk.DrawingArea):
             x, y = self.pattern_to_pos(row, group, track, 0)
             width = (self.track_width[group] - 1) * self.column_width
             height = self.row_height
-            gc.set_foreground(color)
-            drawable.draw_rectangle(gc, True, x, y, width, height)
+            ctx.set_source_rgba(*color)
+            ctx.rectangle(x, y, width, height)
+            ctx.fill()
 #        darkest = cm.alloc_color('#b0b0b0')
 #        lighter = cm.alloc_color('#d0d0d0')
 #        lightest = cm.alloc_color('#f0f0f0')
         cfg = config.get_config()
-        darkest = cm.alloc_color(cfg.get_color('PE BG Very Dark'))
-        lighter = cm.alloc_color(cfg.get_color('PE BG Light'))
-        lightest = cm.alloc_color(cfg.get_color('PE BG Very Light'))
+        darkest = cfg.get_float_color('PE BG Very Dark')
+        lighter = cfg.get_float_color('PE BG Light')
+        lightest = cfg.get_float_color('PE BG Very Light')
 
         def get_color(row):
             "What color to paint the bar with?"
@@ -2713,11 +2717,8 @@ class PatternView(Gtk.DrawingArea):
     def draw_parameter_values(self, ctx, layout):
         """ Draw the parameter values for all tracks, columns and rows."""
         w, h = self.get_client_size()
-        gc = self.get_parent_window().new_gc()
-        cm = gc.get_colormap()
         cfg = config.get_config()
-        pen = cm.alloc_color(cfg.get_color('PE Text'))
-        drawable = self.get_parent_window()
+        pen = cfg.get_float_color('PE Text')
 
         def draw_parameters_range(row, num_rows, group, track=0):
             """Draw the parameter values for a range of rows"""
@@ -2727,8 +2728,9 @@ class PatternView(Gtk.DrawingArea):
             # w = self.column_width * len(self.lines[group][track][row])
             layout.set_text(s)
             px, py = layout.get_pixel_size()
-            gc.set_foreground(pen)
-            drawable.draw_layout(gc, x, y, layout)
+            ctx.set_source_rgba(*pen)
+            PangoCairo.update_layout(ctx, layout)
+            PangoCairo.show_layout(ctx, layout)
             return x + px
         # Draw the parameter values
         #i = self.start_row
@@ -2767,15 +2769,14 @@ class PatternView(Gtk.DrawingArea):
         """ Draw selection box."""
         # drawable = self.window
         # gc = drawable.new_gc()
-        cr = self.get_parent_window().cairo_create()
 
         def draw_box(x, y, width, height):
-            cr.rectangle(x + 0.5, y + 0.5, width, height)
-            cr.set_source_rgba(0.0, 1.0, 0.0, 1.0)
-            cr.set_line_width(1)
-            cr.stroke_preserve()
-            cr.set_source_rgba(0.0, 1.0, 0.0, 0.3)
-            cr.fill()
+            ctx.rectangle(x + 0.5, y + 0.5, width, height)
+            ctx.set_source_rgba(0.0, 1.0, 0.0, 1.0)
+            ctx.set_line_width(1)
+            ctx.stroke_preserve()
+            ctx.set_source_rgba(0.0, 1.0, 0.0, 0.3)
+            ctx.fill()
         if self.selection:
             x, y1 = self.pattern_to_pos(self.selection.begin,
                                         self.selection.group,
@@ -2823,13 +2824,10 @@ class PatternView(Gtk.DrawingArea):
 
     def draw_background(self, ctx):
         w, h = self.get_client_size()
-        drawable = self.get_parent_window()
-        gc = drawable.new_gc()
-        cm = gc.get_colormap()
         cfg = config.get_config()
-        background = cm.alloc_color(cfg.get_color('PE BG'))
-        gc.set_foreground(cm.alloc_color(background))
-        drawable.draw_rectangle(gc, True, 0, 0, w, h)
+        ctx.set_source_rgb(*cfg.get_float_color('PE BG'))
+        ctx.rectangle(0, 0, w, h)
+        ctx.fill()
 
     def draw(self, ctx):
         """
@@ -2843,7 +2841,8 @@ class PatternView(Gtk.DrawingArea):
         self.draw_bar_marks(ctx)
         self.draw_parameter_values(ctx, layout)
         self.draw_selection(ctx)
-        self.draw_cursor_xor()
+        # TODO: convert to use cairo
+        #self.draw_cursor_xor(ctx)
         self.draw_pattern_background(ctx, layout)
         self.draw_playpos_xor()
 
