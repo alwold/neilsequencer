@@ -27,7 +27,7 @@ import re
 import sys
 import os.path
 import xml.sax
-import imp
+#import imp
 from xml.sax.handler import ContentHandler
 from xml.sax.saxutils import unescape
 
@@ -61,8 +61,8 @@ DEFAULT_STYLES = {
 def _main_is_frozen():
     """ Internal used function. """
     return (hasattr(sys, "frozen") or # new py2exe
-            hasattr(sys, "importers") # old py2exe
-            or imp.is_frozen("__main__")) # tools/freeze
+            hasattr(sys, "importers")) # old py2exe
+#            or imp.is_frozen("__main__")) # tools/freeze
 
 
 if _main_is_frozen():
