@@ -1177,7 +1177,7 @@ def generate_ui_method(class_, membername, kwargs):
                         vtype = kwargs.get('vtype', type(default))
                 else:
                         vtype = kwargs['vtype']
-                        default = {float: 0.0, int:0, long:0, str:'', unicode:u'', bool:False}.get(vtype, None)
+                        default = {float: 0.0, int:0, str:'', bool:False}.get(vtype, None)
                 getter = lambda self,defvalue=kwargs.get(default,False): self.getter(membername,kwargs)
                 setter = lambda self,value: self.setter(membername,kwargs,value)
 
