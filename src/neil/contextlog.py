@@ -10,7 +10,7 @@ in order to use contextlog, just import it and call L{init}.
 
 import traceback
 import os
-from path import Path
+from pathlib import Path
 
 if 'NEIL_NO_ESCAPING' in os.environ:
     ESCAPE_BEGIN = ""
@@ -80,8 +80,8 @@ class StdOutAnnotator:
             if len(entry) >= 2:
                 filename = Path(entry[0])
                 line = entry[1]
-        if not str(filename.relpath()).startswith('..'):
-            filename = filename.relpath()
+        if not str(os.path.relpath(filename)).startswith('..'):
+            filename = os.path.relpath(filename)
         self.last_filename = filename
         self.last_line = line
         self.stdout.write("%s%s:%s:%s" %
