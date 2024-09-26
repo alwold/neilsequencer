@@ -235,7 +235,8 @@ def prepstr(s, fix_underscore=False):
         @return: Correctly encoded text.
         @rtype: str
         """
-        s = s.decode('latin-1')
+        # TODO: do we need this?
+#        s = s.decode('latin-1')
         if fix_underscore:
                 s = s.replace('_','__')
         return s
