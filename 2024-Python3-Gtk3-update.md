@@ -24,3 +24,24 @@ Here's what I had to do to get it to run.
 
 - Run
   - `LD_LIBRARY_PATH=libneil/lib PYTHONPATH=src:src/neil:libneil/src/pyzzub:libneil/lib bin/neil`
+
+## Remaining work
+### Tasks
+- [ ] Creating master track in sequencer, click it, crash on `zzub_player_get_sequence`
+- [x] Fix the way we load the component path in `com.py`
+- [ ] Verify clipboard code in utils.py works
+- [x] Fix sorting in searchplugins.py
+- [x] Fix sorting in mainwindow.py (two places)
+- [ ] Check if we need to decode() in prepstr() in utils.py
+- [ ] Convert drawing code (where there are commented out expose event connect calls) to cairo:
+  - [ ] masterpanel.py
+  - [ ] patterns.py (partly implemented)
+  - [ ] router.py
+  - [x] sequencer.py
+  - [ ] envelope.py
+  - [ ] waveedit.py
+- [ ] Restore background color save/restore on clipbtn in masterpanel.py
+- [ ] Verify pickle works in rack.py
+- [ ] Find out if we need the frozen detection in gtkcodebuffer.py (and elsewhere?)
+- [ ] Convert C plugins that use GTK to GTK 3
+- [ ] Verify the code in Sequencer.draw_tracks where it uses translate instead of the old way of creating a new drawable
