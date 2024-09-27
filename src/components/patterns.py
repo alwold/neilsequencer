@@ -75,42 +75,42 @@ class PatternDialog(Gtk.Dialog):
         Gtk.Dialog.__init__(self,
                 "Pattern Properties",
                 parent.get_toplevel(),
-                Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+                Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                 None
         )
         vbox = Gtk.VBox(False, MARGIN)
         vbox.set_border_width(MARGIN)
-        self.btnok = self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
-        self.btncancel = self.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
+        self.btnok = self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        self.btncancel = self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         self.namelabel = Gtk.Label("Name")
         self.edtname = Gtk.Entry()
         self.lengthlabel = Gtk.Label("Length")
-        self.lengthbox = Gtk.combo_box_entry_new_text()
+        self.lengthbox = Gtk.ComboBoxText.new_with_entry()
         self.chkswitch = Gtk.CheckButton('Switch to new pattern')
         for size in patternsizes:
             self.lengthbox.append_text(str(size))
         self.rowslabel = Gtk.Label("Rows")
-        sgroup1 = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
-        sgroup2 = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
+        sgroup1 = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
+        sgroup2 = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
 
         def add_row(c1, c2):
             row = Gtk.HBox(False, MARGIN)
             c1.set_alignment(1, 0.5)
-            row.pack_start(c1, expand=False)
-            row.pack_start(c2)
+            row.pack_start(c1, expand=False, fill=True, padding=0)
+            row.pack_start(c2, expand=True, fill=True, padding=0)
             sgroup1.add_widget(c1)
             sgroup2.add_widget(c2)
-            vbox.pack_start(row, expand=False)
+            vbox.pack_start(row, expand=False, fill=True, padding=0)
         add_row(self.namelabel, self.edtname)
         add_row(self.rowslabel, self.lengthbox)
-        vbox.pack_start(self.chkswitch, expand=False)
+        vbox.pack_start(self.chkswitch, expand=False, fill=True, padding=0)
         self.edtname.connect('activate', self.on_enter)
-        self.lengthbox.child.connect('activate', self.on_enter)
+        self.lengthbox.get_child().connect('activate', self.on_enter)
         self.vbox.add(vbox)
         self.show_all()
 
     def on_enter(self, widget):
-        self.response(Gtk.RESPONSE_OK)
+        self.response(Gtk.ResponseType.OK)
 
 # pattern dialog modes
 DLGMODE_NEW = 0
@@ -148,16 +148,16 @@ def show_pattern_dialog(parent, name, length, dlgmode, letswitch=True):
         dlg.chkswitch.set_sensitive(False)
     dlg.edtname.set_text(name)
     dlg.chkswitch.set_active(config.get_config().get_default_int('SwitchToNewPattern', 1))
-    dlg.lengthbox.child.set_text(str(length))
+    dlg.lengthbox.get_child().set_text(str(length))
     dlg.edtname.select_region(0, -1)
     dlg.edtname.grab_focus()
     response = dlg.run()
-    dlg.hide_all()
+    dlg.hide()
     result = None
-    if response == Gtk.RESPONSE_OK:
+    if response == Gtk.ResponseType.OK:
         switch = int(dlg.chkswitch.get_active())
         config.get_config().set_default_int('SwitchToNewPattern', switch)
-        length = int(dlg.lengthbox.child.get_text())
+        length = int(dlg.lengthbox.get_child().get_text())
         result = str(dlg.edtname.get_text()), length, switch
     dlg.destroy()
     return result
