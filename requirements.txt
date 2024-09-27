@@ -1,4 +1,11 @@
+autopep8==2.3.1
+cffi==1.17.1
 configparser==7.1.0
+numpy==2.1.1
 path==17.0.0
 pycairo==1.27.0
+pycodestyle==2.12.1
+pycparser==2.22
 PyGObject==3.48.2
+PyYAML==6.0.2
+setuptools==74.1.2
