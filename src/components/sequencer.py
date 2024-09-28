@@ -374,7 +374,7 @@ class SequencerPanel(Gtk.VBox):
                 delete.connect('activate', on_delete, path[0][0] - 2)
                 delete.show()
             if hasattr(self, 'plugin') and self.plugin != None:
-                menu.popup(None, None, None, event.button, event.time)
+                menu.popup(None, None, None, None, event.button, event.time)
 
     def on_mouse_over(self, widget, event):
         widget.grab_focus()

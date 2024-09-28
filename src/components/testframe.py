@@ -33,7 +33,7 @@ class TestDialog(Gtk.Dialog):
 	)
 	
 	def __init__(self, embed=None, destroy_on_close=True):
-		gtk.Dialog.__init__(self)
+		Gtk.Dialog.__init__(self)
 		self.set_title("Test Dialog")
 		if destroy_on_close:
 			self.connect('destroy', self.on_destroy)
@@ -42,7 +42,7 @@ class TestDialog(Gtk.Dialog):
 		self.show_all()
 		
 	def on_destroy(self, event):
-		gtk.main_quit()
+		Gtk.main_quit()
 
 __neil__ = dict(
 	classes = [
