@@ -1,12 +1,24 @@
 # Code update
 This branch has modifications to neil to make it work in Python 3 with Gtk 3. It is a work in progress.
 
-Here's what I had to do to get it to run.
+Here's what I had to do to get it to run. My test system is running Ubuntu 24.10.
 
 - Install package dependencies. The ubuntu packages are:
+  - `scons`
+  - `libmad0-dev`?
   - `libgtk2.0-dev`
   - `libgl-dev`
   - `libglu-dev`
+  - `libglade2-dev`?
+  - `libsndfile-dev`
+  - `libsamplerate-dev`
+  - `libfftw3-dev`
+  - `libboost-dev`
+  - `libportaudio2-dev`
+  - `libportaudio19-dev`
+  - `xmlto`
+  - `libcairo2-dev`?
+  - `libmad0-dev`
   
 - Install `gtkgl` from source.
   - `git clone https://github.com/peccatoris/gtkgl`
