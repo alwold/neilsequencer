@@ -22,10 +22,10 @@ if os.path.isfile(os.path.join(CWD, 'this_is_a_repository')):
 
 def init_combrowser():
     import neil.com as com
-    import gtk
+    from gi.repository import Gtk
     # startup python console
     browser = com.get('neil.pythonconsole.dialog', False)
-    browser.connect('destroy', lambda widget: gtk.main_quit())
+    browser.connect('destroy', lambda widget: Gtk.main_quit())
     browser.show_all()
     if len(sys.argv) >= 2:
         for name in sys.argv[1:]:
@@ -34,7 +34,7 @@ def init_combrowser():
     else:
         # startup component browser
         browser = com.get('neil.componentbrowser.dialog', False)
-        browser.connect('destroy', lambda widget: gtk.main_quit())
+        browser.connect('destroy', lambda widget: Gtk.main_quit())
         browser.show_all()
 
 
