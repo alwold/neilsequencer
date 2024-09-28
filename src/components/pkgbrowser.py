@@ -26,6 +26,7 @@ This module can also be executed standalone.
 
 from neil.utils import Menu, test_view
 from gi.repository import Gtk
+from gi.repository import GObject
 import inspect
 import neil.com as com
 import neil.contextlog as contextlog
@@ -47,7 +48,7 @@ class PackageBrowserDialog(Gtk.Dialog):
             self.connect('delete-event', self.hide_on_delete)
         self.resize(600, 500)
         #self.ifacestore = gtk.TreeStore(gtk.gdk.Pixbuf, str, gobject.TYPE_PYOBJECT)
-        self.ifacestore = Gtk.TreeStore(str, gobject.TYPE_PYOBJECT)
+        self.ifacestore = Gtk.TreeStore(str, GObject.TYPE_PYOBJECT)
         self.ifacelist = Gtk.TreeView(self.ifacestore)
         self.ifacelist.set_property('headers-visible', False)
         column = Gtk.TreeViewColumn("Item")
@@ -65,19 +66,19 @@ class PackageBrowserDialog(Gtk.Dialog):
         #     else:
         #         return path
         self.desc = Gtk.TextView()
-        self.desc.set_wrap_mode(Gtk.WRAP_WORD)
+        self.desc.set_wrap_mode(Gtk.WrapMode.WORD)
         self.desc.set_editable(False)
         #self.desc.set_justification(gtk.JUSTIFY_FILL)
         textbuffer = self.desc.get_buffer()
-        textbuffer.create_tag("i", style=pango.STYLE_ITALIC)
-        textbuffer.create_tag("u", underline=pango.UNDERLINE_SINGLE)
-        textbuffer.create_tag("b", weight=pango.WEIGHT_BOLD)
+        textbuffer.create_tag("i", style=Pango.Style.ITALIC)
+        textbuffer.create_tag("u", underline=Pango.Underline.SINGLE)
+        textbuffer.create_tag("b", weight=Pango.Weight.BOLD)
 
         rootnode = self.ifacestore.append(None, ["<b>Neil Components</b>", None])
         packagenode = self.ifacestore.append(rootnode, ["<b>By Packages</b>", None])
         pkgnodes = {}
         pkgnodes['(unknown)'] = self.ifacestore.append(packagenode, ["<i>(unknown)</i>", None])
-        for pkg in sorted(com.get_packages(), lambda a, b: cmp(a.name.lower(), b.name.lower())):
+        for pkg in sorted(com.get_packages(), key=lambda p: p.name.lower()):
             pkgnodes[pkg.module] = self.ifacestore.append(packagenode, ["<b>%s</b> (<b>module</b> <i>%s</i>)" % (pkg.name, pkg.module), None])
         categorynode = self.ifacestore.append(rootnode, ["<b>By Categories</b>", None])
         catnodes = {}
