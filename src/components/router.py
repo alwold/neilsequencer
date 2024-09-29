@@ -795,7 +795,7 @@ class RouteView(Gtk.DrawingArea):
             x, y = mp.get_position()
             x, y = int(cx * (1 + x)), int(cy * (1 + y))
             if (mx >= (x - PW)) and (mx <= (x + PW)) and (my >= (y - PH)) and (my <= (y + PH)):
-                if sum(tuple(gtk.gdk.Rectangle(x - PW + LEDOFSX, y - PH + LEDOFSY, LEDWIDTH, LEDHEIGHT).intersect((mx, my, 1, 1)))):
+                if sum(tuple(Gdk.Rectangle(x - PW + LEDOFSX, y - PH + LEDOFSY, LEDWIDTH, LEDHEIGHT).intersect((mx, my, 1, 1)))):
                     area = AREA_LED
                 return mp, (x, y), area
 
