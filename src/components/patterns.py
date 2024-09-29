@@ -335,9 +335,7 @@ class PatternToolBar(Gtk.HBox):
     def get_plugin_source(self):
         player = com.get('neil.core.player')
 
-        def cmp_func(a, b):
-            return cmp(a.get_name().lower(), b.get_name().lower())
-        plugins = sorted(list(player.get_plugin_list()), cmp_func)
+        plugins = sorted(list(player.get_plugin_list()), key=lambda plugin: plugin.get_name().lower())
         return [(plugin.get_name(), plugin) for plugin in plugins]
 
     def get_plugin_sel(self):
