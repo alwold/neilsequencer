@@ -139,8 +139,8 @@ class EventHandlerList:
         assert callable(func), "object %r must be callable." % func
         ref = None
         funcname = None
-        if hasattr(func, 'im_self'):
-            ref = weakref.ref(func.im_self)
+        if hasattr(func, '__self__'):
+            ref = weakref.ref(func.__self__)
             funcname = func.__name__
         else:
             ref = weakref.ref(func)
