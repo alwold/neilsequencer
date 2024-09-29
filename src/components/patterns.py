@@ -974,7 +974,7 @@ class PatternView(Gtk.DrawingArea):
             self.parameter_width = []
             self.parameter_type = []
             self.track_width = []
-            for group in xrange(3):
+            for group in range(3):
                 if (group == 0) and not self.plugin.get_input_connection_count():
                     group_parameter_count = 0
                 else:
@@ -984,7 +984,7 @@ class PatternView(Gtk.DrawingArea):
                 # parameter widths in columns
                 widths = []
                 types = []
-                for group_param in xrange(group_parameter_count):
+                for group_param in range(group_parameter_count):
                     param = self.plugin.get_parameter(group, 0, group_param)
                     paramtype = param.get_type()
                     paramwidth = get_length_from_param(param)
@@ -1047,9 +1047,9 @@ class PatternView(Gtk.DrawingArea):
         else:
             self.vscroll.show()
         adj = self.hscroll.get_adjustment()
-        adj.set_all(self.start_col, 0, vw, 1, 1, pw)
+        adj.configure(self.start_col, 0, vw, 1, 1, pw)
         adj = self.vscroll.get_adjustment()
-        adj.set_all(self.start_row, 0, vh, 1, 1, ph)
+        adj.configure(self.start_row, 0, vh, 1, 1, ph)
 
     def set_octave(self, o):
         """
@@ -2036,7 +2036,7 @@ class PatternView(Gtk.DrawingArea):
         elif k == 'Insert' or k == 'KP_Insert':
             indices = []
             for index in range(1):
-                for i in xrange(self.plugin.get_parameter_count(self.group,
+                for i in range(self.plugin.get_parameter_count(self.group,
                                                                 self.track)):
                     indices += [self.group, self.track, i]
                 self.lines[self.group][self.track].insert(self.row + index, "")
@@ -2051,7 +2051,7 @@ class PatternView(Gtk.DrawingArea):
             indices = []
             for index in range(1):
                 self.lines[self.group][self.track].append('')
-                for i in xrange(self.plugin.get_parameter_count(self.group,
+                for i in range(self.plugin.get_parameter_count(self.group,
                                                                 self.track)):
                     indices += [self.group, self.track, i]
                 self.update_line(self.row_count - 1 + index - 1)
@@ -2549,7 +2549,7 @@ class PatternView(Gtk.DrawingArea):
                 for t in range(tc):
                     s = ' '.join([get_str_from_param(self.plugin.get_parameter(g, t, i),
                                                      self.plugin.get_pattern_value(self.pattern, g, t, i, row))
-                                                    for i in xrange(self.parameter_count[g])])
+                                                    for i in range(self.parameter_count[g])])
                     # values = [self.plugin.get_pattern_value(self.pattern, g, t, i, row) != self.plugin.get_parameter(g, t, i).get_value_none()
                     #                                         for i in range(self.parameter_count[g])]
                     try:
@@ -2621,7 +2621,7 @@ class PatternView(Gtk.DrawingArea):
         rows = self.row_count
         # Draw the row numbers
         num_rows = min(rows - row, (h - self.row_height) / self.row_height + 1)
-        s = '\n'. join([str(i) for i in xrange(row, row + num_rows)])
+        s = '\n'. join([str(i) for i in range(row, row + num_rows)])
         layout.set_text(s)
         px, py = layout.get_pixel_size()
         ctx.move_to(x - 5 - px, y)
@@ -2722,7 +2722,7 @@ class PatternView(Gtk.DrawingArea):
             """Draw the parameter values for a range of rows"""
             x, y = self.pattern_to_pos(row, group, track, 0)
             s = '\n'.join([self.lines[group][track][i]
-                           for i in xrange(row, row + num_rows)])
+                           for i in range(row, row + num_rows)])
             # w = self.column_width * len(self.lines[group][track][row])
             layout.set_text(s)
             px, py = layout.get_pixel_size()
