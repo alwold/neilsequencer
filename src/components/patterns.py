@@ -2842,7 +2842,7 @@ class PatternView(Gtk.DrawingArea):
         # TODO: convert to use cairo
         #self.draw_cursor_xor(ctx)
         self.draw_pattern_background(ctx, layout)
-        self.draw_playpos_xor()
+        #self.draw_playpos_xor()
 
 __all__ = [
     'PatternDialog',
