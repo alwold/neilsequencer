@@ -1202,7 +1202,7 @@ def generate_ui_methods(class_, memberlist):
 
 def refresh_gui():
         while Gtk.events_pending():
-                Gtk.main_iteration_do(block=False)
+                Gtk.main_iteration_do(blocking=False)
 
 def synchronize_list(old_list, new_list, insert_entry_func=None, del_entry_func=None, swap_entry_func=None):
         """

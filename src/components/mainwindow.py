@@ -667,7 +667,7 @@ class NeilFrame(Gtk.Window):
     player = com.get('neil.core.player')
     base,ext = os.path.splitext(filename)
     if ext.lower() in ('.ccm'):
-      dlg = Gtk.Dialog('Neil', parent=self, flags=Gtk.DIALOG_MODAL)
+      dlg = Gtk.Dialog('Neil', parent=self, flags=Gtk.DialogFlags.MODAL)
       progBar = Gtk.ProgressBar()
       progBar.set_text('Loading CCM Song...')
       progBar.set_size_request(300, 40)

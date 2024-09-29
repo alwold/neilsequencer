@@ -285,7 +285,7 @@ class NeilConfig(configparser.ConfigParser):
         assert self._section
         if not self.has_section(self._section):
             return []
-        return sorted(self.items(self._section), lambda a,b: cmp(a[0],b[0]))
+        return sorted(self.items(self._section), key=lambda item: item[0])
 
     def read_int_value(self, name, default=0):
         assert self._section
