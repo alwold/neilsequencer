@@ -5,5 +5,5 @@ import pybuzzlib
 bp = pybuzzlib.BPlayerCreate('.','.')
 
 
-print bp
+print(bp)
 
