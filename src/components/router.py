@@ -33,6 +33,9 @@ import neil.com as com
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import GObject
+from gi.repository import Pango
+from gi.repository import PangoCairo
+import cairo
 
 from neil.utils import PLUGIN_FLAGS_MASK, ROOT_PLUGIN_FLAGS,\
      GENERATOR_PLUGIN_FLAGS, EFFECT_PLUGIN_FLAGS,\
@@ -390,12 +393,11 @@ class VolumeSlider(Gtk.Window):
         self.resize(VOLBARWIDTH, VOLBARHEIGHT)
         self.hide()
         self.drawingarea.connect('motion-notify-event', self.on_motion)
-        # TODO: convert to use draw/cairo
-        #self.drawingarea.connect('expose-event', self.expose)
+        self.drawingarea.connect('draw', self.expose)
         self.drawingarea.connect('button-release-event', self.on_left_up)
 
-    def expose(self, widget, event):
-        self.draw()
+    def expose(self, widget, ctx):
+        self.draw(ctx)
         return False
 
     def redraw(self):
@@ -420,41 +422,42 @@ class VolumeSlider(Gtk.Window):
         self.redraw()
         return True
 
-    def draw(self):
+    def draw(self, ctx):
         """
-        Event handler for paint requests.
+        Event handler for paint requests for the volume slider.
         """
-        gc = self.drawingarea.window.new_gc()
-        cm = gc.get_colormap()
-        drawable = self.drawingarea.window
-
         rect = self.drawingarea.get_allocation()
         w, h = rect.width, rect.height
 
         cfg = config.get_config()
-        whitebrush = cm.alloc_color(cfg.get_color('MV Amp BG'))
-        blackbrush = cm.alloc_color(cfg.get_color('MV Amp Handle'))
-        outlinepen = cm.alloc_color(cfg.get_color('MV Amp Border'))
+        whitebrush = cfg.get_float_color('MV Amp BG')
+        blackbrush = cfg.get_float_color('MV Amp Handle')
+        outlinepen = cfg.get_float_color('MV Amp Border')
 
-        gc.set_foreground(whitebrush)
-        drawable.draw_rectangle(gc, True, 0, 0, w, h)
-        gc.set_foreground(outlinepen)
-        drawable.draw_rectangle(gc, False, 0, 0, w - 1, h - 1)
+        ctx.set_source_rgb(*whitebrush)
+        ctx.rectangle(0, 0, w, h)
+        ctx.fill()
+
+        ctx.set_source_rgb(*outlinepen)
+        ctx.rectangle(0, 0, w - 1, h - 1)
+        ctx.stroke()
 
         if self.plugin:
-            gc.set_foreground(blackbrush)
+            ctx.set_source_rgb(*blackbrush)
             pos = int(self.amp * (VOLBARHEIGHT - VOLKNOBHEIGHT))
-            drawable.draw_rectangle(gc, True, 1, pos + 1,
-                                    VOLBARWIDTH - 2, VOLKNOBHEIGHT - 2)
+            ctx.rectangle(1, pos + 1,
+                          VOLBARWIDTH - 2, VOLKNOBHEIGHT - 2)
+            ctx.fill()
 
-        black = cm.alloc_color(Gdk.color_parse("black"))
-        gc.set_foreground(black)
-        import pango
-        layout = pango.Layout(self.get_pango_context())
-        font = pango.FontDescription("sans 6")
+        black = (0, 0, 0)
+        ctx.set_source_rgb(*black)
+        layout = Pango.Layout(self.get_pango_context())
+        font = Pango.FontDescription("sans 6")
         layout.set_font_description(font)
         layout.set_markup("<small>%.1f dB</small>" % (self.amp * -48.0))
-        drawable.draw_layout(gc, 2, 2, layout)
+        ctx.move_to(2, 2)
+        PangoCairo.update_layout(ctx, layout)
+        PangoCairo.show_layout(ctx, layout)
 
     def display(self, m, mp, index):
         """
@@ -555,8 +558,7 @@ class RouteView(Gtk.DrawingArea):
         self.connect('button-press-event', self.on_left_down)
         self.connect('button-release-event', self.on_left_up)
         self.connect('motion-notify-event', self.on_motion)
-        # TODO: Convert to use draw/cairo
-        #self.connect("expose_event", self.expose)
+        self.connect('draw', self.expose)
         self.connect('key-press-event', self.on_key_jazz, None)
         self.connect('key-release-event', self.on_key_jazz_release, None)
         self.connect('size-allocate', self.on_size_allocate)
@@ -665,7 +667,7 @@ class RouteView(Gtk.DrawingArea):
         for flags, name in flagids:
             brushes = []
             for name in [x.replace('${PLUGIN}', name) for x in names]:
-                brushes.append(cfg.get_color(name))
+                brushes.append(cfg.get_float_color(name))
             self.flags2brushes[flags] = brushes
         common.get_plugin_infos().reset_plugingfx()
 
@@ -986,8 +988,8 @@ class RouteView(Gtk.DrawingArea):
                 self.get_parent_window().invalidate_rect(Gdk.Rectangle(int(rx), int(ry), PLUGINWIDTH, PLUGINHEIGHT), False)
         return True
 
-    def expose(self, widget, event):
-        self.context = widget.window.cairo_create()
+    def expose(self, widget, context):
+        self.context = context
         self.draw(self.context)
         return False
 
@@ -997,19 +999,16 @@ class RouteView(Gtk.DrawingArea):
             rect = self.get_allocation()
             self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, rect.width, rect.height), False)
 
-    def draw_leds(self):
+    def draw_leds(self, ctx):
         """
         Draws only the leds into the offscreen buffer.
         """
         player = com.get('neil.core.player')
         if player.is_loading():
             return
-        gc = self.get_parent_window().new_gc()
-        cm = gc.get_colormap()
         #cfg = config.get_config()
         rect = self.get_allocation()
-        import pango
-        layout = pango.Layout(self.get_pango_context())
+        layout = Pango.Layout(self.get_pango_context())
         #~ layout.set_font_description(self.fontdesc)
         layout.set_width(-1)
         w, h = rect.width, rect.height
@@ -1035,33 +1034,31 @@ class RouteView(Gtk.DrawingArea):
             brushes = self.flags2brushes.get(mp.get_flags() & PLUGIN_FLAGS_MASK,
                                              self.flags2brushes[GENERATOR_PLUGIN_FLAGS])
 
-            def brush2cm(brush):
-                return cm.alloc_color(brush)
-
-            def flag2cm(flag):
-                return brush2cm(brushes[flag])
-
             if not pi.plugingfx:
-                pi.plugingfx = Gdk.Pixmap(self.get_parent_window(), PLUGINWIDTH, PLUGINHEIGHT, -1)
+                pi.plugingfx = cairo.ImageSurface(cairo.Format.ARGB32, PLUGINWIDTH, PLUGINHEIGHT)
+                pctx = cairo.Context(pi.plugingfx)
                 # adjust colour for muted plugins
                 color = brushes[self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT]
-                gc.set_foreground(cm.alloc_color(color))
+                pctx.set_source_rgb(*color)
 #                if pi.muted:
 #                    gc.set_foreground(cm.alloc_color(brushes[self.COLOR_MUTED]))
 #                else:
 #                    gc.set_foreground(cm.alloc_color(brushes[self.COLOR_DEFAULT]))
-                pi.plugingfx.draw_rectangle(gc, True, -1, -1,
+                pctx.rectangle(-1, -1,
                                             PLUGINWIDTH + 1, PLUGINHEIGHT + 1)
+                pctx.fill()
 
                 # outer border
-                gc.set_foreground(flag2cm(self.COLOR_BORDER_OUT))
-                pi.plugingfx.draw_rectangle(gc, False, 0, 0,
-                                            PLUGINWIDTH - 1, PLUGINHEIGHT - 1)
+                pctx.set_source_rgb(*brushes[self.COLOR_BORDER_OUT])
+                pctx.rectangle(0, 0, PLUGINWIDTH - 1, PLUGINHEIGHT - 1)
+                pctx.stroke()
 
                 #  inner border
-                border = blend(cm.alloc_color(color), Gdk.Color("#fff"), 0.65)
-                gc.set_foreground(cm.alloc_color(border))
-                pi.plugingfx.draw_rectangle(gc, False, 1, 1, PLUGINWIDTH - 3, PLUGINHEIGHT - 3)
+                r, g, b = color
+                border = blend(Gdk.Color(red=r, green=g, blue=b), Gdk.Color(red=1, green=1, blue=1), 0.65)
+                pctx.set_source_rgb(border.red_float, border.green_float, border.blue_float)
+                pctx.rectangle(1, 1, PLUGINWIDTH - 3, PLUGINHEIGHT - 3)
+                pctx.stroke()
 
                 if (player.solo_plugin and player.solo_plugin != mp
                     and is_generator(mp)):
@@ -1073,21 +1070,29 @@ class RouteView(Gtk.DrawingArea):
                 layout.set_markup("<small>%s</small>" % title)
                 lw, lh = layout.get_pixel_size()
                 if mp in player.active_plugins:
-                    gc.set_foreground(flag2cm(self.COLOR_BORDER_SELECT))
-                    pi.plugingfx.draw_rectangle(gc, False,
-                                                PLUGINWIDTH / 2 - lw / 2 - 3,
-                                                PLUGINHEIGHT / 2 - lh / 2,
-                                                lw + 6, lh)
-                gc.set_foreground(cm.alloc_color(blend(flag2cm(self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT), Gdk.Color("#fff"), 0.7)))
-                pi.plugingfx.draw_layout(gc, PLUGINWIDTH / 2 - lw / 2 + 1, PLUGINHEIGHT / 2 - lh / 2 + 1, layout)
-
-                gc.set_foreground(flag2cm(self.COLOR_TEXT))
-                pi.plugingfx.draw_layout(gc, PLUGINWIDTH / 2 - lw / 2, PLUGINHEIGHT / 2 - lh / 2, layout)
+                    pctx.set_source_rgb(*brushes[self.COLOR_BORDER_SELECT])
+                    pctx.rectangle(PLUGINWIDTH / 2 - lw / 2 - 3, PLUGINHEIGHT / 2 - lh / 2, lw + 6, lh)
+                    pctx.stroke()
+                r, g, b = brushes[self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT]
+                c2 = Gdk.Color(red=1, green=1, blue=1)
+                blended = blend(Gdk.Color(red=r, green=g, blue=b), c2, 0.7)
+                pctx.set_source_rgb(blended.red_float, blended.green_float, blended.blue_float)
+                pctx.move_to(PLUGINWIDTH / 2 - lw / 2 + 1, PLUGINHEIGHT / 2 - lh / 2 + 1)
+                PangoCairo.update_layout(pctx, layout)
+                PangoCairo.show_layout(pctx, layout)
+                pctx.set_source_rgb(*brushes[self.COLOR_TEXT])
+                pctx.move_to(PLUGINWIDTH / 2 - lw / 2, PLUGINHEIGHT / 2 - lh / 2)
+                PangoCairo.update_layout(pctx, layout)
+                PangoCairo.show_layout(pctx, layout)
+            else:
+                pctx = cairo.Context(pi.plugingfx)
             if config.get_config().get_led_draw() == True:
                 # led border
-                border = blend(flag2cm(self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT), Gdk.Color("#000"), 0.5)
-                gc.set_foreground(cm.alloc_color(border))
-                pi.plugingfx.draw_rectangle(gc, False, LEDOFSX, LEDOFSY, LEDWIDTH - 1, LEDHEIGHT - 1)
+                r, g, b = brushes[self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT]
+                border = blend(Gdk.Color(red=r, green=g, blue=b), Gdk.Color(red=0, green=0, blue=0), 0.5)
+                pctx.set_source_rgb(border.red_float, border.green_float, border.blue_float)
+                pctx.rectangle(LEDOFSX, LEDOFSY, LEDWIDTH - 1, LEDHEIGHT - 1)
+                pctx.stroke()
 
                 maxl, maxr = mp.get_last_peak()
                 amp = min(max(maxl, maxr), 1.0)
@@ -1099,21 +1104,21 @@ class RouteView(Gtk.DrawingArea):
                         # dq = self.peaks[mp.get_name()]
                         # dq.append(LEDHEIGHT - 4)
 
-                        gc.set_foreground(cm.alloc_color(brushes[self.COLOR_LED_WARNING]))
-                        pi.plugingfx.draw_rectangle(gc, True, LEDOFSX + 1,
-                                                    LEDOFSY + 1, LEDWIDTH - 2,
-                                                    LEDHEIGHT - 2)
+                        pctx.set_source_rgb(*brushes[self.COLOR_LED_WARNING])
+                        pctx.rectangle(LEDOFSX + 1, LEDOFSY + 1, LEDWIDTH - 2, LEDHEIGHT - 2)
+                        pctx.fill()
+
                     else:
-                        gc.set_foreground(cm.alloc_color(brushes[self.COLOR_LED_OFF]))
-                        pi.plugingfx.draw_rectangle(gc, True, LEDOFSX,
-                                                    LEDOFSY, LEDWIDTH,
-                                                    LEDHEIGHT)
+                        pctx.set_source_rgb(*brushes[self.COLOR_LED_OFF])
+                        pctx.rectangle(LEDOFSX, LEDOFSY, LEDWIDTH, LEDHEIGHT)
+                        pctx.fill()
                         amp = 1.0 - (linear2db(amp, -76.0) / -76.0)
                         height = int((LEDHEIGHT - 4) * amp + 0.5)
                         if (height > 0):
                             # led fill
-                            gc.set_foreground(cm.alloc_color(brushes[self.COLOR_LED_ON]))
-                            pi.plugingfx.draw_rectangle(gc, True, LEDOFSX + 1, (LEDOFSY + LEDHEIGHT - height - 1), LEDWIDTH - 2, height)
+                            pctx.set_source_rgb(*brushes[self.COLOR_LED_ON])
+                            pctx.rectangle(LEDOFSX + 1, (LEDOFSY + LEDHEIGHT - height - 1), LEDWIDTH - 2, height)
+                            pctx.fill()
                             # # peak falloff
                             # from collections import deque
                             # if not mp.get_name() in self.peaks:
@@ -1132,37 +1137,41 @@ class RouteView(Gtk.DrawingArea):
                     pi.cpu = relperc
 
                     # cpu fill
-                    gc.set_foreground(flag2cm(self.COLOR_CPU_OFF))
-                    pi.plugingfx.draw_rectangle(gc, True, CPUOFSX, CPUOFSY, CPUWIDTH, CPUHEIGHT)
+                    pctx.set_source_rgb(*brushes[self.COLOR_CPU_OFF])
+                    pctx.rectangle(CPUOFSX, CPUOFSY, CPUWIDTH, CPUHEIGHT)
+                    pctx.fill()
 
                     # cpu border
                     color = brushes[self.COLOR_MUTED if pi.muted else self.COLOR_DEFAULT]
-                    border = blend(cm.alloc_color(color), Gdk.Color("#000"), 0.5)
-                    gc.set_foreground(cm.alloc_color(border))
-                    pi.plugingfx.draw_rectangle(gc, False, CPUOFSX, CPUOFSY, CPUWIDTH - 1, CPUHEIGHT - 1)
+                    r, g, b = color
+                    border = blend(Gdk.Color(red=r, green=g, blue=b), Gdk.Color(red=0, green=0, blue=0), 0.5)
+                    pctx.set_source_rgb(border.red_float, border.green_float, border.blue_float)
+                    pctx.rectangle(CPUOFSX, CPUOFSY, CPUWIDTH - 1, CPUHEIGHT - 1)
+                    pctx.stroke()
 
                     height = int((CPUHEIGHT - 4) * relperc + 0.5)
                     if (height > 0):
                         if relperc >= 0.9:
-                            gc.set_foreground(flag2cm(self.COLOR_CPU_WARNING))
+                            pctx.set_source_rgb(*brushes[self.COLOR_CPU_WARNING])
                         else:
-                            gc.set_foreground(flag2cm(self.COLOR_CPU_ON))
-                        pi.plugingfx.draw_rectangle(gc, True, CPUOFSX + 1, (CPUOFSY + CPUHEIGHT - height - 1), CPUWIDTH - 2, height)
+                            pctx.set_source_rgb(*brushes[self.COLOR_CPU_ON])
+                        pctx.rectangle(CPUOFSX + 1, (CPUOFSY + CPUHEIGHT - height - 1), CPUWIDTH - 2, height)
+                        pctx.fill()
             # shadow
-            cr = self.get_parent_window().cairo_create()
-            cr.rectangle(rx + 3, ry + 3, PLUGINWIDTH, PLUGINHEIGHT)
-            cr.set_source_rgba(0.0, 0.0, 0.0, 0.2)
-            cr.fill()
+            ctx.rectangle(rx + 3, ry + 3, PLUGINWIDTH, PLUGINHEIGHT)
+            ctx.set_source_rgba(0.0, 0.0, 0.0, 0.2)
+            ctx.fill()
 
             if mp in player.active_plugins:
                 pass
 
             # flip plugin pixmap to screen
-            self.get_parent_window().draw_drawable(gc, pi.plugingfx, 0, 0, int(rx), int(ry), -1, -1)
+            ctx.set_source_surface(pi.plugingfx, int(rx), int(ry))
+            ctx.paint()
 
     def draw(self, ctx):
         """
-        Draws plugins, connections and arrows to an offscreen buffer.
+        Draws plugins, connections and arrows.
         """
         player = com.get('neil.core.player')
         if player.is_loading():
@@ -1287,16 +1296,12 @@ class RouteView(Gtk.DrawingArea):
             bmpctx.restore()
 
         if not self.routebitmap:
-            self.routebitmap = Gdk.Pixmap(self.get_parent_window(), w, h, -1)
-            gc = self.routebitmap.new_gc()
-            cm = gc.get_colormap()
-            drawable = self.routebitmap
-            gc_bgbrush = cm.alloc_color(cfg.get_color('MV Background'))
-            gc.set_foreground(gc_bgbrush)
-            gc.set_background(gc_bgbrush)
-            drawable.draw_rectangle(gc, True, 0, 0, w, h)
+            self.routebitmap = cairo.ImageSurface(cairo.Format.ARGB32, w, h)
+            bmpctx = cairo.Context(self.routebitmap)
+            bmpctx.set_source_rgb(*cfg.get_float_color('MV Background'))
+            bmpctx.rectangle(0, 0, w, h)
+            bmpctx.fill()
 
-            bmpctx = self.routebitmap.cairo_create()
             bmpctx.translate(0.5, 0.5)
             bmpctx.set_line_width(1)
             mplist = [(mp, get_pixelpos(*mp.get_position()))
@@ -1327,14 +1332,14 @@ class RouteView(Gtk.DrawingArea):
                         arrowcolors[zzub.zzub_connection_type_audio][0] = [c.red_float, c.green_float, c.blue_float]
 
                     draw_line_arrow(bmpctx, arrowcolors[mp.get_input_connection_type(index)], int(crx), int(cry), int(rx), int(ry))
-        gc = self.get_parent_window().new_gc()
-        self.get_parent_window().draw_drawable(gc, self.routebitmap, 0, 0, 0, 0, -1, -1)
+        ctx.set_source_surface(self.routebitmap, 0, 0)
+        ctx.paint()
         if self.connecting:
             ctx.set_line_width(1)
             crx, cry = get_pixelpos(*player.active_plugins[0].get_position())
             rx, ry = self.connectpos
             draw_line(ctx, int(crx), int(cry), int(rx), int(ry))
-        self.draw_leds()
+        self.draw_leds(ctx)
 
     # This method is not *just* for key-jazz, it handles all key-events in router. Rename?
     def on_key_jazz(self, widget, event, plugin):
