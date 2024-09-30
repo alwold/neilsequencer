@@ -1328,7 +1328,8 @@ class RouteView(Gtk.DrawingArea):
                         amp = amp ** 0.5
                         #color = [amp, amp, amp]
                         #arrowcolors[zzub.zzub_connection_type_audio][0] = color
-                        c = blend(cm.alloc_color(cfg.get_color("MV Arrow")), Gdk.Color("#000"), amp)
+                        r, g, b = cfg.get_float_color("MV Arrow")
+                        c = blend(Gdk.Color(red=r, green=g, blue=b), Gdk.Color(red=0, green=0, blue=0), amp)
                         arrowcolors[zzub.zzub_connection_type_audio][0] = [c.red_float, c.green_float, c.blue_float]
 
                     draw_line_arrow(bmpctx, arrowcolors[mp.get_input_connection_type(index)], int(crx), int(cry), int(rx), int(ry))
