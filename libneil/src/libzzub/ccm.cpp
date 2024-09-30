@@ -1096,7 +1096,10 @@ namespace zzub {
   static FLAC__StreamDecoderReadStatus flac_stream_decoder_read_callback(const FLAC__StreamDecoder *decoder, FLAC__byte buffer[], size_t *bytes, void *client_data) {
     DecoderInfo* info = (DecoderInfo*)client_data;
 
-    if (info->reader->position() >= info->reader->size()-1) return FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM;
+    if (info->reader->position() >= info->reader->size()-1) {
+      *bytes = 0;
+      return FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM;
+    }
 
     unsigned int bytesRead = info->reader->read(buffer, *bytes);
     if (bytesRead != *bytes) { 
