@@ -34,6 +34,7 @@ from gi.repository import Gdk
 from gi.repository import GObject
 from gi.repository import Pango
 from gi.repository import PangoCairo
+import cairo
 
 from neil.utils import prepstr
 from neil.utils import get_clipboard_text, set_clipboard_text
@@ -2438,26 +2439,11 @@ class PatternView(Gtk.DrawingArea):
         self.adjust_scrollbars()
         self.update_font()
 
-    def create_xor_gc(self):
+    def draw_cursor_xor(self, cr):
         if self.pattern == -1:
             return
         if not self.get_parent_window():
             return
-        gc = self.get_parent_window().new_gc()
-        cm = gc.get_colormap()
-        w, h = self.get_client_size()
-        bbrush = cm.alloc_color('#ffffff')
-        gc.set_function(Gdk.XOR)
-        gc.set_foreground(bbrush)
-        gc.set_background(bbrush)
-        self.xor_gc = gc
-
-    def draw_cursor_xor(self):
-        if self.pattern == -1:
-            return
-        if not self.get_parent_window():
-            return
-        cr = self.get_parent_window().cairo_create()
         cx, cy = self.pattern_to_pos(self.row, self.group, self.track,
                                      self.index, self.subindex)
         if (cx >= (PATLEFTMARGIN + 4)) and (cy >= self.top_margin):
@@ -2470,15 +2456,14 @@ class PatternView(Gtk.DrawingArea):
             cr.set_source_rgba(1.0, 0.0, 0.0, 0.3)
             cr.fill()
 
-    def draw_playpos_xor(self):
+    def draw_playpos_xor(self, ctx):
         if self.pattern == -1:
             return
         if not self.get_parent_window():
             return
-        drawable = self.get_parent_window()
-        if not hasattr(self, "xor_gc"):
-            self.create_xor_gc()
-        gc = self.xor_gc
+        ctx.set_operator(cairo.Operator.XOR)
+        ctx.set_source_rgb(1, 1, 1)
+
         # draw play cursor
         player = com.get('neil.core.player')
         current_position = self.playpos
@@ -2504,8 +2489,12 @@ class PatternView(Gtk.DrawingArea):
                     and current_position < pos + row_count:
                         y = self.top_margin + (current_position - pos - self.start_row) * self.row_height
                         w, h = self.get_client_size()
-                        drawable.draw_rectangle(gc, True, 0, y, w, 2)
+                        ctx.rectangle(0, y, w, 2)
+                        ctx.fill()
+                        ctx.set_operator(cairo.Operator.OVER)
                         return
+        ctx.set_operator(cairo.Operator.OVER)
+
 
     def get_plugin(self):
         """
@@ -2839,10 +2828,9 @@ class PatternView(Gtk.DrawingArea):
         self.draw_bar_marks(ctx)
         self.draw_parameter_values(ctx, layout)
         self.draw_selection(ctx)
-        # TODO: convert to use cairo
-        #self.draw_cursor_xor(ctx)
+        self.draw_cursor_xor(ctx)
         self.draw_pattern_background(ctx, layout)
-        #self.draw_playpos_xor()
+        self.draw_playpos_xor(ctx)
 
 __all__ = [
     'PatternDialog',
