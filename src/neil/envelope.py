@@ -309,8 +309,7 @@ class EnvelopeView(Gtk.DrawingArea):
         self.connect('motion-notify-event', self.on_motion)
         self.connect('enter-notify-event', self.on_enter)
         self.connect('leave-notify-event', self.on_leave)
-        # TODO: figure out how to do this
-        #self.connect('expose_event', self.expose)
+        self.connect('draw', self.expose)
 
         # Menu that get's activated when you click right mouse button.
         self.context_menu = Gtk.Menu()
@@ -365,8 +364,8 @@ class EnvelopeView(Gtk.DrawingArea):
         self.open_dialog.add_filter(self.filter_)
         self.save_dialog.add_filter(self.filter_)
 
-    def expose(self, widget, event):
-        self.context = widget.window.cairo_create()
+    def expose(self, widget, context):
+        self.context = context
         self.draw(self.context)
         return False
 
@@ -658,7 +657,7 @@ class EnvelopeView(Gtk.DrawingArea):
         points = self.get_translated_points()
         envp = None
         ctx.move_to(*self.env_to_pixel(0, 0))
-        for i in xrange(len(points)):
+        for i in range(len(points)):
             pt1 = points[max(i, 0)]
             ctx.line_to(pt1[0], pt1[1])
             if pt1[2] & zzub.zzub_envelope_flag_sustain:
