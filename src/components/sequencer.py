@@ -582,7 +582,7 @@ class SequencerView(Gtk.DrawingArea):
         """
         player = com.get('neil.core.player')
         seq = player.get_current_sequencer()
-        track = max(min(track, seq.get_sequence_track_count() - 1), 0)
+        track = int(max(min(track, seq.get_sequence_track_count() - 1), 0))
         row = max(row, 0)
         if (track, row) == (self.track, self.row):
             return
