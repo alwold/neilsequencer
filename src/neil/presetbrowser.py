@@ -45,40 +45,40 @@ class PresetView(Gtk.VBox):
 		"""
 		Initialization.
 		"""
-		gtk.VBox.__init__(self)
+		Gtk.VBox.__init__(self)
 		self.set_size_request(150, 400)
 		self.rootwindow = rootwindow
 		self.plugin = plugin
 		self.pluginloader = plugin.get_pluginloader()
 		self.panels = {}
-		scrollwindow = gtk.ScrolledWindow()
-		scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		scrollwindow = Gtk.ScrolledWindow()
+		scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 		self.presetlist, self.presetstore, columns = new_listview([('Name', str),])
-		self.presetlist.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+		self.presetlist.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 		self.update_presets()
 		scrollwindow.add_with_viewport(self.presetlist)
-		self.scrollwindow = scrollwindow		
-		self.pack_start(self.scrollwindow)		
+		self.scrollwindow = scrollwindow
+		self.pack_start(self.scrollwindow, expand=True, fill=True, padding=0)
 
 		self.presetlist.connect("row-activated", self.on_row_activate)
 		
-		buttonbox = gtk.HBox()
+		buttonbox = Gtk.HBox()
 		buttonbox.set_size_request(-1, 50)
-		button_import = gtk.Button('Import')
-		button_export = gtk.Button('Export')		
-		button_delete = gtk.Button('Delete')				
-		buttonbox.pack_start(button_import, padding=5)		
-		buttonbox.pack_start(button_export, padding=5)		
-		buttonbox.pack_start(button_delete, padding=5)		
-		self.pack_start(buttonbox, expand=False, padding=5)
+		button_import = Gtk.Button('Import')
+		button_export = Gtk.Button('Export')		
+		button_delete = Gtk.Button('Delete')
+		buttonbox.pack_start(button_import, expand=True, fill=True, padding=5)
+		buttonbox.pack_start(button_export, expand=True, fill=True, padding=5)
+		buttonbox.pack_start(button_delete, expand=True, fill=True, padding=5)		
+		self.pack_start(buttonbox, expand=False, fill=True, padding=5)
 		
 		button_import.connect('clicked', self.on_import)
 		button_export.connect('clicked', self.on_export)
 		button_delete.connect('clicked', self.on_delete)		
-		self.export_dlg = gtk.FileChooserDialog(title="Export", parent=parent, action=gtk.FILE_CHOOSER_ACTION_SAVE,
-			buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE, gtk.RESPONSE_OK))
-		self.import_dlg = gtk.FileChooserDialog(title="Import", parent=parent, action=gtk.FILE_CHOOSER_ACTION_OPEN,
-			buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+		self.export_dlg = Gtk.FileChooserDialog(title="Export", parent=parent, action=Gtk.FileChooserAction.SAVE,
+			buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+		self.import_dlg = Gtk.FileChooserDialog(title="Import", parent=parent, action=Gtk.FileChooserAction.OPEN,
+			buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
 		filter = file_filter("Preset files (*.prs)", "*.prs")
 		self.export_dlg.add_filter(filter)
 		self.import_dlg.add_filter(filter)
@@ -94,9 +94,9 @@ class PresetView(Gtk.VBox):
 		model, rows = self.presetlist.get_selection().get_selected_rows()
 		if rows:
 			if len(rows) > 1:
-				if question(self, '<b><big>Really delete %s presets?</big></b>' % len(rows),False) != gtk.RESPONSE_YES:
+				if question(self, '<b><big>Really delete %s presets?</big></b>' % len(rows),False) != Gtk.ResponseType.YES:
 					return
-			elif question(self, '<b><big>Really delete preset?</big></b>',False) != gtk.RESPONSE_YES:
+			elif question(self, '<b><big>Really delete preset?</big></b>',False) != Gtk.ResponseType.YES:
 				return
 			selected = [self.presets.presets[row[0]] for row in rows]
 			for preset in selected:
@@ -107,7 +107,7 @@ class PresetView(Gtk.VBox):
 	def on_export(self, widget):
 		response = self.export_dlg.run()		
 		self.export_dlg.hide()
-		if response == gtk.RESPONSE_OK:
+		if response == Gtk.ResponseType.OK:
 			model, rows = self.presetlist.get_selection().get_selected_rows()	
 			filename = self.export_dlg.get_filename()	
 			#~ if not os.path.splitext(filename)[1]:
@@ -121,7 +121,7 @@ class PresetView(Gtk.VBox):
 	def on_import(self, widget):		
 		response = self.import_dlg.run()
 		self.import_dlg.hide()		
-		if response == gtk.RESPONSE_OK:
+		if response == Gtk.ResponseType.OK:
 			try:
 				new_presets = PresetCollection(self.import_dlg.get_filename())				
 				# Test them first
@@ -165,4 +165,4 @@ if __name__ == '__main__':
 	window.add(rack)
 	window.show_all()
 	
-	gtk.main()
+	Gtk.main()

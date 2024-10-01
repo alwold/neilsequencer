@@ -52,9 +52,9 @@ class TickDoublerDialog(Gtk.Dialog):
 		self.halve_button= Gtk.Button("Halve")
 		self.halve_button.connect("clicked", self.on_double, 0.5)
 		hbox = Gtk.HBox(False, 6)
-		hbox.pack_start(self.double_button, expand=True)
-		hbox.pack_start(self.halve_button, expand=True)
-		self.vbox.pack_start(hbox, expand=False)
+		hbox.pack_start(self.double_button, expand=True, fill=True, padding=0)
+		hbox.pack_start(self.halve_button, expand=True, fill=True, padding=0)
+		self.vbox.pack_start(hbox, expand=False, fill=True, padding=0)
 		self.connect('button-press-event', self.on_left_down)
 
 	def double_pattern(self, plugin, pattern_index):

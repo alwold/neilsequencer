@@ -130,7 +130,7 @@ class ViewMenu(Menu):
     if menuitem.get_active():
       view.show_all()
     else:
-      view.hide_all()
+      view.hide()
 
   def on_activate_item(self, menuitem, view):
     if 'neil.viewpanel' in view.__neil__.get('categories',[]):
