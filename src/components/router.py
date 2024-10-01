@@ -847,17 +847,17 @@ class RouteView(Gtk.DrawingArea):
                 self.redraw()
             else:
                 if not mp in player.active_plugins:
-                    if (event.state & Gdk.SHIFT_MASK):
+                    if (event.state & Gdk.ModifierType.SHIFT_MASK):
                         player.active_plugins = [mp] + player.active_plugins
                     else:
                         player.active_plugins = [mp]
                 if not mp in player.active_patterns and is_generator(mp):
-                    if (event.state & Gdk.SHIFT_MASK):
+                    if (event.state & Gdk.ModifierType.SHIFT_MASK):
                         player.active_patterns = [(mp, 0)] + player.active_patterns
                     else:
                         player.active_patterns = [(mp, 0)]
                 player.set_midi_plugin(mp)
-                if (event.state & Gdk.CONTROL_MASK) or (event.button == 2):
+                if (event.state & Gdk.ModifierType.CONTROL_MASK) or (event.button == 2):
                     if is_controller(mp):
                         pass
                     else:
@@ -901,7 +901,7 @@ class RouteView(Gtk.DrawingArea):
             mx, my = int(x), int(y)
             size = self.get_allocation()
             x, y = max(0, min(mx - ox, size.width)), max(0, min(my - oy, size.height))
-            if (event.state & Gdk.CONTROL_MASK):
+            if (event.state & Gdk.ModifierType.CONTROL_MASK):
                 # quantize position
                 x = int(float(x) / QUANTIZEX + 0.5) * QUANTIZEX
                 y = int(float(y) / QUANTIZEY + 0.5) * QUANTIZEY
@@ -936,7 +936,7 @@ class RouteView(Gtk.DrawingArea):
             ox, oy = self.dragoffset
             size = self.get_allocation()
             x, y = max(0, min(mx - ox, size.width)), max(0, min(my - oy, size.height))
-            if (event.state & Gdk.CONTROL_MASK):
+            if (event.state & Gdk.ModifierType.CONTROL_MASK):
                 # quantize position
                 x = int(float(x) / QUANTIZEX + 0.5) * QUANTIZEX
                 y = int(float(y) / QUANTIZEY + 0.5) * QUANTIZEY

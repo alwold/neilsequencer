@@ -167,7 +167,7 @@ class WaveEditView(Gtk.DrawingArea):
     def redraw(self):
         if self.get_parent_window():
             w, h = self.get_client_size()
-            self.get_parent_window().invalidate_rect((0, 0, w, h), False)
+            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, w, h), False)
 
     def update_digest(self, channel=0):
         if self.level == None:
@@ -221,10 +221,10 @@ class WaveEditView(Gtk.DrawingArea):
         b, e = self.range
         diffl = s - b
         diffr = e - s
-        if event.direction == Gtk.gdk.SCROLL_DOWN:
+        if event.direction == Gdk.ScrollDirection.DOWN:
             diffl *= 2
             diffr *= 2
-        elif event.direction == Gtk.gdk.SCROLL_UP:
+        elif event.direction == Gdk.ScrollDirection.UP:
             diffl /= 2
             diffr /= 2
         self.set_range(s - diffl, s + diffr)
@@ -345,7 +345,7 @@ class WaveEditView(Gtk.DrawingArea):
         if (event.button == 1):
             s, a = self.client_to_sample(mx,my)
             # If a user double-clicks - clear the selection.
-            if (event.type == Gtk.gdk._2BUTTON_PRESS):
+            if (event.type == Gdk._2BUTTON_PRESS):
                 self.selection = None
                 self.dragging = False
                 self.redraw()
@@ -478,11 +478,11 @@ class WaveEditView(Gtk.DrawingArea):
             self.near_end_selection_marker(mx, my) or
             self.near_start_loop_marker(mx, my) or
             self.near_end_loop_marker(mx, my)):
-            resizer = Gtk.gdk.Cursor(Gtk.gdk.SB_H_DOUBLE_ARROW)
+            resizer = Gdk.Cursor.new(Gdk.CursorType.SB_H_DOUBLE_ARROW)
             self.get_parent_window().set_cursor(resizer)
         else:
             if (not self.dragging) and (not self.start_loop_dragging) and (not self.end_loop_dragging):
-                arrow = Gtk.gdk.Cursor(Gtk.gdk.ARROW)
+                arrow = Gdk.Cursor.new(Gdk.CursorType.ARROW)
                 self.get_parent_window().set_cursor(arrow)
         if self.dragging == True:
             if s < self.startpos:

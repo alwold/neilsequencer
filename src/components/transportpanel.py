@@ -229,7 +229,7 @@ class TransportPanel(Gtk.HBox):
         if widget.get_active():
             root_window.master.show_all()
         else:
-            root_window.master.hide_all()
+            root_window.master.hide()
 
     #def on_master_focus_out(self, widget, event):
         #self.master_control_window.hide_all()

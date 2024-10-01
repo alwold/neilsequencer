@@ -77,7 +77,7 @@ class SimpleEnvelope(Gtk.DrawingArea):
     def redraw(self):
         if self.get_parent_window():
             w, h = self.get_client_size()
-            self.get_parent_window().invalidate_rect((0, 0, w, h), False)
+            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, w, h), False)
 
     def on_enter(self, widget, event):
         """
@@ -377,7 +377,7 @@ class EnvelopeView(Gtk.DrawingArea):
     def redraw(self):
         if self.get_parent_window():
             w, h = self.get_client_size()
-            self.get_parent_window().invalidate_rect((0, 0, w, h), False)
+            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, w, h), False)
 
     def on_enter(self, widget, event):
         """
@@ -465,7 +465,7 @@ class EnvelopeView(Gtk.DrawingArea):
         """
         Callback that responds to mouse motion over the envelope view.
         """
-        mx, my, state = self.get_parent_window().get_pointer()
+        window, mx, my, state = self.get_parent_window().get_pointer()
         mx, my = int(mx), int(my)
         if self.dragging:
             x, y, f = self.envelope.get_point(self.currentpoint)
