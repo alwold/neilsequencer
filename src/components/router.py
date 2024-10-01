@@ -100,7 +100,7 @@ class AttributesDialog(Gtk.Dialog):
         Gtk.Dialog.__init__(self,
                 "Attributes",
                 parent.get_toplevel(),
-                Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+                Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
                 None
         )
         vbox = Gtk.VBox(False, MARGIN)

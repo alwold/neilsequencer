@@ -380,7 +380,7 @@ class WavetablePanel(Gtk.VBox):
         if not files:
             return
         sel = self.get_sample_selection()
-        if question(self, '<b><big>Really delete selected files?</big></b>', False) != Gtk.RESPONSE_YES:
+        if question(self, '<b><big>Really delete selected files?</big></b>', False) != Gtk.ResponseType.YES:
             return
         for file in files:
             os.remove(file)
@@ -394,7 +394,7 @@ class WavetablePanel(Gtk.VBox):
         if not(files) or len(files) > 1:
             return
         data_entry = DataEntry(self, "Rename File", "New Name:")
-        if data_entry.run() == Gtk.RESPONSE_OK:
+        if data_entry.run() == Gtk.ResponseType.OK:
             try:
                 value = data_entry.edit.get_text()
                 filename = os.path.basename(files[0])
@@ -412,7 +412,7 @@ class WavetablePanel(Gtk.VBox):
         Swap instrument with another
         """
         data_entry = DataEntry(self, "Swap Instruments", "With #:")
-        if data_entry.run() == Gtk.RESPONSE_OK:
+        if data_entry.run() == Gtk.ResponseType.OK:
             try:
                 selects = self.get_sample_selection()
                 player = com.get('neil.core.player')
@@ -451,7 +451,7 @@ class WavetablePanel(Gtk.VBox):
         if not(selects) or len(selects) > 1:
             return
         data_entry = DataEntry(self, "Rename Instrument", "New Name:")
-        if data_entry.run() == Gtk.RESPONSE_OK:
+        if data_entry.run() == Gtk.ResponseType.OK:
             try:
                 value = data_entry.edit.get_text()
                 target = self.get_sample_selection()[0]
@@ -614,9 +614,9 @@ class WavetablePanel(Gtk.VBox):
         """
         sel = self.get_sample_selection()
         if len(sel) > 1:
-            if question(self, '<b><big>Really delete %s instruments?</big></b>' % len(sel), False) != Gtk.RESPONSE_YES:
+            if question(self, '<b><big>Really delete %s instruments?</big></b>' % len(sel), False) != Gtk.ResponseType.YES:
                 return
-        elif question(self, '<b><big>Really delete instrument?</big></b>', False) != Gtk.RESPONSE_YES:
+        elif question(self, '<b><big>Really delete instrument?</big></b>', False) != Gtk.ResponseType.YES:
             return
         player = com.get('neil.core.player')
         for i in sel:
@@ -690,15 +690,15 @@ class WavetablePanel(Gtk.VBox):
                 filename = os.path.splitext(os.path.basename(origpath))[0] + '.wav'
             else:
                 filename = w.get_name() + '.wav'
-            dlg = Gtk.FileChooserDialog(title="Export Sample", parent=self.get_toplevel(), action=Gtk.FILE_CHOOSER_ACTION_SAVE,
-                    buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL, Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
+            dlg = Gtk.FileChooserDialog(title="Export Sample", parent=self.get_toplevel(), action=Gtk.FileChooserAction.SAVE,
+                    buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
             dlg.set_current_name(filename)
             dlg.set_do_overwrite_confirmation(True)
             dlg.add_filter(file_filter('Wave Files (*.wav)', '*.wav'))
             response = dlg.run()
             filepath = dlg.get_filename()
             dlg.destroy()
-            if response == Gtk.RESPONSE_OK:
+            if response == Gtk.ResponseType.OK:
                 player.save_wave(w, filepath)
             else:
                 return
@@ -744,7 +744,7 @@ class WavetablePanel(Gtk.VBox):
         Loads a sample from the file list into the sample list of the song.
         """
         response = self.libpanel.run()
-        if response == Gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             filenames = self.libpanel.get_filenames()
             samplepaths = [path for path in filenames if os.path.isfile(path)]
             self.load_samples(samplepaths)
@@ -1098,8 +1098,8 @@ class DataEntry(Gtk.Dialog):
         Gtk.Dialog.__init__(self,
                 title,
                 parent.get_toplevel(),
-                Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
-                (Gtk.STOCK_OK, Gtk.RESPONSE_OK, Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL),
+                Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                (Gtk.STOCK_OK, Gtk.ResponseType.OK, Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL),
         )
         self.label = Gtk.Label(label)
         self.edit = Gtk.Entry()
@@ -1113,7 +1113,7 @@ class DataEntry(Gtk.Dialog):
         self.edit.connect('activate', self.on_text_enter)
 
     def on_text_enter(self, widget):
-        self.response(Gtk.RESPONSE_OK)
+        self.response(Gtk.ResponseType.OK)
 
 
 __all__ = [

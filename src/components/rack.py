@@ -23,6 +23,7 @@ Contains all classes and functions needed to render the rack view.
 """
 
 from gi.repository import Gtk
+from gi.repository import Gdk
 import cairo
 from gi.repository import PangoCairo
 from neil.utils import prepstr, filepath, db2linear, linear2db, is_debug, filenameify, \
@@ -53,7 +54,7 @@ class ParameterView(Gtk.VBox):
     DROP_TARGET_CTRL_SLIDER = 0
 
     DROP_TARGETS = [
-        ('application/x-controller-slider-drop',
+        Gtk.TargetEntry.new('application/x-controller-slider-drop',
          Gtk.TargetFlags.SAME_APP, DROP_TARGET_CTRL_SLIDER),
     ]
 
@@ -74,40 +75,38 @@ class ParameterView(Gtk.VBox):
         Gtk.VBox.__init__(self)
         self.set_can_focus(True)
         self.plugin = plugin
-        self.tooltips = Gtk.Tooltips()
         name = prepstr(self.plugin.get_name())
         pl = self.plugin.get_pluginloader()
         classname = prepstr(pl.get_name())
         title = "%s - %s" % (name, classname)
         self._title = title
 
-        self.presetbox = Gtk.combo_box_entry_new_text()
+        self.presetbox = Gtk.ComboBoxText.new_with_entry()
         self.presetbox.set_size_request(100, -1)
         self.presetbox.set_wrap_width(4)
         self.btnadd = new_stock_image_button(Gtk.STOCK_ADD)
-        self.tooltips.set_tip(self.btnadd, "Write Values to Preset")
+        self.btnadd.set_tooltip_text("Write Values to Preset")
         self.btnremove = new_stock_image_button(Gtk.STOCK_REMOVE)
-        self.tooltips.set_tip(self.btnremove, "Delete Preset")
+        self.btnremove.set_tooltip_text("Delete Preset")
         self.btncopy = new_stock_image_button(Gtk.STOCK_COPY)
-        self.tooltips.set_tip(
-            self.btncopy, "Copy Values to Clipboard (to Paste in Pattern)")
+        self.btncopy.set_tooltip_text("Copy Values to Clipboard (to Paste in Pattern)")
         self.btnrandom = Gtk.Button("_Random")
-        self.tooltips.set_tip(self.btnrandom, "Randomise Values")
+        self.btnrandom.set_tooltip_text("Randomise Values")
         self.btnhelp = new_stock_image_button(Gtk.STOCK_HELP)
-        self.tooltips.set_tip(self.btnhelp, "Help")
+        self.btnhelp.set_tooltip_text("Help")
         menugroup = Gtk.HBox(False, MARGIN)
-        menugroup.pack_start(self.presetbox)
-        menugroup.pack_start(self.btnadd, expand=False)
-        menugroup.pack_start(self.btnremove, expand=False)
-        menugroup.pack_start(self.btncopy, expand=False)
-        menugroup.pack_start(self.btnrandom, expand=False)
-        menugroup.pack_start(self.btnhelp, expand=False)
+        menugroup.pack_start(self.presetbox, expand=True, fill=True, padding=0)
+        menugroup.pack_start(self.btnadd, expand=False, fill=True, padding=0)
+        menugroup.pack_start(self.btnremove, expand=False, fill=True, padding=0)
+        menugroup.pack_start(self.btncopy, expand=False, fill=True, padding=0)
+        menugroup.pack_start(self.btnrandom, expand=False, fill=True, padding=0)
+        menugroup.pack_start(self.btnhelp, expand=False, fill=True, padding=0)
         toplevelgroup = Gtk.VBox(False, MARGIN)
         toplevelgroup.set_border_width(MARGIN)
-        toplevelgroup.pack_start(menugroup, expand=False)
+        toplevelgroup.pack_start(menugroup, expand=False, fill=True, padding=0)
 
         scrollwindow = Gtk.ScrolledWindow()
-        scrollwindow.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         self.pluginloader = pl
 
@@ -174,9 +173,9 @@ class ParameterView(Gtk.VBox):
     def create_sliders(self, rowgroup):
         plugin = self.plugin
         pl = self.pluginloader
-        snamegroup = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
-        sslidergroup = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
-        svaluegroup = Gtk.SizeGroup(Gtk.SIZE_GROUP_HORIZONTAL)
+        snamegroup = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
+        sslidergroup = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
+        svaluegroup = Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
 
         def add_controller(g, t, i):
             p = plugin.get_parameter(g, t, i)
@@ -196,16 +195,16 @@ class ParameterView(Gtk.VBox):
             valuelabel.set_alignment(0, 0)
             valuelabel.set_size_request(80, -1)
             slidergroup = Gtk.HBox(False, MARGIN)
-            slidergroup.pack_start(namelabel, expand=False)
+            slidergroup.pack_start(namelabel, expand=False, fill=True, padding=0)
             slidergroup.add(button)
-            slidergroup.pack_end(valuelabel, expand=False)
+            slidergroup.pack_end(valuelabel, expand=False, fill=True, padding=0)
             sslidergroup.add_widget(button)
             svaluegroup.add_widget(valuelabel)
-            rowgroup.pack_start(slidergroup, expand=False)
+            rowgroup.pack_start(slidergroup, expand=False, fill=True, padding=0)
             self.pid2ctrls[(g, t, i)] = [namelabel, button, None]
             button.connect('button-press-event',
                            self.on_context_menu, (g, t, i))
-            namelabel.add_events(Gdk.ALL_EVENTS_MASK)
+            namelabel.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
             namelabel.connect('button-press-event',
                               self.on_context_menu, (g, t, i))
             self.update_namelabel(g, t, i)
@@ -219,8 +218,8 @@ class ParameterView(Gtk.VBox):
             namelabel = Gtk.Label()
             namelabel._default_name = name
             button = Gtk.Button('Drop here to connect')
-            button.drag_dest_set(Gtk.DEST_DEFAULT_ALL, self.DROP_TARGETS,
-                                 Gdk.ACTION_COPY)
+            button.drag_dest_set(Gtk.DestDefaults.ALL, self.DROP_TARGETS,
+                                 Gdk.DragAction.COPY)
             button.connect('drag-data-received',
                            self.on_drag_data_received, (g, t, i))
             button.connect('drag-drop', self.on_drag_drop, (g, t, i))
@@ -230,16 +229,16 @@ class ParameterView(Gtk.VBox):
             valuelabel.set_alignment(0, 0)
             valuelabel.set_size_request(80, -1)
             slidergroup = Gtk.HBox(False, MARGIN)
-            slidergroup.pack_start(namelabel, expand=False)
+            slidergroup.pack_start(namelabel, expand=False, fill=True, padding=0)
             slidergroup.add(button)
-            slidergroup.pack_end(valuelabel, expand=False)
+            slidergroup.pack_end(valuelabel, expand=False, fill=True, padding=0)
             sslidergroup.add_widget(button)
             svaluegroup.add_widget(valuelabel)
-            rowgroup.pack_start(slidergroup, expand=False)
+            rowgroup.pack_start(slidergroup, expand=False, fill=True, padding=0)
             self.pid2ctrls[(g, t, i)] = [namelabel, button, None]
             button.connect('button-press-event',
                            self.on_context_menu, (g, t, i))
-            namelabel.add_events(Gdk.ALL_EVENTS_MASK)
+            namelabel.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
             namelabel.connect('button-press-event',
                               self.on_context_menu, (g, t, i))
             self.update_namelabel(g, t, i)
@@ -273,8 +272,8 @@ class ParameterView(Gtk.VBox):
             slider.set_tooltip_markup(
                 "<b>Description</b>: %s" % p.get_description())
             slider.set_value(v)
-            slider.drag_dest_set(Gtk.DEST_DEFAULT_ALL, self.DROP_TARGETS,
-                                 Gdk.ACTION_COPY)
+            slider.drag_dest_set(Gtk.DestDefaults.ALL, self.DROP_TARGETS,
+                                 Gdk.DragAction.COPY)
             slider.connect('drag-data-received',
                            self.on_drag_data_received, (g, t, i))
             slider.connect('drag-drop', self.on_drag_drop, (g, t, i))
@@ -288,17 +287,17 @@ class ParameterView(Gtk.VBox):
             svaluegroup.add_widget(valuelabel)
 
             slidergroup = Gtk.HBox(False, MARGIN)
-            slidergroup.pack_start(namelabel, expand=False)
+            slidergroup.pack_start(namelabel, expand=False, fill=True, padding=0)
             slidergroup.add(slider)
-            slidergroup.pack_end(valuelabel, expand=False)
-            rowgroup.pack_start(slidergroup, expand=False)
+            slidergroup.pack_end(valuelabel, expand=False, fill=True, padding=0)
+            rowgroup.pack_start(slidergroup, expand=False, fill=True, padding=0)
             self.pid2ctrls[(g, t, i)] = [namelabel, slider, valuelabel]
             slider.connect('button-press-event',
                            self.on_context_menu, (g, t, i))
-            namelabel.add_events(Gdk.ALL_EVENTS_MASK)
+            namelabel.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
             namelabel.connect('button-press-event',
                               self.on_context_menu, (g, t, i))
-            valuelabel.add_events(Gdk.ALL_EVENTS_MASK)
+            valuelabel.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
             valuelabel.connect('button-press-event',
                                self.on_context_menu, (g, t, i))
             slider.connect('scroll-event', self.on_mousewheel, (g, t, i))
@@ -337,7 +336,7 @@ class ParameterView(Gtk.VBox):
         rc = self.scrollwindow.get_allocation()
         swx, swy = rc.width, rc.height
         ofsy = cdh - swy  # size without scrollwindow
-        return max(swx, 400), min((svy+20+ofsy), (3*Gdk.screen_height())/4)
+        return max(swx, 400), min((svy+20+ofsy), (3*Gdk.Screen.height())/4)
 
     def get_title(self):
         return self._title
@@ -600,12 +599,12 @@ class ParameterView(Gtk.VBox):
         """
         config = com.get('neil.core.config')
         self.presets = config.get_plugin_presets(self.pluginloader)
-        s = self.presetbox.child.get_text()
+        s = self.presetbox.get_child().get_text()
         self.presetbox.get_model().clear()
         self.presetbox.append_text('<default>')
         for preset in self.presets.presets:
             self.presetbox.append_text(prepstr(preset.name))
-        self.presetbox.child.set_text(s)
+        self.presetbox.get_child().set_text(s)
 
     def apply_preset(self, preset=None):
         if not preset:
@@ -627,7 +626,7 @@ class ParameterView(Gtk.VBox):
         Handler for the Add preset button
         """
         config = com.get('neil.core.config')
-        name = self.presetbox.child.get_text()
+        name = self.presetbox.get_child().get_text()
         presets = [preset for preset in self.presets.presets if prepstr(
             preset.name) == name]
         if presets:
@@ -648,7 +647,7 @@ class ParameterView(Gtk.VBox):
         Handler for the Remove preset button
         """
         config = com.get('neil.core.config')
-        name = self.presetbox.child.get_text()
+        name = self.presetbox.get_child().get_text()
         presets = [preset for preset in self.presets.presets if prepstr(
             preset.name) == name]
         if presets:
@@ -661,10 +660,10 @@ class ParameterView(Gtk.VBox):
         """
         Update presets.
         """
-        if self.presetbox.child.get_text() == "<default>":
+        if self.presetbox.get_child().get_text() == "<default>":
             self.btnadd.set_sensitive(False)
             self.btnremove.set_sensitive(False)
-        elif [preset for preset in self.presets.presets if prepstr(preset.name) == self.presetbox.child.get_text()]:
+        elif [preset for preset in self.presets.presets if prepstr(preset.name) == self.presetbox.get_child().get_text()]:
             self.btnadd.set_sensitive(True)
             self.btnremove.set_sensitive(True)
         else:
@@ -919,12 +918,12 @@ class DataEntry(Gtk.Dialog):
         self.edit = Gtk.Entry()
         self.edit.set_text(v)
         s = Gtk.HBox()
-        s.pack_start(self.label, expand=False)
-        s.pack_start(self.edit)
-        self.vbox.pack_start(s, expand=False)
+        s.pack_start(self.label, expand=False, fill=True, padding=0)
+        s.pack_start(self.edit, expand=True, fill=True, padding=0)
+        self.vbox.pack_start(s, expand=False, fill=True, padding=0)
         label = Gtk.Label(prepstr("%s - %s" % (minval, maxval)))
         label.set_alignment(0, 0.5)
-        self.vbox.pack_start(label, expand=False)
+        self.vbox.pack_start(label, expand=False, fill=True, padding=0)
         self.edit.grab_focus()
         self.edit.select_region(1, -1)
         self.show_all()
@@ -964,7 +963,7 @@ class RackPanel(Gtk.VBox):
         Gtk.VBox.__init__(self)
         self.panels = {}
         scrollwindow = Gtk.ScrolledWindow()
-        scrollwindow.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         rowgroup = Gtk.VBox()
         scrollwindow.add_with_viewport(rowgroup)
         self.scrollwindow = scrollwindow
@@ -994,7 +993,7 @@ class RackPanel(Gtk.VBox):
             view = ParameterView(plugin)
             view.show_all()
             self.panels[plugin] = view
-            self.rowgroup.pack_start(view, expand=False)
+            self.rowgroup.pack_start(view, expand=False, fill=True, padding=0)
             # ~ view.set_size_request(*view.get_best_size())
 
 
