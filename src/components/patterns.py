@@ -2620,7 +2620,7 @@ class PatternView(Gtk.DrawingArea):
         row = self.start_row
         rows = self.row_count
         # Draw the row numbers
-        num_rows = min(rows - row, (h - self.row_height) / self.row_height + 1)
+        num_rows = int(min(rows - row, (h - self.row_height) / self.row_height + 1))
         s = '\n'. join([str(i) for i in range(row, row + num_rows)])
         layout.set_text(s)
         px, py = layout.get_pixel_size()
@@ -2692,8 +2692,8 @@ class PatternView(Gtk.DrawingArea):
                 return lightest
             else:
                 return None
-        num_rows = min(self.row_count - self.start_row,
-                       (h - self.row_height) / self.row_height + 1)
+        num_rows = int(min(self.row_count - self.start_row,
+                       (h - self.row_height) / self.row_height + 1))
         if self.lines and self.lines[CONN]:
             for track in range(self.group_track_count[CONN]):
                 for row in range(self.start_row, num_rows + self.start_row):
@@ -2738,7 +2738,7 @@ class PatternView(Gtk.DrawingArea):
         # Number of rows is calculated to be either the first row displayed
         # subtracted from all rows, or the height of the screen divided
         # by row height, whichever is smaller.
-        num_rows = min(rows - row, (h - self.row_height) / self.row_height + 1)
+        num_rows = int(min(rows - row, (h - self.row_height) / self.row_height + 1))
         # out_of_bounds will be set to true if we have gone over the right
         # edge of the screen, which signifies that we don't have to process
         # the columns that are further to the right.
