@@ -118,15 +118,15 @@ class AttributesDialog(Gtk.Dialog):
         vbox.add(add_scrollbars(self.attriblist))
         hsizer = Gtk.HButtonBox()
         hsizer.set_spacing(MARGIN)
-        hsizer.set_layout(Gtk.BUTTONBOX_START)
+        hsizer.set_layout(Gtk.ButtonBoxStyle.START)
         self.edvalue = Gtk.Entry()
         self.edvalue.set_size_request(50, -1)
         self.btnset = Gtk.Button("_Set")
-        self.btnok = self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
-        self.btncancel = self.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
-        hsizer.pack_start(self.edvalue, expand=False)
-        hsizer.pack_start(self.btnset, expand=False)
-        vbox.pack_start(hsizer, expand=False)
+        self.btnok = self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        self.btncancel = self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        hsizer.pack_start(self.edvalue, expand=False, fill=True, padding=0)
+        hsizer.pack_start(self.btnset, expand=False, fill=True, padding=0)
+        vbox.pack_start(hsizer, expand=False, fill=True, padding=0)
         self.attribs = []
         for i in range(self.pluginloader.get_attribute_count()):
             attrib = self.pluginloader.get_attribute(i)
@@ -189,7 +189,7 @@ class AttributesDialog(Gtk.Dialog):
         """
         Called when the "ok" or "cancel" button is being pressed.
         """
-        if response == Gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             for i in range(len(self.attribs)):
                 self.plugin.set_attribute_value(i, self.attribs[i])
 
@@ -863,7 +863,7 @@ class RouteView(Gtk.DrawingArea):
                     else:
                         self.connecting = True
                         self.connectpos = int(mx), int(my)
-                        self.get_parent_window().set_cursor(Gdk.Cursor(Gdk.CROSSHAIR))
+                        self.get_parent_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.CROSSHAIR))
                 if not self.connecting:
                     for plugin in player.active_plugins:
                         pinfo = self.get_plugin_info(plugin)
@@ -871,7 +871,7 @@ class RouteView(Gtk.DrawingArea):
                         x, y = self.float_to_pixel(pinfo.dragpos)
                         pinfo.dragoffset = x - mx, y - my
                     self.dragging = True
-                    self.get_parent_window().set_cursor(Gdk.Cursor(Gdk.FLEUR))
+                    self.get_parent_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.FLEUR))
                     self.grab_add()
         else:
             res = self.get_connection_at((mx, my))
@@ -917,7 +917,7 @@ class RouteView(Gtk.DrawingArea):
             res = self.get_plugin_at((x, y))
             if res:
                 mp, (mx, my), area = res
-                self.get_parent_window().set_cursor(Gdk.Cursor(Gdk.HAND1) if area == AREA_LED else None)
+                self.get_parent_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.HAND1) if area == AREA_LED else None)
         return True
 
     def on_left_up(self, widget, event):
@@ -959,7 +959,7 @@ class RouteView(Gtk.DrawingArea):
         if res:
             mp, (x, y), area = res
             if area == AREA_LED:
-                self.get_parent_window().set_cursor(Gdk.Cursor(Gdk.HAND1))
+                self.get_parent_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.HAND1))
         else:
             self.get_parent_window().set_cursor(None)
 

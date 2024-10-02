@@ -485,13 +485,13 @@ def run_function_with_progress(parent, msg, allow_cancel, func, *args):
         """
         buttons = []
         if allow_cancel:
-                buttons = (Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
+                buttons = (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         else:
                 buttons = None
         dialog = Gtk.Dialog(
                 '',
                 parent and parent.get_toplevel(),
-                gtk.DIALOG_DESTROY_WITH_PARENT,
+                Gtk.DialogFlags.DESTROY_WITH_PARENT,
                 buttons)
         label = Gtk.Label()
         label.set_markup(msg)
@@ -499,8 +499,8 @@ def run_function_with_progress(parent, msg, allow_cancel, func, *args):
         progress = Gtk.ProgressBar()
         vbox = Gtk.VBox(False, 6)
         vbox.set_border_width(6)
-        vbox.pack_start(label)
-        vbox.pack_start(progress)
+        vbox.pack_start(label, expand=True, fill=True, padding=0)
+        vbox.pack_start(progress, expand=True, fill=True, padding=0)
         dialog._label = label
         dialog._progress = progress
         dialog.markup = msg
@@ -518,7 +518,7 @@ def run_function_with_progress(parent, msg, allow_cancel, func, *args):
         dialog.connect('response', on_response)
         def run_function(dlg, func, args):
                 if func(dlg, *args) and dlg._response == None:
-                        dlg.response(Gtk.RESPONSE_OK)
+                        dlg.response(Gtk.ResponseType.OK)
         gobject.timeout_add(50, update_progress, dialog)
         import thread
         thread.start_new_thread(run_function, (dialog,func,args))
@@ -533,7 +533,7 @@ def gettext(parent, msg, text=''):
     dialog = Gtk.Dialog(
         '',
         parent and parent.get_toplevel(),
-        Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
+        Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
         (Gtk.STOCK_OK, True, Gtk.STOCK_CANCEL, False))
     label = Gtk.Label()
     label.set_markup(msg)
@@ -543,8 +543,8 @@ def gettext(parent, msg, text=''):
     entry.connect('activate', lambda widget: dialog.response(True))
     vbox = Gtk.VBox(False, 6)
     vbox.set_border_width(6)
-    vbox.pack_start(label)
-    vbox.pack_end(entry, expand=False)
+    vbox.pack_start(label, expand=True, fill=True, padding=0)
+    vbox.pack_end(entry, expand=False, fill=True, padding=0)
     dialog.vbox.add(vbox)
     dialog.show_all()
     response = dialog.run()
@@ -606,10 +606,10 @@ def message(parent, msg):
         Shows an info message dialog.
         """
         dialog = Gtk.MessageDialog(parent.get_toplevel(),
-                                   Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   Gtk.MESSAGE_INFO , Gtk.BUTTONS_NONE)
+                                   Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.INFO , Gtk.ButtonsType.NONE)
         dialog.set_markup(msg)
-        dialog.add_buttons(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         response = dialog.run()
         dialog.destroy()
         return response
@@ -619,10 +619,10 @@ def warning(parent, msg):
         Shows an warning message dialog.
         """
         dialog = Gtk.MessageDialog(parent.get_toplevel(),
-                                   Gtk.DIALOG_MODAL | Gtk.DIALOG_DESTROY_WITH_PARENT,
-                                   Gtk.MESSAGE_WARNING, Gtk.BUTTONS_NONE)
+                                   Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.WARNING, Gtk.ButtonsType.NONE)
         dialog.set_markup(msg)
-        dialog.add_buttons(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         response = dialog.run()
         dialog.destroy()
         return response

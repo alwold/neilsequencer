@@ -273,7 +273,7 @@ class PatternToolBar(Gtk.HBox):
             return
         name = filenameify(player.active_plugins[0].get_pluginloader().get_name())
         if not show_machine_manual(name):
-            info = Gtk.MessageDialog(self.get_toplevel(), flags=0, type=Gtk.MESSAGE_INFO, buttons=Gtk.BUTTONS_OK, message_format="Sorry, there's no help for this plugin yet")
+            info = Gtk.MessageDialog(self.get_toplevel(), flags=0, type=Gtk.MessageType.INFO, buttons=Gtk.ButtonsType.OK, message_format="Sorry, there's no help for this plugin yet")
             info.run()
             info.destroy()
 
