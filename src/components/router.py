@@ -404,7 +404,7 @@ class VolumeSlider(Gtk.Window):
         if self.get_parent_window():
             rect = self.drawingarea.get_allocation()
             window = self.drawingarea.window
-            window.invalidate_rect((0, 0, rect.width, rect.height), False)
+            window.invalidate_rect(rect, False)
 
     def on_motion(self, widget, event):
         """
@@ -773,18 +773,17 @@ class RouteView(Gtk.DrawingArea):
         """
         Finds a plugin at a specific position.
 
-        @param x: X coordinate in pixels.
+        @param x: X coordinate of in pixels, relative to the widget.
         @type x: int
-        @param y: Y coordinate in pixels.
+        @param y: Y coordinate in pixels, relative to the widget.
         @type y: int
         @return: A connection item, exact pixel position and area (AREA_ANY, AREA_PANNING, AREA_LED) or None.
         @rtype: (zzub.Plugin,(int,int),int) or None
         """
-        x, y = xy
         rect = self.get_allocation()
         w, h = rect.width, rect.height
         cx, cy = w * 0.5, h * 0.5
-        mx, my = x, y
+        mx, my = xy
         PW, PH = PLUGINWIDTH / 2, PLUGINHEIGHT / 2
         area = AREA_ANY
         player = com.get('neil.core.player')
@@ -793,7 +792,10 @@ class RouteView(Gtk.DrawingArea):
             if not pi.songplugin:
                 continue
             x, y = mp.get_position()
+            # the mp position is between -1 and 1, add 1 to get it between 0 and 2, then multiply by half of
+            # the width/height to convert to widget coordinates
             x, y = int(cx * (1 + x)), int(cy * (1 + y))
+            # check if the coordinates passed in fall within the bounds of the plugin's box
             if (mx >= (x - PW)) and (mx <= (x + PW)) and (my >= (y - PH)) and (my <= (y + PH)):
                 if sum(tuple(Gdk.Rectangle(x - PW + LEDOFSX, y - PH + LEDOFSY, LEDWIDTH, LEDHEIGHT).intersect((mx, my, 1, 1)))):
                     area = AREA_LED
@@ -894,7 +896,7 @@ class RouteView(Gtk.DrawingArea):
         @param event: Mouse event.
         @type event: wx.MouseEvent
         """
-        window, x, y, state = self.get_parent_window().get_pointer()
+        x, y = self.get_pointer()
         if self.dragging:
             player = com.get('neil.core.player')
             ox, oy = self.dragoffset
@@ -997,7 +999,7 @@ class RouteView(Gtk.DrawingArea):
         if self.get_parent_window():
             self.routebitmap = None
             rect = self.get_allocation()
-            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, rect.width, rect.height), False)
+            self.get_parent_window().invalidate_rect(rect, False)
 
     def draw_leds(self, ctx):
         """
