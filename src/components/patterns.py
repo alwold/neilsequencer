@@ -2376,7 +2376,7 @@ class PatternView(Gtk.DrawingArea):
         value = int(max(min(value, maxv - pagesize), minv) + 0.5)
         widget.set_value(value)
         if self.start_row != value / 1 * 1:
-            self.start_row = value / 1 * 1
+            self.start_row = int(value / 1 * 1)
         self.redraw()
         return True
 
