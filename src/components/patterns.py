@@ -2721,6 +2721,7 @@ class PatternView(Gtk.DrawingArea):
             layout.set_text(s)
             px, py = layout.get_pixel_size()
             ctx.set_source_rgba(*pen)
+            ctx.move_to(x, y)
             PangoCairo.update_layout(ctx, layout)
             PangoCairo.show_layout(ctx, layout)
             return x + px
