@@ -2329,7 +2329,7 @@ class PatternView(Gtk.DrawingArea):
                 # subindex is that what remains
                 subindex = x
         # find row
-        row = min(max(0, y), self.row_count - 1)
+        row = int(min(max(0, y), self.row_count - 1))
         return (row, group, track, index, subindex)
 
     def pos_to_pattern(self, position):
