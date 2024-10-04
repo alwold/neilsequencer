@@ -39,7 +39,7 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 
 ## Remaining work
 ### Tasks
-- [ ] Creating master track in sequencer, click it, crash on `zzub_player_get_sequence`
+- [ ] Creating master track in sequencer, click it, null pointer access in player.py
 - [x] Fix the way we load the component path in `com.py`
 - [ ] Verify clipboard code in utils.py works
 - [x] Fix sorting in searchplugins.py
@@ -47,7 +47,7 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [ ] Check if we need to decode() in prepstr() in utils.py
 - [ ] Convert drawing code (where there are commented out expose event connect calls) to cairo:
   - [ ] masterpanel.py
-  - [x] patterns.py (partly implemented)
+  - [x] patterns.py
   - [x] router.py
   - [x] sequencer.py
   - [x] envelope.py
@@ -57,8 +57,8 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [ ] Find out if we need the frozen detection in gtkcodebuffer.py (and elsewhere?)
 - [ ] Convert C plugins that use GTK to GTK 3
 - [ ] Verify the code in Sequencer.draw_tracks where it uses translate instead of the old way of creating a new drawable
-- [ ] Fix layout issues with patterns
+- [x] Fix layout issues with patterns
 - [ ] Clean up awkward color blending code in router `draw_leds` function
-- [ ] Fix various issues where tracks/rows end up as floats and we try to pass them to C functions that take int
+- [x] Fix various issues where tracks/rows end up as floats and we try to pass them to C functions that take int
 - [ ] Fix rectangle intersection stuff in router
 - [ ] Look for references to Gdk.Rectangle creation and make sure we aren't doing it wrong
