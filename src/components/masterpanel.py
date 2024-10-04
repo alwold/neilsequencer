@@ -210,6 +210,9 @@ class MasterPanel(Gtk.VBox):
         self.clipbtn.connect('clicked', self.on_clip_button_clicked)
         self.clipbtn.set_property("can-focus", False)
 
+        self.clipbtn_style_provider = Gtk.CssProvider.new()
+        self.clipbtn_style_provider.load_from_data("* { background-image:none; background-color:red;}")
+
         self.volumelabel = Gtk.Label()
 
         vbox.pack_start(self.clipbtn, expand=False, fill=False, padding=0)
@@ -223,12 +226,6 @@ class MasterPanel(Gtk.VBox):
         # Send keystrokes back to main window
         # Lambda needed because root window isn't initialized here
         self.connect('key-press-event', lambda w, e: com.get('neil.core.window.root').on_key_down(w, e))
-        self.connect('realize', self.on_realize)
-
-    def on_realize(self, widget):
-        # TODO: figure out how to save/restore the background here
-        #self.clipbtn_org_color = self.clipbtn.get_style().bg[Gtk.STATE_NORMAL]
-        pass
 
     def on_zzub_parameter_changed(self, plugin, group, track, param, value):
         player = com.get('neil.core.player')
@@ -269,12 +266,12 @@ class MasterPanel(Gtk.VBox):
         master = player.get_plugin(0)
         maxL, maxR = master.get_last_peak()
         self.clipbtn.set_label("%.1f dbFS" % utils.linear2db(min(maxL, maxR, 1.)))
-        self.clipbtn.modify_bg(Gtk.StateType.NORMAL, self.clipbtn_org_color)
+        self.clipbtn.get_style_context().remove_provider(self.clipbtn_style_provider)
 
     def on_clipped(self, widget, level):
         # db = utils.linear2db(level, widget.range)
         self.clipbtn.set_label('CLIP')
-        self.clipbtn.modify_bg(Gtk.StateType.NORMAL, Gdk.Color(red=1, green=0, blue=0))
+        self.clipbtn.get_style_context().add_provider(self.clipbtn_style_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def update_all(self):
         """
