@@ -2327,7 +2327,7 @@ class PatternView(Gtk.DrawingArea):
                     index = i
                 x -= self.parameter_position[group][index]
                 # subindex is that what remains
-                subindex = x
+                subindex = int(x)
         # find row
         row = int(min(max(0, y), self.row_count - 1))
         return (row, group, track, index, subindex)
