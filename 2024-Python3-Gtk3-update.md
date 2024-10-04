@@ -45,20 +45,27 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [x] Fix sorting in searchplugins.py
 - [x] Fix sorting in mainwindow.py (two places)
 - [ ] Check if we need to decode() in prepstr() in utils.py
-- [ ] Convert drawing code (where there are commented out expose event connect calls) to cairo:
-  - [ ] masterpanel.py
+- [x] Convert drawing code (where there are commented out expose event connect calls) to cairo:
+  - [x] masterpanel.py
   - [x] patterns.py
   - [x] router.py
   - [x] sequencer.py
   - [x] envelope.py
   - [x] waveedit.py
-- [ ] Restore background color save/restore on clipbtn in masterpanel.py
+- [x] Restore background color save/restore on clipbtn in masterpanel.py
 - [ ] Verify pickle works in rack.py
 - [ ] Find out if we need the frozen detection in gtkcodebuffer.py (and elsewhere?)
 - [ ] Convert C plugins that use GTK to GTK 3
 - [ ] Verify the code in Sequencer.draw_tracks where it uses translate instead of the old way of creating a new drawable
+- [ ] Look into layout issues on sequencer - as you scroll to the right, things seem to get crazy (maybe related to above)
 - [x] Fix layout issues with patterns
 - [ ] Clean up awkward color blending code in router `draw_leds` function
 - [x] Fix various issues where tracks/rows end up as floats and we try to pass them to C functions that take int
 - [ ] Fix rectangle intersection stuff in router
 - [ ] Look for references to Gdk.Rectangle creation and make sure we aren't doing it wrong
+- [ ] Dialog layout/packing problems
+  - Dialog that pops up when you edit parameters on machine
+  - Machine attributes dialog
+  - Tools->Component browser
+  - App preferences
+  
