@@ -925,9 +925,10 @@ class PatternView(Gtk.DrawingArea):
         player = com.get('neil.core.player')
         playpos = player.get_position()
         if self.playpos != playpos:
-            self.draw_playpos_xor()
             self.playpos = playpos
-            self.draw_playpos_xor()
+            # This used to just draw the play position, but we can't do that anymore because we don't
+            # have access to the cairo context. We might need to tweak this to improve performance, though.
+            self.redraw()
         return True
 
     def get_new_pattern_name(self, m=None):
