@@ -396,7 +396,7 @@ class SequencerPanel(Gtk.VBox):
         """
         self.update_list()
         self.toolbar.update_all()
-        for k, v in self.view.plugin_info.items():
+        for k, v in self.view.plugin_info.iteritems():
             v.patterngfx = {}
         self.view.update()
         self.seqview.set_cursor_pos(0, 0)
