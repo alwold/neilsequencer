@@ -62,7 +62,6 @@ class AmpView(Gtk.DrawingArea):
         self.peaks = np.zeros(300)
         self.hold = 15
         self.set_size_request(20, -1)
-        # TODO: Convert to use Cairo drawing
         self.connect("draw", self.expose)
         self.connect("configure_event", self.configure)
         GObject.timeout_add(33, self.on_update)
@@ -82,7 +81,7 @@ class AmpView(Gtk.DrawingArea):
 
         rect = self.get_allocation()
         if self.get_parent_window():
-            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, rect.width, rect.height), False)
+            self.get_parent_window().invalidate_rect(rect, False)
         return True
 
     def draw(self, ctx):
@@ -163,8 +162,7 @@ class AmpView(Gtk.DrawingArea):
         self.linear.add_color_stop_rgb(self.stops[2], 0, 1, 0)
         self.linear.add_color_stop_rgb(1, 0, .3, 0)
 
-    def expose(self, widget, event):
-        context = widget.get_parent_window().cairo_create()
+    def expose(self, widget, context):
         self.draw(context)
         return False
 
@@ -276,7 +274,7 @@ class MasterPanel(Gtk.VBox):
     def on_clipped(self, widget, level):
         # db = utils.linear2db(level, widget.range)
         self.clipbtn.set_label('CLIP')
-        self.clipbtn.modify_bg(Gtk.StateType.NORMAL, Gdk.Color("#f00"))
+        self.clipbtn.modify_bg(Gtk.StateType.NORMAL, Gdk.Color(red=1, green=0, blue=0))
 
     def update_all(self):
         """
