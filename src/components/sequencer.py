@@ -396,7 +396,7 @@ class SequencerPanel(Gtk.VBox):
         """
         self.update_list()
         self.toolbar.update_all()
-        for k, v in self.view.plugin_info.iteritems():
+        for k, v in self.view.plugin_info.items():
             v.patterngfx = {}
         self.view.update()
         self.seqview.set_cursor_pos(0, 0)
@@ -1348,7 +1348,7 @@ class SequencerView(Gtk.DrawingArea):
     def redraw(self, *args):
         if self.get_parent_window() and self.get_parent_window().is_visible():
             rect = self.get_allocation()
-            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, rect.width, rect.height), False)
+            self.get_parent_window().invalidate_rect(rect, False)
 
     def on_left_up(self, widget, event):
         """
@@ -1377,10 +1377,8 @@ class SequencerView(Gtk.DrawingArea):
                     self.startseqtime = playpos / self.step * self.step
                     self.redraw()
             #self.draw_cursors()
-            self.draw_playpos()
             self.playpos = playpos
-            self.draw_playpos()
-            #self.redraw()
+            self.redraw()
         return True
 
     def on_vscroll_window(self, widget, scroll, value):
@@ -1655,16 +1653,16 @@ class SequencerView(Gtk.DrawingArea):
                                 pass
                             box_size = max(int(((self.seq_row_size * length) / self.step) + 0.5), 4)
                             gfx_w, gfx_h = box_size - 3, self.seq_track_size - 3
-                            #gfx = Gdk.Pixmap(drawable, gfx_w, gfx_h, -1)
+                            gfx = cairo.ImageSurface(cairo.Format.ARGB32, gfx_w, gfx_h)
+                            gctx = cairo.Context(gfx)
 
                             x = self.seq_left_margin + ((position - self.startseqtime) * self.seq_row_size / self.step)
-                            ctx.translate(x + 2, y + 2)
                             pattern_color = self.get_random_color(plugin.get_name() + name)
-                            ctx.set_source_rgba(*pattern_color)
-                            ctx.rectangle(0, 0, gfx_w, gfx_h)
-                            ctx.fill()
+                            gctx.set_source_rgba(*pattern_color)
+                            gctx.rectangle(0, 0, gfx_w, gfx_h)
+                            gctx.fill()
                             if plugin.get_pluginloader().get_uri() == '@neil/lunar/controller/Control;1':
-                                ctx.set_source_rgba(0.25, 0.25, 0.25)
+                                gctx.set_source_rgba(0.25, 0.25, 0.25)
                                 for row in range(length - 1):
                                     val1 = pattern.get_value(row, 1, 0, 0)
                                     val2 = pattern.get_value(row, 1, 0, 0)
@@ -1673,15 +1671,15 @@ class SequencerView(Gtk.DrawingArea):
                                     if val1 != param.get_value_none() and val2 != param.get_value_none:
                                         scaled1 = (val1 - param.get_value_min()) * scale
                                         scaled2 = (val2 - param.get_value_min()) * scale
-                                        ctx.move_to(
+                                        gctx.move_to(
                                                       int(1 + gfx_w * (row / float(length))),
                                                       int(1 + (gfx_h - 2) * (1.0 - scaled1)))
-                                        ctx.line_to(
+                                        gctx.line_to(
                                                       int(1 + gfx_w * ((row + 1) / float(length))),
                                                       int(1 + (gfx_h - 2) * (1.0 - scaled2)))
-                                        ctx.stroke()
+                                        gctx.stroke()
                             else:
-                                ctx.set_source_rgba(0.25, 0.25, 0.25)
+                                gctx.set_source_rgba(0.25, 0.25, 0.25)
                                 for row in range(length):
                                     groups = pattern.get_group_count()
                                     for group in range(groups):
@@ -1695,23 +1693,24 @@ class SequencerView(Gtk.DrawingArea):
                                                     if val != param.get_value_none():
                                                         scale = 1.0 / (param.get_value_max() - param.get_value_min())
                                                         scaled = (val - param.get_value_min()) * scale
-                                                        ctx.rectangle(
+                                                        gctx.rectangle(
                                                                            int(1 + gfx_w * (row / float(length))),
                                                                            int(1 + (gfx_h - 2) * (1.0 - scaled)), 2, 2)
-                                                        ctx.fill()
-                            ctx.set_source_rgba(*colors['Border'])
-                            ctx.rectangle(0, 0, gfx_w - 1, gfx_h - 1)
-                            ctx.stroke()
+                                                        gctx.fill()
+                            gctx.set_source_rgba(*colors['Border'])
+                            gctx.rectangle(0, 0, gfx_w - 1, gfx_h - 1)
+                            gctx.stroke()
                             layout.set_markup("<small>%s</small>" % name)
                             px, py = layout.get_pixel_size()
-                            ctx.set_source_rgba(*colors['Text'])
-                            ctx.move_to(2, 2)
-                            PangoCairo.update_layout(ctx, layout)
-                            PangoCairo.show_layout(ctx, layout)
-                            #plugin_info.patterngfx[value] = gfx
-                        #x = self.seq_left_margin + ((position - self.startseqtime) * self.seq_row_size / self.step)
-                        #drawable.draw_drawable(ctx, gfx, 0, 0, x + 2, y + 2, -1, -1)
-                        ctx.translate(0, 0)
+                            gctx.set_source_rgba(*colors['Text'])
+                            gctx.move_to(2, 2)
+                            PangoCairo.update_layout(gctx, layout)
+                            PangoCairo.show_layout(gctx, layout)
+                            plugin_info.patterngfx[value] = gfx
+                        x = self.seq_left_margin + ((position - self.startseqtime) * self.seq_row_size / self.step)
+                        ctx.set_source_surface(gfx)
+                        ctx.move_to(x + 2, y + 2)
+                        ctx.paint()
                     if pattern != None:
                         pattern.destroy()
                 elif value == 0x00 or value == 0x01:
