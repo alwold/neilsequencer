@@ -1708,8 +1708,7 @@ class SequencerView(Gtk.DrawingArea):
                             PangoCairo.show_layout(gctx, layout)
                             plugin_info.patterngfx[value] = gfx
                         x = self.seq_left_margin + ((position - self.startseqtime) * self.seq_row_size / self.step)
-                        ctx.set_source_surface(gfx)
-                        ctx.move_to(x + 2, y + 2)
+                        ctx.set_source_surface(gfx, x+2, y+2)
                         ctx.paint()
                     if pattern != None:
                         pattern.destroy()

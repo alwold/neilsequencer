@@ -56,8 +56,8 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [ ] Verify pickle works in rack.py
 - [ ] Find out if we need the frozen detection in gtkcodebuffer.py (and elsewhere?)
 - [ ] Convert C plugins that use GTK to GTK 3
-- [ ] Verify the code in Sequencer.draw_tracks where it uses translate instead of the old way of creating a new drawable
-- [ ] Look into layout issues on sequencer - as you scroll to the right, things seem to get crazy (maybe related to above)
+- [x] Verify the code in Sequencer.draw_tracks where it uses translate instead of the old way of creating a new drawable
+- [x] Look into layout issues on sequencer - as you scroll to the right, things seem to get crazy (maybe related to above)
 - [x] Fix layout issues with patterns
 - [ ] Clean up awkward color blending code in router `draw_leds` function
 - [x] Fix various issues where tracks/rows end up as floats and we try to pass them to C functions that take int
@@ -68,4 +68,4 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
   - Machine attributes dialog
   - Tools->Component browser
   - App preferences
-  
+- [ ] Clicking in random places on sequencer, you can get the cursor in a non-aligned position
