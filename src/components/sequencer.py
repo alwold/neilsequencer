@@ -550,11 +550,11 @@ class SequencerView(Gtk.DrawingArea):
         if x < self.seq_left_margin:
             row = -1
         else:
-            row = (((x - self.seq_left_margin) / self.seq_row_size) * self.step) + self.startseqtime
+            row = (int((x - self.seq_left_margin) / self.seq_row_size) * self.step) + self.startseqtime
         if y < self.seq_top_margin:
             track = -1
         else:
-            track = ((y - self.seq_top_margin) / self.seq_track_size) + self.starttrack
+            track = int((y - self.seq_top_margin) / self.seq_track_size) + self.starttrack
         return track, row
 
     def get_endtrack(self):
