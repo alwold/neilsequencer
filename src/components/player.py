@@ -763,7 +763,7 @@ class NeilPlayer(Player, PropertyEventHandler):
         # restore all connections
         for inplug, iamp, ipan in inplugs:
             for outplug, oamp, opan in outplugs:
-                newamp = (iamp * oamp) / 16384
+                newamp = int((iamp * oamp) / 16384)
                 newpan = ipan
                 outplug.add_input(inplug, zzub.zzub_connection_type_audio)
                 index = outplug.get_input_connection_count() - 1
