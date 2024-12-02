@@ -12,10 +12,10 @@ To install _Neil_ you should enter the commands shown below to the terminal. The
     ```bash
     git clone https://github.com/alwold/neilsequencer
     ```
-    This creates a copy of the _Neil_ source tree on your hard drive. This is done by calling Git with the "clone" option. To read more about how Git works go here: https://git-scm.com/. A new repository is created for the code in a directory called `neil`.
+    This creates a copy of the _Neil_ source tree on your hard drive. This is done by calling Git with the "clone" option. To read more about how Git works go here: https://git-scm.com/. A new repository is created for the code in a directory called `neilsequencer`.
 3. Compile and install Neil:
     ```bash
-    cd neil; scons configure; scons; sudo scons install
+    cd neilsequencer; scons configure; scons; sudo scons install
     ```
     This launches the build scripts with different options. This will configure the build system, compile the C++ code and install it in the `/usr/local/` prefix by default (it is possible to change this).
 4. Now you ought to be able to run _Neil_:
