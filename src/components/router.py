@@ -797,7 +797,19 @@ class RouteView(Gtk.DrawingArea):
             x, y = int(cx * (1 + x)), int(cy * (1 + y))
             # check if the coordinates passed in fall within the bounds of the plugin's box
             if (mx >= (x - PW)) and (mx <= (x + PW)) and (my >= (y - PH)) and (my <= (y + PH)):
-                if sum(tuple(Gdk.Rectangle(x - PW + LEDOFSX, y - PH + LEDOFSY, LEDWIDTH, LEDHEIGHT).intersect((mx, my, 1, 1)))):
+                led = Gdk.Rectangle()
+                led.x = x - PW + LEDOFSX
+                led.y = y - PH + LEDOFSY
+                led.width = LEDWIDTH
+                led.height = LEDHEIGHT
+
+                cursor = Gdk.Rectangle()
+                cursor.x = mx
+                cursor.y = my
+                cursor.width = 1
+                cursor.height = 1
+                intersects, rectangle = led.intersect(cursor)
+                if intersects:
                     area = AREA_LED
                 return mp, (x, y), area
 
