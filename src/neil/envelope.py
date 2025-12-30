@@ -77,7 +77,12 @@ class SimpleEnvelope(Gtk.DrawingArea):
     def redraw(self):
         if self.get_parent_window():
             w, h = self.get_client_size()
-            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, w, h), False)
+            rect = Gdk.Rectangle()
+            rect.x = 0
+            rect.y = 0
+            rect.width = w
+            rect.height = h
+            self.get_parent_window().invalidate_rect(rect, False)
 
     def on_enter(self, widget, event):
         """
@@ -111,8 +116,20 @@ class SimpleEnvelope(Gtk.DrawingArea):
             px, py = point
             if (bestindex == None) and (px > x):
                 bestindex = i
-            rc = Gdk.Rectangle(px - ds, py - ds, DOTSIZE, DOTSIZE)
-            if sum(rc.intersect((x, y, 1, 1))):
+            rc = Gdk.Rectangle()
+            rc.x = px - ds
+            rc.y = py - ds
+            rc.width = DOTSIZE
+            rc.height = DOTSIZE
+
+            position_rect = Gdk.Rectangle()
+            position_rect.x = x
+            position_rect.y = y
+            position_rect.width = 1
+            position_rect.height = 1
+
+            intersects, rectangle = rc.intersect(position_rect)
+            if intersects:
                 return i, EXACT
         return bestindex, NEXT
 
@@ -376,7 +393,12 @@ class EnvelopeView(Gtk.DrawingArea):
     def redraw(self):
         if self.get_parent_window():
             w, h = self.get_client_size()
-            self.get_parent_window().invalidate_rect(Gdk.Rectangle(0, 0, w, h), False)
+            rectangle = Gdk.Rectangle()
+            rectangle.x = 0
+            rectangle.y = 0
+            rectangle.width = w
+            rectangle.height = h
+            self.get_parent_window().invalidate_rect(rectangle, False)
 
     def on_enter(self, widget, event):
         """
@@ -410,8 +432,19 @@ class EnvelopeView(Gtk.DrawingArea):
             px, py, f = point
             if (bestindex == None) and (px > x):
                 bestindex = i
-            rc = Gdk.Rectangle(px - ds, py - ds, DOTSIZE, DOTSIZE)
-            if sum(rc.intersect((x, y, 1, 1))):
+            rc = Gdk.Rectangle()
+            rc.x = px - ds
+            rc.y = py - ds
+            rc.width = DOTSIZE
+            rc.height = DOTSIZE
+
+            position_rect = Gdk.Rectangle()
+            position_rect.x = x
+            position_rect.y = y
+            position_rect.width = 1
+            position_rect.height = 1
+            intersects, rectangle = rc.intersect(position_rect)
+            if intersects:
                 return i, EXACT
         return bestindex, NEXT
 

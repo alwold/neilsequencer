@@ -62,7 +62,7 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [ ] Clean up awkward color blending code in router `draw_leds` function
 - [x] Fix various issues where tracks/rows end up as floats and we try to pass them to C functions that take int
 - [x] Fix rectangle intersection stuff in router
-- [ ] Look for references to Gdk.Rectangle creation and make sure we aren't doing it wrong
+- [x] Look for references to Gdk.Rectangle creation and make sure we aren't doing it wrong
   - in `envelope.py` there are some
   - in `wavedit.py` there is one
 - [ ] Dialog layout/packing problems
