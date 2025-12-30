@@ -71,5 +71,5 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
   - Tools->Component browser
   - App preferences
 - [ ] Clicking in random places on sequencer, you can get the cursor in a non-aligned position
-- [ ] Update menu item labels so they don't say like "gtk-save-as"
-- [ ] Update menus so they don't have underscores in the names
+- [x] Update menu item labels so they don't say like "gtk-save-as"
+- [x] Update menus so they don't have underscores in the names

@@ -311,7 +311,7 @@ class PackageBrowserMenuItem:
 
     def __init__(self, menu):
         # create a menu item
-        item = Gtk.MenuItem(label="Show _Component Browser")
+        item = Gtk.MenuItem.new_with_mnemonic(label="Show _Component Browser")
         # connect the menu item to our handler
         item.connect('activate', self.on_menuitem_activate)
         # append the item to the menu

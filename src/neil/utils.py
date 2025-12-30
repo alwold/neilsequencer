@@ -940,17 +940,8 @@ class CancelException(Exception):
         """
 
 def make_submenu_item(submenu, name):
-        item = Gtk.MenuItem(label=name)
+        item = Gtk.MenuItem.new_with_mnemonic(label=name)
         item.set_submenu(submenu)
-        return item
-
-def make_stock_menu_item(stockid, func, frame=None, shortcut=None, *args):
-        item = Gtk.ImageMenuItem(stockid)
-        if frame and shortcut:
-                acc = com.get('neil.core.accelerators')
-                acc.add_accelerator(shortcut, item)
-        if func:
-                item.connect('activate', func, *args)
         return item
 
 def make_stock_tool_item(stockid, func, *args):
@@ -971,8 +962,11 @@ def make_stock_radio_item(stockid, func, *args):
                 item.connect('toggled', func, *args)
         return item
 
-def make_menu_item(label, desc, func, *args):
-        item = Gtk.MenuItem(label=label)
+def make_menu_item(label, desc, func, *args, frame=None, shortcut=None):
+        item = Gtk.MenuItem.new_with_mnemonic(label=label)
+        if frame and shortcut:
+                acc = com.get('neil.core.accelerators')
+                acc.add_accelerator(shortcut, item)
         if desc:
                 item.set_tooltip_text(desc)
         if func:

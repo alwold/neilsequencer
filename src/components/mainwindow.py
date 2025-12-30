@@ -36,7 +36,7 @@ MARGIN2 = common.MARGIN2
 MARGIN3 = common.MARGIN3
 MARGIN0 = common.MARGIN0
 
-from neil.utils import make_submenu_item, make_stock_menu_item, make_stock_tool_item, make_stock_toggle_item, \
+from neil.utils import make_submenu_item, make_stock_tool_item, make_stock_toggle_item, \
         make_stock_radio_item, make_menu_item, make_check_item, make_radio_item, new_theme_image,  \
         hicoloriconpath, Menu
 
@@ -307,25 +307,25 @@ class NeilFrame(Gtk.Window):
     if not toolitems:
       item.destroy()
     tempmenu = Gtk.Menu()
-    tempmenu.append(make_stock_menu_item(Gtk.STOCK_HELP, self.on_help_contents))
+    tempmenu.append(make_menu_item("_Help", "", self.on_help_contents))
     # Menu item that launches a pdf reader with a document explaining Neil shortcuts
     #shortcuts_menu_item = gtk.MenuItem("_Shortcuts")
     #shortcuts_menu_item.connect('activate', self.on_help_shortcuts)
     #tempmenu.append(shortcuts_menu_item)
-    irc_menu_item = Gtk.MenuItem("Ask on _IRC")
+    irc_menu_item = Gtk.MenuItem.new_with_mnemonic("Ask on _IRC")
     irc_menu_item.connect('activate', self.on_irc)
     tempmenu.append(irc_menu_item)
-    bugreport_menu_item = Gtk.MenuItem("Report a _Bug")
+    bugreport_menu_item = Gtk.MenuItem.new_with_mnemonic("Report a _Bug")
     bugreport_menu_item.connect('activate', self.on_bug_report)
     tempmenu.append(bugreport_menu_item)
     # Separator
     tempmenu.append(Gtk.SeparatorMenuItem())
-    donate_menu_item = Gtk.MenuItem("_Donate")
+    donate_menu_item = Gtk.MenuItem.new_with_mnemonic("_Donate")
     donate_menu_item.connect('activate', self.on_donate)
     tempmenu.append(donate_menu_item)
     tempmenu.append(Gtk.SeparatorMenuItem())
     # Menu item that launches the about box
-    tempmenu.append(make_stock_menu_item(Gtk.STOCK_ABOUT, self.on_about))
+    tempmenu.append(make_menu_item("_About", "", self.on_about))
     self.neilframe_menubar.append(make_submenu_item(tempmenu, "_Help"))
 
     self.master = com.get('neil.core.panel.master')
@@ -462,11 +462,11 @@ class NeilFrame(Gtk.Window):
     self.editmenu.append(item)
 
     self.editmenu.append(Gtk.SeparatorMenuItem())
-    self.editmenu.append(make_stock_menu_item(Gtk.STOCK_CUT, self.on_cut))
-    self.editmenu.append(make_stock_menu_item(Gtk.STOCK_COPY, self.on_copy))
-    self.editmenu.append(make_stock_menu_item(Gtk.STOCK_PASTE, self.on_paste))
+    self.editmenu.append(make_menu_item("Cu_t", "", self.on_cut))
+    self.editmenu.append(make_menu_item("_Copy", "", self.on_copy))
+    self.editmenu.append(make_menu_item("_Paste", "", self.on_paste))
     self.editmenu.append(Gtk.SeparatorMenuItem())
-    self.editmenu.append(make_stock_menu_item(Gtk.STOCK_PREFERENCES, self.on_preferences))
+    self.editmenu.append(make_menu_item("_Preferences", "", self.on_preferences))
     self.editmenu.show_all()
   
   def page_select(self, notebook, page, page_num, *args):
@@ -483,10 +483,10 @@ class NeilFrame(Gtk.Window):
     """
     for item in self.filemenu:
       item.destroy()
-    self.filemenu.append(make_stock_menu_item(Gtk.STOCK_NEW, self.new, frame=self, shortcut="<Control>N"))
-    self.filemenu.append(make_stock_menu_item(Gtk.STOCK_OPEN, self.on_open, frame=self, shortcut="<Control>O"))
-    self.filemenu.append(make_stock_menu_item(Gtk.STOCK_SAVE, self.on_save, frame=self, shortcut="<Control>S"))
-    self.filemenu.append(make_stock_menu_item(Gtk.STOCK_SAVE_AS, self.on_save_as))
+    self.filemenu.append(make_menu_item("_New", "", self.new, frame=self, shortcut="<Control>N"))
+    self.filemenu.append(make_menu_item("_Open", "", self.on_open, frame=self, shortcut="<Control>O"))
+    self.filemenu.append(make_menu_item("_Save", "", self.on_save, frame=self, shortcut="<Control>S"))
+    self.filemenu.append(make_menu_item("Save _As", "", self.on_save_as))
     recent_files = config.get_config().get_recent_files_config()
     if recent_files:
       self.filemenu.append(Gtk.SeparatorMenuItem())
@@ -494,7 +494,7 @@ class NeilFrame(Gtk.Window):
         filetitle=os.path.basename(filename).replace("_","__")
         self.filemenu.append(make_menu_item("_%i %s" % (i+1,filetitle), "", self.open_recent_file, filename))
     self.filemenu.append(Gtk.SeparatorMenuItem())
-    self.filemenu.append(make_stock_menu_item(Gtk.STOCK_QUIT, self.on_exit))
+    self.filemenu.append(make_menu_item("_Quit", "", self.on_exit))
     self.filemenu.show_all()
 
   def get_active_view(self):
