@@ -990,8 +990,8 @@ class RouteView(Gtk.DrawingArea):
         #       return True
         if self.get_parent_window():
             player = com.get('neil.core.player')
-            rect = self.get_allocation()
-            w, h = rect.width, rect.height
+            allocation = self.get_allocation()
+            w, h = allocation.width, allocation.height
             cx, cy = w * 0.5, h * 0.5
 
             def get_pixelpos(x, y):
@@ -999,7 +999,12 @@ class RouteView(Gtk.DrawingArea):
             PW, PH = PLUGINWIDTH / 2, PLUGINHEIGHT / 2
             for mp, (rx, ry) in ((mp, get_pixelpos(*mp.get_position())) for mp in player.get_plugin_list()):
                 rx, ry = rx - PW, ry - PH
-                self.get_parent_window().invalidate_rect(Gdk.Rectangle(int(rx), int(ry), PLUGINWIDTH, PLUGINHEIGHT), False)
+                rect = Gdk.Rectangle()
+                rect.x = int(rx+allocation.x)
+                rect.y = int(ry+allocation.y)
+                rect.width = PLUGINWIDTH
+                rect.height = PLUGINHEIGHT
+                self.get_parent_window().invalidate_rect(rect, False)
         return True
 
     def expose(self, widget, context):

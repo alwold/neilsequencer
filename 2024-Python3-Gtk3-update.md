@@ -61,11 +61,15 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [x] Fix layout issues with patterns
 - [ ] Clean up awkward color blending code in router `draw_leds` function
 - [x] Fix various issues where tracks/rows end up as floats and we try to pass them to C functions that take int
-- [ ] Fix rectangle intersection stuff in router
+- [x] Fix rectangle intersection stuff in router
 - [ ] Look for references to Gdk.Rectangle creation and make sure we aren't doing it wrong
+  - in `envelope.py` there are some
+  - in `wavedit.py` there is one
 - [ ] Dialog layout/packing problems
   - Dialog that pops up when you edit parameters on machine
   - Machine attributes dialog
   - Tools->Component browser
   - App preferences
 - [ ] Clicking in random places on sequencer, you can get the cursor in a non-aligned position
+- [ ] Update menu item labels so they don't say like "gtk-save-as"
+- [ ] Update menus so they don't have underscores in the names
