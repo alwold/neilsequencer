@@ -212,7 +212,7 @@ class ParameterDialog(Gtk.Dialog):
         self.manager.plugin_dialogs[plugin] = self
         self.paramview = ParameterView(plugin)
         self.set_title(self.paramview.get_title())
-        self.vbox.add(self.paramview)
+        self.vbox.pack_start(self.paramview, True, True, 0)
         self.connect('destroy', self.on_destroy)
         self.connect('realize', self.on_realize)
         eventbus = com.get('neil.core.eventbus')
@@ -555,7 +555,7 @@ class RouteView(Gtk.DrawingArea):
         self.volume_slider = VolumeSlider(self)
         self.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
         self.set_property('can-focus', True)
-        self.connect('button-press-event', self.on_left_down)
+        self.connect('button-press-event', self.on_button_down)
         self.connect('button-release-event', self.on_left_up)
         self.connect('motion-notify-event', self.on_motion)
         self.connect('draw', self.expose)
@@ -835,9 +835,9 @@ class RouteView(Gtk.DrawingArea):
             if not (mp.get_flags() & zzub.zzub_plugin_flag_has_custom_gui):
                 com.get('neil.core.parameterdialog.manager').show(mp, self)
 
-    def on_left_down(self, widget, event):
+    def on_button_down(self, widget, event):
         """
-        Event handler for left mouse button presses. Initiates
+        Event handler for mouse button presses. Initiates
         plugin dragging or connection volume adjustments.
 
         @param event: Mouse event.
@@ -845,7 +845,7 @@ class RouteView(Gtk.DrawingArea):
         """
         self.grab_focus()
         player = com.get('neil.core.player')
-        if (event.button == 3):
+        if (event.button == 3): # right button
             return self.on_context_menu(widget, event)
         if not event.button in (1, 2):
             return
