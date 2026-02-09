@@ -45,7 +45,7 @@ class PackageBrowserDialog(Gtk.Dialog):
     def __init__(self, hide_on_delete=True):
         Gtk.Dialog.__init__(self, "Component Browser")
         if hide_on_delete:
-            self.connect('delete-event', self.hide_on_delete)
+            self.connect('delete-event', self.delete_handler)
         self.resize(600, 500)
         #self.ifacestore = gtk.TreeStore(gtk.gdk.Pixbuf, str, gobject.TYPE_PYOBJECT)
         self.ifacestore = Gtk.TreeStore(str, GObject.TYPE_PYOBJECT)
@@ -119,7 +119,7 @@ class PackageBrowserDialog(Gtk.Dialog):
         scrollwin.add(self.desc)
         hsizer.pack2(scrollwin)
         hsizer.set_position(300)
-        self.vbox.add(hsizer)
+        self.vbox.pack_start(hsizer, True, True, 0)
         self.ifacelist.get_selection().connect('changed', self.on_ifacelist_sel_changed)
         self.ifacelist.connect('row-activated', self.on_ifacelist_row_activated)
         self.ifacelist.connect('button-press-event', self.on_ifacelist_button_press_event)
@@ -299,6 +299,8 @@ class PackageBrowserDialog(Gtk.Dialog):
             insert('returns (%s):' % typedesc, paramc)
             insert('\t%s\n' % desc)
 
+    def delete_handler(self, widget, event):
+        self.hide_on_delete()
 
 class PackageBrowserMenuItem:
     __neil__ = dict(
