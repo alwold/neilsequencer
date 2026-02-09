@@ -499,7 +499,6 @@ class PreferencesDialog(Gtk.Dialog):
         self.tab_list, self.tab_list_store, columns = new_listview([
                                                                    ('Name', str),])
         self.tab_list.set_headers_visible(False)
-        self.tab_list.set_size_request(120, 100)
         # iterate through all tabs and add to tab list
         for i in range(self.nb.get_n_pages()):
             tab_label = self.nb.get_tab_label(
@@ -507,7 +506,9 @@ class PreferencesDialog(Gtk.Dialog):
             self.tab_list_store.append([tab_label])
         self.tab_list.connect('cursor-changed', self.on_tab_list_change)
         self.splitter = Gtk.HPaned()
-        self.splitter.pack1(add_scrollbars(self.tab_list))
+        tab_list_with_scrollbars = add_scrollbars(self.tab_list)
+        tab_list_with_scrollbars.set_size_request(120, 100)
+        self.splitter.pack1(tab_list_with_scrollbars)
         self.splitter.pack2(self.nb)
         self.vbox.add(self.splitter)
 
