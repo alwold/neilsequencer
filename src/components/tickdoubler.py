@@ -43,7 +43,7 @@ class TickDoublerDialog(Gtk.Dialog):
 
         # do not destroy dialog on close
         if hide_on_delete:
-            self.connect('delete-event', self.hide_on_delete)
+            self.connect('delete-event', self.delete_handler)
 
         self.plugin = 0
         self.resize(250, 10)
@@ -57,6 +57,9 @@ class TickDoublerDialog(Gtk.Dialog):
         hbox.pack_start(self.halve_button, expand=True, fill=True, padding=0)
         self.vbox.pack_start(hbox, expand=False, fill=True, padding=0)
         self.connect('button-press-event', self.on_left_down)
+
+    def delete_handler(self, widget, event):
+        self.hide_on_delete()
 
     def double_pattern(self, plugin, pattern_index):
         """
