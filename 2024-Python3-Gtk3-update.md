@@ -66,10 +66,12 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
   - in `envelope.py` there are some
   - in `wavedit.py` there is one
 - [ ] Dialog layout/packing problems
-  - Dialog that pops up when you edit parameters on machine
+  - Dialog that pops up when you edit parameters on machine - done
   - Machine attributes dialog
-  - Tools->Component browser
-  - App preferences
+  - Tools->Component browser - done
+  - App preferences - done
 - [ ] Clicking in random places on sequencer, you can get the cursor in a non-aligned position
 - [x] Update menu item labels so they don't say like "gtk-save-as"
 - [x] Update menus so they don't have underscores in the names
+- [ ] Figure out how the app is normally distributed and installed and try to replicate
+- [ ] Right click on machine in router, there are underscores in menu
