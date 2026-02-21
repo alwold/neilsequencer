@@ -27,7 +27,7 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
   - `sudo make install`
   
 - Install python dependencies (I'm using a pyenv)
-  - `pip -m venv venv`
+  - `python3 -m venv venv`
   - `source venv/bin/activate`
   - `pip install -r requirements.txt`
   
