@@ -67,7 +67,7 @@ class SearchPluginsDialog(Gtk.Window):
         self.vbox = Gtk.VBox()
         self.add(self.vbox)
         self.set_title("Search Plugins")
-        self.connect('delete-event', self.hide_on_delete)
+        self.connect('delete-event', self.delete_handler)
         com.get("neil.core.icons")  # make sure theme icons are loaded
         self.searchterms = ['']
         self.searchbox = Gtk.Entry()
@@ -126,6 +126,9 @@ class SearchPluginsDialog(Gtk.Window):
         self.show_nonnative_button.set_active(
             cfg.pluginlistbrowser_show_nonnative)
         self.set_size_request(-1, 500)
+
+    def delete_handler(self, widget, event):
+        self.hide_on_delete()
 
     def get_icon_name(self, pluginloader):
         uri = pluginloader.get_uri()
