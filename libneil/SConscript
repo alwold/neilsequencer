@@ -133,7 +133,7 @@ gcc = env['CC'] == 'gcc'
 
 if gcc:
     #env['CXXFLAGS'] += ['--no-rtti']
-    env.Append(CCFLAGS=['-std=gnu++98',])
+    env.Append(CCFLAGS=['-std=gnu++11',])
     if env['DEBUG'] == False:
         env.Append(CCFLAGS=[
                 '-Wall',
@@ -555,9 +555,9 @@ builders = dict(
         BuildConfig = Builder(action = build_buildconfig),
         Signature = Builder(action = build_signature),
         PyExtension = Builder(action = build_python_extension),
-        ZIDLCHeader = Builder(action = 'python ${ROOTPATH}/tools/zidl --c-header $TARGET $SOURCE'),
-        ZIDLCDef = Builder(action = 'python ${ROOTPATH}/tools/zidl --c-def $TARGET $SOURCE'),
-        ZIDLPyCtypes = Builder(action = 'python ${ROOTPATH}/tools/zidl --libversion $LIBZZUB_VERSION --py-ctypes $TARGET $SOURCE'),
+        ZIDLCHeader = Builder(action = 'python3 ${ROOTPATH}/tools/zidl --c-header $TARGET $SOURCE'),
+        ZIDLCDef = Builder(action = 'python3 ${ROOTPATH}/tools/zidl --c-def $TARGET $SOURCE'),
+        ZIDLPyCtypes = Builder(action = 'python3 ${ROOTPATH}/tools/zidl --libversion $LIBZZUB_VERSION --py-ctypes $TARGET $SOURCE'),
 )
 
 env['BUILDERS'].update(builders)
