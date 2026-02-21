@@ -65,7 +65,7 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [x] Look for references to Gdk.Rectangle creation and make sure we aren't doing it wrong
   - in `envelope.py` there are some
   - in `wavedit.py` there is one
-- [ ] Dialog layout/packing problems
+- [x] Dialog layout/packing problems
   - Dialog that pops up when you edit parameters on machine - done
   - Machine attributes dialog
   - Tools->Component browser - done
