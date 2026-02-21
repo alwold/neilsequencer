@@ -145,7 +145,7 @@ class AttributesDialog(Gtk.Dialog):
         if self.attribs:
             self.attriblist.grab_focus()
             self.attriblist.get_selection().select_path((0,))
-        self.vbox.add(vbox)
+        self.vbox.pack_start(vbox, True, True, 0)
         self.show_all()
 
     def get_focused_item(self):
