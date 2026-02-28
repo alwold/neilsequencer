@@ -247,7 +247,7 @@ bool Spectogram::invoke(zzub_event_data_t& data) {
 
 			gtk_window_set_title(GTK_WINDOW(window), "Spectogram Analyzer");
 			gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_MOUSE);
-			gtk_signal_connect(GTK_OBJECT(window), "delete_event", GTK_SIGNAL_FUNC(&destroy_handler), gpointer(this));
+			g_signal_connect(window, "delete_event", G_CALLBACK(&destroy_handler), gpointer(this));
 
 			gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 
@@ -262,9 +262,9 @@ bool Spectogram::invoke(zzub_event_data_t& data) {
 									| GDK_BUTTON_PRESS_MASK
 									| GDK_POINTER_MOTION_MASK
 									| GDK_POINTER_MOTION_HINT_MASK);
-			gtk_signal_connect(GTK_OBJECT(drawing_box), "configure_event", GTK_SIGNAL_FUNC(&resize_handler), gpointer(this));
-			gtk_signal_connect(GTK_OBJECT(drawing_box), "expose-event", GTK_SIGNAL_FUNC(&expose_handler), gpointer(this));
-			gtk_signal_connect(GTK_OBJECT(drawing_box), "motion-notify-event", GTK_SIGNAL_FUNC(&motion_handler), gpointer(this));
+			g_signal_connect(drawing_box, "configure_event", G_CALLBACK(&resize_handler), gpointer(this));
+			g_signal_connect(drawing_box, "expose-event", G_CALLBACK(&expose_handler), gpointer(this));
+			g_signal_connect(drawing_box, "motion-notify-event", G_CALLBACK(&motion_handler), gpointer(this));
 			gtk_widget_set_size_request(drawing_box, 256, 256);
 			gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(drawing_box), TRUE, TRUE, 0);
 			// gtk_widget_set_double_buffered(drawing_box, FALSE);
@@ -296,7 +296,7 @@ bool Spectogram::invoke(zzub_event_data_t& data) {
 			gtk_scale_set_value_pos(GTK_SCALE(size_slider), GTK_POS_RIGHT);
 			gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(size_slider), TRUE, TRUE, 0);
 			// gtk_range_set_update_policy(GTK_RANGE(buffer_slider), GTK_UPDATE_DISCONTINUOUS);
-			gtk_signal_connect(GTK_OBJECT(size_slider), "value-changed", GTK_SIGNAL_FUNC(&on_size_slider_changed), gpointer(this));
+			g_signal_connect(size_slider, "value-changed", G_CALLBACK(&on_size_slider_changed), gpointer(this));
 			// gtk_signal_connect(GTK_OBJECT(size_slider), "format-value", GTK_SIGNAL_FUNC(&format_value_callback_fstr), gpointer("%gSamples"));
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -314,8 +314,8 @@ bool Spectogram::invoke(zzub_event_data_t& data) {
 			gtk_range_set_value(GTK_RANGE(window_slider), 0);
 			gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(window_slider), TRUE, TRUE, 0);
 			// gtk_range_set_update_policy(GTK_RANGE(window_slider), GTK_UPDATE_DISCONTINUOUS);
-			gtk_signal_connect(GTK_OBJECT(window_slider), "value-changed", GTK_SIGNAL_FUNC(&on_window_slider_changed), gpointer(this));
-			gtk_signal_connect(GTK_OBJECT(window_slider), "format-value", GTK_SIGNAL_FUNC(&format_value_callback_windowing), NULL);
+			g_signal_connect(window_slider, "value-changed", G_CALLBACK(&on_window_slider_changed), gpointer(this));
+			g_signal_connect(window_slider, "format-value", G_CALLBACK(&format_value_callback_windowing), NULL);
 
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
@@ -334,8 +334,8 @@ bool Spectogram::invoke(zzub_event_data_t& data) {
 			gtk_scale_set_value_pos(GTK_SCALE(floor_slider), GTK_POS_RIGHT);
 			gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(floor_slider), TRUE, TRUE, 0);
 			// gtk_range_set_update_policy(GTK_RANGE(floor_slider), GTK_UPDATE_DISCONTINUOUS);
-			gtk_signal_connect(GTK_OBJECT(floor_slider), "value-changed", GTK_SIGNAL_FUNC(&on_floor_slider_changed), gpointer(this));
-			gtk_signal_connect(GTK_OBJECT(floor_slider), "format-value", GTK_SIGNAL_FUNC(&format_value_callback_fstr), gpointer("%gdB"));
+			g_signal_connect(floor_slider, "value-changed", G_CALLBACK(&on_floor_slider_changed), gpointer(this));
+			g_signal_connect(floor_slider, "format-value", G_CALLBACK(&format_value_callback_fstr), gpointer("%gdB"));
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 
@@ -349,7 +349,7 @@ bool Spectogram::invoke(zzub_event_data_t& data) {
 		
 			checkbutton = gtk_check_button_new();
 			gtk_box_pack_start(GTK_BOX(hbox), GTK_WIDGET(checkbutton), FALSE, FALSE, 0);
-			gtk_signal_connect(GTK_OBJECT(checkbutton), "toggled", GTK_SIGNAL_FUNC(&on_checkbutton_toggled), gpointer(this));
+			g_signal_connect(checkbutton, "toggled", G_CALLBACK(&on_checkbutton_toggled), gpointer(this));
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 
@@ -386,10 +386,13 @@ gboolean Spectogram::expose_handler(GtkWidget *widget, GdkEventExpose *event, gp
 	cairo_t *cr;
 	int w, h;
 
-	w = widget->allocation.width;
-	h = widget->allocation.height;
+        GtkAllocation allocation;
+        gtk_widget_get_allocation(widget, &allocation);
+	w = allocation.width;
+	h = allocation.height;
 
-	cr = gdk_cairo_create(widget->window);
+        GdkWindow *window = gtk_widget_get_window(widget);
+	cr = gdk_cairo_create(window);
 
 
 	spectrum->drawSpectrum(cr, n, w, h);
