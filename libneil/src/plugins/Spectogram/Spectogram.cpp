@@ -123,12 +123,6 @@ get_colour_map_value (float value, double spec_floor_db, unsigned char colour [3
 	return ;
 } /* get_colour_map_value */
 
-guint32 Spectogram::getColor(float f) {
-	unsigned char rgb [3] = {0, 0, 0};
-	get_colour_map_value(f, -dbrange, rgb);
-	return 0xff << 24 | rgb[0] << 16 | rgb[1] << 8 | rgb[2];
-}
-
 void Spectogram::drawSpectrum(cairo_t* cr, int n, int w, int h)
 {	
 	if(!spec) return;
@@ -137,6 +131,8 @@ void Spectogram::drawSpectrum(cairo_t* cr, int n, int w, int h)
 
 	for (int i=1; i<=n>>1; i++) {
 		guint32 c = getColor(10.0*log10(spec[i]));
+                unsigned char rgb[3] = {0, 0, 0};
+                get_colour_map_value(10*log10(spec[i]), -dbrange, rgb);
 
 		float fl;
 		float fh;
@@ -152,9 +148,14 @@ void Spectogram::drawSpectrum(cairo_t* cr, int n, int w, int h)
 			fl = 1.f - i / float(n>>1);
 			fh = 1.f - (i-1) / float(n>>1);
 		}
-				
+
+		int rowstride = gdk_pixbuf_get_rowstride(image);
+		guchar *pixels = gdk_pixbuf_get_pixels(image);
 		for(int j=fl*h; j<=fh*h; j++) {
-			gdk_image_put_pixel (image, phase, j, c);
+			guchar *p = pixels + j * rowstride + phase * 3;
+			p[0] = rgb[0];
+			p[1] = rgb[1];
+			p[2] = rgb[2];
 		}
 	}
 
@@ -226,7 +227,7 @@ const char *Spectogram::describe_value(int param, int value) {
 void Spectogram::destroy() {
 	g_source_remove(timer);
 
-	gdk_image_unref(image);
+	image = 0;
 	// gdk_visual_unref(visual);
 
 	gtk_widget_destroy(drawing_box);
@@ -263,7 +264,7 @@ bool Spectogram::invoke(zzub_event_data_t& data) {
 									| GDK_POINTER_MOTION_MASK
 									| GDK_POINTER_MOTION_HINT_MASK);
 			g_signal_connect(drawing_box, "configure_event", G_CALLBACK(&resize_handler), gpointer(this));
-			g_signal_connect(drawing_box, "expose-event", G_CALLBACK(&expose_handler), gpointer(this));
+			g_signal_connect(drawing_box, "draw", G_CALLBACK(&expose_handler), gpointer(this));
 			g_signal_connect(drawing_box, "motion-notify-event", G_CALLBACK(&motion_handler), gpointer(this));
 			gtk_widget_set_size_request(drawing_box, 256, 256);
 			gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(drawing_box), TRUE, TRUE, 0);
@@ -398,11 +399,11 @@ gboolean Spectogram::expose_handler(GtkWidget *widget, GdkEventExpose *event, gp
 	spectrum->drawSpectrum(cr, n, w, h);
 
 
-	gdk_draw_image(spectrum->drawing_box->window, 
-				spectrum->drawing_box->style->fg_gc[GTK_WIDGET_STATE (spectrum->drawing_box)],
-				spectrum->image, 0, 0, 0, 0, -1, -1);
+        gdk_cairo_set_source_pixbuf(cr, spectrum->image, 0, 0);
+        cairo_paint(cr);
 
 
+        // this draws the shaded part to the right of the line
 	for(int i=1; i<10; i++) {
 		int x = (spectrum->phase + i) % w;
 		cairo_move_to(cr, x, 0);
@@ -411,7 +412,8 @@ gboolean Spectogram::expose_handler(GtkWidget *widget, GdkEventExpose *event, gp
 		cairo_set_source_rgba(cr, 0, 0, 0, 1 - float(i) / 10);
 		cairo_stroke(cr);		
 	}
-	
+
+        // this draws the red line that shows current position?
 	int& x = spectrum->phase;
 	x = (x+1) % w;
 	cairo_move_to(cr, x, 0);
@@ -490,11 +492,10 @@ gboolean Spectogram::resize_handler(GtkWidget* da, GdkEventConfigure* event, gpo
 	Spectogram* s = ((Spectogram*)user_data);
 	
 	// s->visual = gdk_drawable_get_visual(s->drawing_box->window);
-	s->image = gdk_image_new(GDK_IMAGE_FASTEST, gdk_drawable_get_visual(da->window), event->width, event->height);
+	GdkWindow *window = gtk_widget_get_window(da);
+	s->image = gdk_pixbuf_new(GDK_COLORSPACE_RGB, false, 8, event->width, event->height);
 	// s->image = gdk_image_new(GDK_IMAGE_NORMAL, s->visual, event->width, event->height);
 	// s->image = gdk_image_new(GDK_IMAGE_NORMAL, gdk_drawable_get_visual(da->window), event->width, event->height);
-
-	memset(s->image->mem, 0, s->image->width * s->image->height);
 
 	return TRUE;
 }

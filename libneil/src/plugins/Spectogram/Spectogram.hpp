@@ -57,7 +57,7 @@ private:
   GtkWidget *floor_slider;
   GtkWidget *checkbutton;
   // GdkVisual *visual;
-  GdkImage *image;
+  GdkPixbuf *image;
   guint32 timer;
   fftw_type* spec;
   int fftsize;
