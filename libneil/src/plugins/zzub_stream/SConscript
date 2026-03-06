@@ -26,8 +26,8 @@ if pluginenv['ZZUB_STREAM'] and pluginenv['MAD']:
         pluginenv.Append(CPPPATH = [ "resampler" ] );
 
 
-        pluginenv.Append(CCFLAGS = ' `pkg-config --cflags gtk+-2.0` ')
-        pluginenv.Append(LINKFLAGS = ' `pkg-config --libs gtk+-2.0` ')
+        pluginenv.Append(CCFLAGS = ' `pkg-config --cflags gtk+-3.0` ')
+        pluginenv.Append(LINKFLAGS = ' `pkg-config --libs gtk+-3.0` ')
 
 
         build_plugin(pluginenv, 'zzub_stream', files=[

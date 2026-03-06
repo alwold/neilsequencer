@@ -73,7 +73,7 @@ opts.Add("LADSPA", "Support LADSPA plugins", False, None, bool_converter)
 opts.Add("DSSI", "Support DSSI plugins", False, None, bool_converter)
 opts.Add("JOBS", "Number of threads to compile with", '2') 
 opts.Add("PYZZUB", "Support pyzzub", True, None, bool_converter)
-opts.Add("GTK2", "Support GTK2 GUIs", False, None, bool_converter)
+opts.Add("GTK3", "Support GTK3 GUIs", False, None, bool_converter)
 opts.Add("MAD", "Support libmad encoder", False, None, bool_converter)
 
 env = Environment(ENV = os.environ, options = opts)
@@ -430,10 +430,10 @@ if (not is_cleaning()) and ('configure' in COMMAND_LINE_TARGETS):
         print('pkg-config >= 0.15.0 not found.')
         Exit(1)
 
-    if conf.CheckPKG('gtk+-2.0'):
-        env['GTK2'] = True
+    if conf.CheckPKG('gtk+-3.0'):
+        env['GTK3'] = True
     else:
-        env['GTK2'] = False
+        env['GTK3'] = False
 
     if not conf.CheckPKGVersion('portaudio-2.0', '19'):
         print('Error: need at least portaudio 19.')
@@ -442,7 +442,7 @@ if (not is_cleaning()) and ('configure' in COMMAND_LINE_TARGETS):
     print("Finished configuration.")
     print
     print("=== Using ===".center(50))
-    print("GTK2:".rjust(30), yesno[env['GTK2'] == True])
+    print("GTK3:".rjust(30), yesno[env['GTK3'] == True])
     print("MAD:".rjust(30), yesno[env['MAD'] == True])
     print("Use SSE CPU Extension:".rjust(30),yesno[env['SSE'] == True])
     print("Use SSE2 CPU Extension:".rjust(30),yesno[env['SSE2'] == True])

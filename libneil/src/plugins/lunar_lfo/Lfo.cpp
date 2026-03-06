@@ -107,9 +107,12 @@ gboolean LunarLfo::expose_handler(GtkWidget *widget, GdkEventExpose *event, gpoi
   cairo_t *cr;
   int w, h;
   DrawingData *data = (DrawingData *)ddata;
-  w = widget->allocation.width;
-  h = widget->allocation.height;
-  cr = gdk_cairo_create(widget->window);
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(widget, &allocation);
+  w = allocation.width;
+  h = allocation.height;
+  GdkWindow *window = gtk_widget_get_window(widget);
+  cr = gdk_cairo_create(window);
   cairo_rectangle(cr, 0, 0, w, h);
   cairo_set_source_rgb(cr, 0, 0, 0);
   cairo_fill(cr);
@@ -137,14 +140,18 @@ gboolean LunarLfo::expose_handler(GtkWidget *widget, GdkEventExpose *event, gpoi
 
 bool LunarLfo::near_min_bar(GtkWidget *widget, int y, void *ddata) {
   DrawingData *data = (DrawingData *)ddata;
-  int h = widget->allocation.height;
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(widget, &allocation);
+  int h = allocation.height;
   int min_y = h - h * data->min;
   return ((y > min_y - 5) && (y < min_y + 5));
 }
 
 bool LunarLfo::near_max_bar(GtkWidget *widget, int y, void *ddata) {
   DrawingData *data = (DrawingData *)ddata;
-  int h = widget->allocation.height;
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(widget, &allocation);
+  int h = allocation.height;
   int max_y = h - h * data->max;
   return ((y > max_y - 5) && (y < max_y + 5));
 }
@@ -164,7 +171,9 @@ gboolean LunarLfo::mouse_click_handler(GtkWidget *widget, GdkEventButton *event,
 
 gboolean LunarLfo::mouse_motion_handler(GtkWidget *widget, GdkEventMotion *event, gpointer ddata) {
   DrawingData *data = (DrawingData *)ddata;
-  int h = widget->allocation.height;
+  GtkAllocation allocation;
+  gtk_widget_get_allocation(widget, &allocation);
+  int h = allocation.height;
   if (data->min_bar_drag_start) {
     if (event->y <= h && event->y >= 0) {
       float value = (h - event->y) / float(h);
@@ -176,9 +185,11 @@ gboolean LunarLfo::mouse_motion_handler(GtkWidget *widget, GdkEventMotion *event
       data->host->set_parameter(data->host->get_metaplugin(), 1, 0, 4, value * para_max->value_max);
     }
   } else if (near_min_bar(widget, event->y, ddata) || near_max_bar(widget, event->y, ddata)) {
-    gdk_window_set_cursor(widget->window, gdk_cursor_new_for_display(gtk_widget_get_display(widget), GDK_DOUBLE_ARROW));
+    GdkWindow *window = gtk_widget_get_window(widget);
+    gdk_window_set_cursor(window, gdk_cursor_new_for_display(gtk_widget_get_display(widget), GDK_DOUBLE_ARROW));
   } else {
-    gdk_window_set_cursor(widget->window, gdk_cursor_new_for_display(gtk_widget_get_display(widget), GDK_ARROW));
+    GdkWindow *window = gtk_widget_get_window(widget);
+    gdk_window_set_cursor(window, gdk_cursor_new_for_display(gtk_widget_get_display(widget), GDK_ARROW));
   }
   return TRUE;
 }
@@ -228,7 +239,8 @@ gboolean LunarLfo::on_drag_data_get(GtkWidget *widget,
     static char text[100];
     // The data below is in Python pickle format.
     sprintf(text, "(I%d\nI3\nI0\nI0\nt.", data_->id);
-    gtk_selection_data_set(data, data->target, 8, (guchar*)text, strlen(text));
+    GdkAtom target = gtk_selection_data_get_target(data);
+    gtk_selection_data_set(data, target, 8, (guchar*)text, strlen(text));
   }
   return TRUE;
 }
@@ -249,9 +261,11 @@ gboolean LunarLfo::on_drag_end(GtkWidget *widget,
 
 void LunarLfo::redraw_box() {
   if (window) {
+    GtkAllocation allocation;
+    gtk_widget_get_allocation(drawing_box, &allocation);
     gtk_widget_queue_draw_area(GTK_WIDGET(drawing_box), 0, 0, 
-			       drawing_box->allocation.width,
-			       drawing_box->allocation.height);
+			       allocation.width,
+			       allocation.height);
   }
 }
 
@@ -275,32 +289,32 @@ bool LunarLfo::invoke(zzub_event_data_t& data) {
 			&drag_targets,
 			1,
 			GDK_ACTION_COPY);
-    gtk_signal_connect(GTK_OBJECT(drawing_box), "expose-event", 
-		       GTK_SIGNAL_FUNC(&expose_handler), 
+    g_signal_connect(drawing_box, "draw", 
+		       G_CALLBACK(&expose_handler), 
 		       (gpointer)(&drawing_data));
-    gtk_signal_connect(GTK_OBJECT(drawing_box), "button-press-event", 
-		       GTK_SIGNAL_FUNC(&mouse_click_handler), 
+    g_signal_connect(drawing_box, "button-press-event", 
+		       G_CALLBACK(&mouse_click_handler), 
 		       (gpointer)(&drawing_data));
-    gtk_signal_connect(GTK_OBJECT(drawing_box), "button-release-event", 
-		       GTK_SIGNAL_FUNC(&mouse_release_handler), 
+    g_signal_connect(drawing_box, "button-release-event", 
+		       G_CALLBACK(&mouse_release_handler), 
 		       (gpointer)(&drawing_data));
-    gtk_signal_connect(GTK_OBJECT(drawing_box), "motion-notify-event",
-		       GTK_SIGNAL_FUNC(&mouse_motion_handler), 
+    g_signal_connect(drawing_box, "motion-notify-event",
+		       G_CALLBACK(&mouse_motion_handler), 
 		       (gpointer)(&drawing_data));
-    gtk_signal_connect(GTK_OBJECT(offset_slider), "value-changed",
-		       GTK_SIGNAL_FUNC(&offset_slider_set),
+    g_signal_connect(offset_slider, "value-changed",
+		       G_CALLBACK(&offset_slider_set),
 		       (gpointer)(&drawing_data));
-    gtk_signal_connect(GTK_OBJECT(rate_slider), "value-changed",
-		       GTK_SIGNAL_FUNC(&rate_slider_set),
+    g_signal_connect(rate_slider, "value-changed",
+		       G_CALLBACK(&rate_slider_set),
 		       (gpointer)(&drawing_data));
-    gtk_signal_connect(GTK_OBJECT(drag_button), "drag-data-get",
-		       GTK_SIGNAL_FUNC(&on_drag_data_get),
+    g_signal_connect(drag_button, "drag-data-get",
+		       G_CALLBACK(&on_drag_data_get),
 		       (gpointer)(&drawing_data));
-    gtk_signal_connect(GTK_OBJECT(drag_button), "drag-data-delete",
-		       GTK_SIGNAL_FUNC(&on_drag_data_delete),
+    g_signal_connect(drag_button, "drag-data-delete",
+		       G_CALLBACK(&on_drag_data_delete),
 		       (gpointer)(&drawing_data));
-    gtk_signal_connect(GTK_OBJECT(drag_button), "drag-end",
-		       GTK_SIGNAL_FUNC(&on_drag_end),
+    g_signal_connect(drag_button, "drag-end",
+		       G_CALLBACK(&on_drag_end),
 		       (gpointer)(&drawing_data));
 /*         
     gtk_signal_connect(GTK_OBJECT(window), "destroy",
