@@ -2114,7 +2114,7 @@ class PatternView(Gtk.DrawingArea):
                     if on:
                         o, n = on
                         player = com.get('neil.core.player')
-                        data = (min(player.octave + o, 9) << 4) | (n + 1)
+                        data = (int(min(player.octave + o, 9)) << 4) | (n + 1)
                         if (wp != None):
                             if player.active_waves:
                                 wdata = player.active_waves[0].get_index() + 1
