@@ -827,7 +827,11 @@ class PatternView(Gtk.DrawingArea):
         """
         player = com.get('neil.core.player')
         sel_sensitive = (self.selection.begin < self.selection.end)
-        paste_sensitive = (get_clipboard_text().startswith(self.CLIPBOARD_MAGIC))
+        clipboard_text = get_clipboard_text()
+        if clipboard_text:
+            paste_sensitive = clipboard_text.startswith(self.CLIPBOARD_MAGIC)
+        else:
+            paste_sensitive = False
 
         menu = Menu()
         menu.add_item("Add track", self.on_popup_add_track)

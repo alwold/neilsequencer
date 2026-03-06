@@ -57,9 +57,9 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [ ] Find out if we need the frozen detection in gtkcodebuffer.py (and elsewhere?)
 - [ ] Convert C plugins that use GTK to GTK 3
   - [x] Spectogram
-  - [ ] zzub_stream
+  - [x] zzub_stream
   - [ ] Oscilloscope
-  - [ ] lunar_lfo
+  - [x] lunar_lfo
   - [ ] Spectrum
 - [x] Verify the code in Sequencer.draw_tracks where it uses translate instead of the old way of creating a new drawable
 - [x] Look into layout issues on sequencer - as you scroll to the right, things seem to get crazy (maybe related to above)
