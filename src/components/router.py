@@ -1392,7 +1392,7 @@ class RouteView(Gtk.DrawingArea):
         if note:
             if note not in self.chordnotes:
                 self.chordnotes.append(note)
-                n = ((note[0] + octave) << 4 | note[1] + 1)
+                n = (int(note[0] + octave) << 4 | note[1] + 1)
                 plugin.play_midi_note(n, 0, 127)
 
     def on_key_jazz_release(self, widget, event, plugin):
@@ -1409,7 +1409,7 @@ class RouteView(Gtk.DrawingArea):
             note = key_to_note(kv)
             if note in self.chordnotes:
                 self.chordnotes.remove(note)
-                n = ((note[0] + octave) << 4 | note[1] + 1)
+                n = (int(note[0] + octave) << 4 | note[1] + 1)
                 plugin.play_midi_note(zzub.zzub_note_value_off, n, 0)
 
 __all__ = [
