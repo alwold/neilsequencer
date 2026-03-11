@@ -79,7 +79,7 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [x] Update menu item labels so they don't say like "gtk-save-as"
 - [x] Update menus so they don't have underscores in the names
 - [ ] Figure out how the app is normally distributed and installed and try to replicate
-- [ ] Right click on machine in router, there are underscores in menu
+- [x] Right click on machine in router, there are underscores in menu
 - [ ] Fix `hide_on_delete` handling
   - pkgbrowser.py
   - cpumonitor.py

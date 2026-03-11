@@ -1076,7 +1076,7 @@ class Menu(Gtk.Menu):
                 return item, submenu
 
         def add_item(self, label, func, *args):
-                item = Gtk.MenuItem(label=label)
+                item = Gtk.MenuItem.new_with_mnemonic(label)
                 item.connect('activate', func, *args)
                 self.append(item)
                 return item
@@ -1088,7 +1088,7 @@ class Menu(Gtk.Menu):
                 return item
 
         def add_check_item(self, label, toggled, func, *args):
-                item = Gtk.CheckMenuItem(label=label)
+                item = Gtk.CheckMenuItem.new_with_mnemonic(label)
                 item.set_active(toggled)
                 item.connect('toggled', func, *args)
                 self.append(item)
