@@ -59,7 +59,7 @@ class CPUMonitorDialog(Gtk.Dialog):
         Initializer.
         """
         Gtk.Dialog.__init__(self)
-        self.connect('delete-event', self.hide_on_delete)
+        self.connect('delete-event', self.delete_handler)
         self.set_size_request(200, 300)
         self.set_title("CPU Monitor")
         self.pluginlist = Gtk.ListStore(str, str)
@@ -94,6 +94,9 @@ class CPUMonitorDialog(Gtk.Dialog):
         sizer.pack_start(hsizer, expand=False, fill=True, padding=0)
         self.vbox.add(sizer)
         GObject.timeout_add(1000, self.on_timer)
+
+    def delete_handler(self, widget, event):
+        self.hide_on_delete()
 
     def on_timer(self):
         """
