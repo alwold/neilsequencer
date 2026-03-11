@@ -57,7 +57,7 @@ class PythonConsoleDialog(Gtk.Dialog):
         Gtk.Dialog.__init__(self,
                             "Python Console")
         if hide_on_delete:
-            self.connect('delete-event', self.hide_on_delete)
+            self.connect('delete-event', self.delete_handler)
         self.resize(600, 500)
         vpack = Gtk.VBox()
         hpack = Gtk.HBox()
@@ -132,6 +132,9 @@ class PythonConsoleDialog(Gtk.Dialog):
 
         for command in cfg.debug_commands:
             self.add_tool(command, add_to_config=False)
+
+    def delete_handler(self, widget, event):
+        self.hide_on_delete()
 
     def add_tool(self, cmd, name=None, add_to_config=True):
         if not name:
