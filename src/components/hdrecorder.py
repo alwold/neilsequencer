@@ -61,7 +61,7 @@ class HDRecorderDialog(Gtk.Dialog):
         """
         Gtk.Dialog.__init__(self,
                             "Hard Disk Recorder")
-        self.connect('delete-event', self.hide_on_delete)
+        self.connect('delete-event', self.delete_handler)
         # self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
         # self.set_size_request(250,-1)
         self.set_resizable(False)
@@ -97,6 +97,9 @@ class HDRecorderDialog(Gtk.Dialog):
         eventbus.zzub_parameter_changed += self.on_zzub_parameter_changed
         self.update_label()
         self.update_rec_button()
+
+    def delete_handler(self, widget, event):
+        self.hide_on_delete()
 
     def on_zzub_parameter_changed(self, plugin, group, track, param, value):
         player = com.get('neil.core.player')
