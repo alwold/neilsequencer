@@ -870,6 +870,7 @@ class RouteView(Gtk.DrawingArea):
                         player.active_patterns = [(mp, 0)] + player.active_patterns
                     else:
                         player.active_patterns = [(mp, 0)]
+                    self.grab_focus() # switching the active pattern can change the focus, so re-focus
                 player.set_midi_plugin(mp)
                 if (event.state & Gdk.ModifierType.CONTROL_MASK) or (event.button == 2):
                     if is_controller(mp):
