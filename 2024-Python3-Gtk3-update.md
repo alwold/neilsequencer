@@ -83,7 +83,7 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [ ] Fix `hide_on_delete` handling
   - [x] pkgbrowser.py
   - [x] cpumonitor.py
-  - [ ] transportpanel.py
+  - [ ] transportpanel.py - this is on the master panel window, but that doesn't seem to be shown ever?
   - [x] pythonconsole.py
   - [x] hdrecorder.py
   - [x] tickdoubler.py (maybe)
