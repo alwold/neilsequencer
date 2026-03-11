@@ -58,9 +58,9 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [ ] Convert C plugins that use GTK to GTK 3
   - [x] Spectogram
   - [x] zzub_stream
-  - [ ] Oscilloscope
+  - [ ] Oscilloscope - the build is currently commented out, so this might be low priority?
   - [x] lunar_lfo
-  - [ ] Spectrum
+  - [ ] Spectrum - has dependencies on gtkgl, which might be tricky to update
 - [x] Verify the code in Sequencer.draw_tracks where it uses translate instead of the old way of creating a new drawable
 - [x] Look into layout issues on sequencer - as you scroll to the right, things seem to get crazy (maybe related to above)
 - [x] Fix layout issues with patterns
