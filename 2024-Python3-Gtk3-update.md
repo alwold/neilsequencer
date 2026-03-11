@@ -81,9 +81,9 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
 - [ ] Figure out how the app is normally distributed and installed and try to replicate
 - [x] Right click on machine in router, there are underscores in menu
 - [ ] Fix `hide_on_delete` handling
-  - [ ] pkgbrowser.py
+  - [x] pkgbrowser.py
   - [x] cpumonitor.py
   - [ ] transportpanel.py
   - [x] pythonconsole.py
   - [x] hdrecorder.py
-  - [ ] tickdoubler.py (maybe)
+  - [x] tickdoubler.py (maybe)
