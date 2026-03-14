@@ -1118,7 +1118,7 @@ class PatternView(Gtk.DrawingArea):
         row = min(max(r, 0), self.row_count - 1)
         if row >= 0:
             w, h = self.get_client_size()
-            endrow = (((h - self.top_margin) / self.row_height * 1) + self.start_row) - 1
+            endrow = int(((h - self.top_margin) / self.row_height * 1) + self.start_row) - 1
             if (row < self.start_row):
                 self.start_row = row
                 self.redraw()
