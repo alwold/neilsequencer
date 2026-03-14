@@ -21,7 +21,7 @@
 VERSION = "0.13"
 
 import os, glob, sys, time
-import distutils.sysconfig
+import sysconfig
 
 posix = os.name == 'posix'
 win32 = os.name == 'nt'
@@ -59,8 +59,7 @@ env.SConsignFile()
 distutils_prefix = "%s%s" % (env['DESTDIR'], env['PREFIX'])
 
 env['ROOTPATH'] = os.getcwd()
-env['SITE_PACKAGE_PATH'] = \
-    distutils.sysconfig.get_python_lib(prefix=distutils_prefix)
+env['SITE_PACKAGE_PATH'] = sysconfig.get_path('purelib')
 env['APPLICATIONS_PATH'] = '${DESTDIR}${PREFIX}/share/applications'
 env['BIN_PATH'] = '${DESTDIR}${PREFIX}/bin'
 env['SHARE_PATH'] = '${DESTDIR}${PREFIX}/share/neil'
@@ -131,8 +130,8 @@ def install_recursive(target, path, mask):
 
 def build_path_config(target, source, env):
     outpath = str(target[0])
-    from StringIO import StringIO
-    from ConfigParser import ConfigParser
+    from io import StringIO
+    from configparser import ConfigParser
     s = StringIO()
     cfg = ConfigParser()
     cfg.add_section('Paths')

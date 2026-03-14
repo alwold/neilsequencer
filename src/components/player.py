@@ -235,7 +235,7 @@ class NeilPlayer(Player, PropertyEventHandler):
                 for j in range(pluginloader.get_stream_format_count()):
                     ext = '.' + pluginloader.get_stream_format_ext(j)
                     if ext in self.__stream_ext_uri_mappings:
-                        print >> sys.stderr, "Found another mapping for " + ext + "! Skipping " + uri
+                        print("Found another mapping for " + ext + "! Skipping " + uri, file=sys.stderr)
                         continue
                     self.__stream_ext_uri_mappings[ext] = uri
         #print "supported sample formats: " + ', '.join(sorted(self.__stream_ext_uri_mappings.keys()))
