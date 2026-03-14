@@ -22,7 +22,7 @@
 VERSION = "0.3"
 
 import os, glob, sys, time, platform
-import distutils.sysconfig
+import sysconfig
 
 posix = os.name == 'posix'
 linux = sys.platform == 'linux2'
@@ -240,7 +240,7 @@ libpath = "${DESTDIR}${PREFIX}${LIBDIR}"
 includepath = "${DESTDIR}${PREFIX}/include"
 pluginpath = "${DESTDIR}${PREFIX}${LIBDIR}/zzub"
 pypath = "%s%s" % (env['DESTDIR'], env['PREFIX'])
-pyextpath = distutils.sysconfig.get_python_lib(prefix=pypath)
+pyextpath = sysconfig.get_path('purelib')
 
 def install(target, source, perm=None, symlink=False):
     if not perm:
