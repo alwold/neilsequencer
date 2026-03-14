@@ -35,7 +35,7 @@ Here's what I had to do to get it to run. My test system is running Ubuntu 24.10
   - `scons`
 
 - Run
-  - `LD_LIBRARY_PATH=libneil/lib PYTHONPATH=src:src/neil:libneil/src/pyzzub:libneil/lib bin/neil`
+  - `LD_LIBRARY_PATH=libneil/lib PYTHONPATH=src:libneil/src/pyzzub:libneil/lib bin/neil`
 
 ## Remaining work
 ### Tasks

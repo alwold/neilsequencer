@@ -44,7 +44,7 @@ Provides a class to read and write preset files.
 #~ comment characters
 
 import zzub
-from utils import read_int, read_string, write_int, write_string
+from neil.utils import read_int, read_string, write_int, write_string
 
 
 def sort_preset(a, b):

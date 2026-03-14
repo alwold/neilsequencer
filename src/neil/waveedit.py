@@ -27,13 +27,13 @@ from gi.repository import Gdk
 from gi.repository import Pango
 from gi.repository import PangoCairo
 import os, sys
-from utils import prepstr, db2linear, linear2db, note2str, file_filter
-from utils import read_int, write_int, add_scrollbars, new_image_button,\
+from neil.utils import prepstr, db2linear, linear2db, note2str, file_filter
+from neil.utils import read_int, write_int, add_scrollbars, new_image_button,\
      filepath, add_hscrollbar, error, message, Menu, wave_names_generator
 import zzub
 import config
-import common
-from common import MARGIN, MARGIN2, MARGIN3
+import neil.common
+from neil.common import MARGIN, MARGIN2, MARGIN3
 
 import neil.com as com
 

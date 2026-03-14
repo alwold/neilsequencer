@@ -78,7 +78,7 @@ def etcpath(path):
         @return: Absolute path to file.
         @rtype: str
         """
-        from pathconfig import path_cfg
+        from neil.pathconfig import path_cfg
         return path_cfg.get_path('etc', path)
 
 def iconpath(path):
@@ -91,7 +91,7 @@ def iconpath(path):
         @return: Absolute path to file.
         @rtype: str
         """
-        from pathconfig import path_cfg
+        from neil.pathconfig import path_cfg
         return path_cfg.get_path('icons_neil', path)
 
 def hicoloriconpath(path):
@@ -104,7 +104,7 @@ def hicoloriconpath(path):
         @return: Absolute path to file.
         @rtype: str
         """
-        from pathconfig import path_cfg
+        from neil.pathconfig import path_cfg
         return path_cfg.get_path('icons_hicolor', path)
 
 
@@ -118,7 +118,7 @@ def imagepath(path):
         @return: Absolute path to file.
         @rtype: str
         """
-        from pathconfig import path_cfg
+        from neil.pathconfig import path_cfg
         return path_cfg.get_path('pixmaps', path)
 
 def sharedpath(path):
@@ -131,7 +131,7 @@ def sharedpath(path):
         @return: Absolute path to file.
         @rtype: str
         """
-        from pathconfig import path_cfg
+        from neil.pathconfig import path_cfg
         return path_cfg.get_path('share', path)
 
 def docpath(path):
@@ -139,7 +139,7 @@ def docpath(path):
     Translates a path relative to the doc directory in to an absolute
     path.
     """
-    from pathconfig import path_cfg
+    from neil.pathconfig import path_cfg
     return path_cfg.get_path('doc', path)
 
 def filepath(path):

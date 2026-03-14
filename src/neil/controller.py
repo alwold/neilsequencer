@@ -28,11 +28,11 @@ import zzub
 import webbrowser
 
 import neil.com as com
-from utils import prepstr, buffersize_to_latency, filepath, error, add_scrollbars, new_listview
-import utils
+from neil.utils import prepstr, buffersize_to_latency, filepath, error, add_scrollbars, new_listview
+import neil.utils
 import config
-import common
-from common import MARGIN, MARGIN2, MARGIN3
+import neil.common
+from neil.common import MARGIN, MARGIN2, MARGIN3
 
 class SelectControllerDialog(Gtk.Dialog):
 	"""

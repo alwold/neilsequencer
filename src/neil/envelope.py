@@ -27,12 +27,12 @@ from gi.repository import Gdk
 import os
 import sys
 import math
-from utils import prepstr, db2linear, linear2db, note2str
-from utils import read_int, write_int
+from neil.utils import prepstr, db2linear, linear2db, note2str
+from neil.utils import read_int, write_int
 import zzub
 import config
-import common
-from common import MARGIN, MARGIN2, MARGIN3
+import neil.common
+from neil.common import MARGIN, MARGIN2, MARGIN3
 
 import neil.com as com
 

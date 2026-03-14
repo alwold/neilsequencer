@@ -18,7 +18,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-from pathconfig import path_cfg
+from neil.pathconfig import path_cfg
 import os,sys,glob
 from configparser import ConfigParser
 
@@ -98,7 +98,7 @@ class ComponentManager:
                 self.register(module_.__neil__, modulename)
                 self.packages.append(pkg)
             except:
-                import errordlg
+                import neil.errordlg as errordlg
                 errordlg.print_exc()
 
     def register(self, pkginfo, modulename=None):

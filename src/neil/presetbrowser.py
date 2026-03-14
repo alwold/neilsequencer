@@ -25,14 +25,14 @@ Contains all classes and functions needed to render the preset browser.
 from gi.repository import Gtk
 import cairo
 from gi.repository import PangoCairo
-from utils import prepstr, filepath, db2linear, linear2db, is_debug, filenameify, \
+from neil.utils import prepstr, filepath, db2linear, linear2db, is_debug, filenameify, \
 	get_item_count, question, error, new_listview, add_scrollbars, get_clipboard_text, set_clipboard_text, \
 	gettext, new_stock_image_button, diff, file_filter
 import config
 import zzub
 import sys,os
-from preset import PresetCollection, Preset
-import common
+from neil.preset import PresetCollection, Preset
+import neil.common
 import neil.com as com
 
 class PresetView(Gtk.VBox):

@@ -22,7 +22,7 @@
 Provides application class and controls used in the neil main window.
 """
 
-import pathconfig
+import neil.pathconfig
 import gi
 from gi.repository import GObject
 GObject.threads_init()
