@@ -136,13 +136,14 @@ def build_path_config(target, source, env):
     cfg = ConfigParser()
     cfg.add_section('Paths')
     remove_prefix = '${DESTDIR}'
-    for key, value in CONFIG_PATHS.iteritems():
+    for key, value in CONFIG_PATHS.items():
         value = env[value]
         if value.startswith(remove_prefix):
             value = value[len(remove_prefix):]
         cfg.set('Paths', key, os.path.abspath(str(env.Dir(value))))
     cfg.write(s)
-    file(outpath, 'w').write(s.getvalue())
+    f = open(outpath, 'w')
+    f.write(s.getvalue())
 
 builders = dict(
     BuildPathConfig = Builder(action=build_path_config),
