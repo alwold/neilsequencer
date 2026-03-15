@@ -2054,7 +2054,7 @@ class PatternView(Gtk.DrawingArea):
                 self.update_line(self.row + index)
             del self.lines[self.group][self.track][-1]
             self.plugin.insert_pattern_rows(self.pattern, indices,
-                                            len(indices) / 3, self.row, 1)
+                                            int(len(indices) / 3), self.row, 1)
             player.history_commit("insert row")
         elif k == 'Delete':
             del self.lines[self.group][self.track][self.row:self.row +\
@@ -2067,7 +2067,7 @@ class PatternView(Gtk.DrawingArea):
                     indices += [self.group, self.track, i]
                 self.update_line(self.row_count - 1 + index - 1)
             self.plugin.remove_pattern_rows(self.pattern, indices,
-                                            len(indices) / 3, self.row, 1)
+                                            int(len(indices) / 3), self.row, 1)
             player.history_commit("remove row")
         elif k == 'Return':
             eventbus.edit_sequence_request()
