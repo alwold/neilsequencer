@@ -1278,7 +1278,7 @@ class AcceleratorMap:
                 if successful.
                 """
                 # remove numlock from the key modifiers
-                key_mod = event.state & (~Gdk.ModifierType.MOD2_MASK)
+                key_mod = Gdk.ModifierType(event.state & (~Gdk.ModifierType.MOD2_MASK))
                 name = Gtk.accelerator_name(event.keyval, key_mod)
                 if name == None:
                         return False
