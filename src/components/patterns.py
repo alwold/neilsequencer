@@ -246,7 +246,7 @@ class PatternToolBar(Gtk.HBox):
         self.edit_step_box.set_active(0)
         self.edit_step_box.connect('changed', self.edit_step_changed)
 
-        self.playnotes = Gtk.CheckButton(label="_Play")
+        self.playnotes = Gtk.CheckButton.new_with_mnemonic(label="_Play")
         self.playnotes.set_active(True)
         self.playnotes.set_tooltip_text("If checked, the notes will be played as you enter them in the editor")
         self.playnotes.connect('clicked', self.on_playnotes_click)
