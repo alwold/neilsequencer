@@ -654,8 +654,9 @@ class WaveEditView(Gtk.DrawingArea):
             ctx.set_source_rgb(0.7, 0.9, 0.7)
             hm = (h / (2 * channels) - 1) * (1 + channel * 2)
             ctx.move_to(0, hm)
-            for x in range(0, w):
+            for x in range(0, len(maxbuffer)):
                 ctx.line_to(x, hm - (h / channels) * maxbuffer[x] * 0.4)
+            w = len(minbuffer)
             for x in range(0, w):
                 ctx.line_to(w - x, hm - (h / channels) * minbuffer[w - x - 1] * 0.4)
             ctx.fill_preserve()
