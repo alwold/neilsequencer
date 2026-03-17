@@ -120,11 +120,11 @@ class PythonConsoleDialog(Gtk.Dialog):
         scrollwin.set_shadow_type(Gtk.ShadowType.IN)
         scrollwin.add(self.consoleview)
 
-        vpack.pack_start(self.shell, expand=False, fill=True, padding=0)
-        vpack.pack_start(scrollwin, expand=True, fill=True, padding=0)
-        vpack.pack_end(self.entry, expand=False, fill=True, padding=0)
-        hpack.pack_start(vpack, expand=True, fill=True, padding=0)
-        self.vbox.add(hpack)
+        vpack.pack_start(self.shell, False, True, 0)
+        vpack.pack_start(scrollwin, True, True, 0)
+        vpack.pack_end(self.entry, False, True, 0)
+        hpack.pack_start(vpack, True, True, 0)
+        self.vbox.pack_start(hpack, True, True, 0)
 
         GObject.timeout_add(50, self.update_output)
         self.log_buffer_pos = 0
