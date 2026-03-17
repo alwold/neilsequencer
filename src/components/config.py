@@ -353,17 +353,18 @@ class NeilConfig(configparser.ConfigParser):
             self.active_theme = ''
             return
         re_theme_attrib = re.compile('^([\w\s]+\w)\s+(\w+)$')
-        for line in file(sharedpath('themes/'+name+'.col'),'r'):
-            line = line.strip()
-            if line and not line.startswith('#'):
-                m = re_theme_attrib.match(line)
-                assert m, "invalid line for theme %s: %s" % (name,line)
-                key = m.group(1)
-                value = int(m.group(2),16)
-                if key in self.current_theme.keys():
-                    self.current_theme[key] = value
-                else:
-                    print("no such key: %s" % key)
+        with open(sharedpath('themes/'+name+'.col'),'r') as file:
+            for line in file:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    m = re_theme_attrib.match(line)
+                    assert m, "invalid line for theme %s: %s" % (name,line)
+                    key = m.group(1)
+                    value = int(m.group(2),16)
+                    if key in self.current_theme.keys():
+                        self.current_theme[key] = value
+                    else:
+                        print("no such key: %s" % key)
         self.active_theme = name
 
     def get_float_color(self, name):
