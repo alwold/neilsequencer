@@ -156,24 +156,28 @@ namespace zzub {
     PaError err;
     PaStreamParameters inputParameters, outputParameters;
     int in_id, out_id;
-    in_id = devices[inIndex].device_id;
+    if (inIndex > -1) {
+      in_id = devices[inIndex].device_id;
+      inputParameters.device = in_id;
+      inputParameters.channelCount = 2;
+      inputParameters.sampleFormat = paFloat32 | paNonInterleaved;
+      inputParameters.suggestedLatency = Pa_GetDeviceInfo(in_id)->defaultLowInputLatency;
+      inputParameters.hostApiSpecificStreamInfo = NULL;
+    } else {
+      in_id = -1;
+    }
     out_id = devices[index].device_id;
-    inputParameters.device = in_id;
-    inputParameters.channelCount = 2;
-    inputParameters.sampleFormat = paFloat32 | paNonInterleaved;
-    inputParameters.suggestedLatency = Pa_GetDeviceInfo(in_id)->defaultLowInputLatency;
-    inputParameters.hostApiSpecificStreamInfo = NULL;
     outputParameters.device = out_id;
     outputParameters.channelCount = 2;
     outputParameters.sampleFormat = paFloat32 | paNonInterleaved;
     outputParameters.suggestedLatency = Pa_GetDeviceInfo(out_id)->defaultLowOutputLatency;
     outputParameters.hostApiSpecificStreamInfo = NULL;
-    err = Pa_IsFormatSupported(&inputParameters, &outputParameters, samplerate);
+    err = Pa_IsFormatSupported(in_id == -1 ? NULL : &inputParameters, &outputParameters, samplerate);
     if (err != paNoError) {
       return false;
     }
     err = Pa_OpenStream(&stream, 
-                        &inputParameters, 
+                        in_id == -1 ? NULL : &inputParameters, 
                         &outputParameters, 
                         samplerate, 
                         buffersize, 
